@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+    depends_on:
+      - child-growth-monitoring-service
+    networks:
+      - app-network
+
+  child-growth-monitoring-service:
+    build:
+      context: ./services/child-growth-monitoring-service
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=development
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

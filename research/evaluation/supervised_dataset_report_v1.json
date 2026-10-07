@@ -1,0 +1,36 @@
+{
+    "dataset_information": {
+        "input_observations": 9325,
+        "180_day_sufficient_followup": 8260,
+        "insufficient_followup": 1065,
+        "already_below_threshold_at_index": 570,
+        "primary_eligible_observations": 7690
+    },
+    "target_distribution": {
+        "positive_targets": 323,
+        "negative_targets": 7367,
+        "positive_percentage": 4.200260078023407,
+        "negative_percentage": 95.7997399219766
+    },
+    "child_level_metrics": {
+        "unique_children": 497,
+        "children_with_positive_events": 157
+    },
+    "target_component_overlap": {
+        "new_crossing_only": 118,
+        "waz_decline_only": 180,
+        "both_conditions": 25
+    },
+    "leakage_validation": {
+        "future_columns_in_features": false,
+        "target_in_features": false,
+        "shift_neg_1_in_features": false,
+        "validation_passed": true
+    },
+    "output_files": {
+        "supervised_dataset": "data/processed/chdr_supervised_180d_v1.csv",
+        "exclusions_dataset": "data/processed/chdr_supervised_exclusions_180d_v1.csv",
+        "schema": "data/schemas/supervised_180d_feature_schema_v1.json"
+    },
+    "warnings": []
+}

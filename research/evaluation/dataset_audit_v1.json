@@ -1,0 +1,227 @@
+{
+    "dimensions": {
+        "rows": 9325,
+        "columns": 28
+    },
+    "child_statistics": {
+        "unique_children": 500,
+        "min_obs": 13,
+        "max_obs": 20,
+        "mean_obs": 18.65,
+        "median_obs": 19.0
+    },
+    "longitudinal": {
+        "duplicates": 0
+    },
+    "missing_data": [
+        {
+            "column": "child_id",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "sex",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "date_of_birth",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "birth_weight_kg",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "birth_length_cm",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "gestational_age_weeks",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "birth_order",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "delivery_type",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "apgar_score_5min",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "visit_date",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "age_days",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "weight_kg",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "length_height_cm",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "breastfeeding_status",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "breastfeeding_frequency_per_day",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "formula_feeding",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "formula_feeds_per_day",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "complementary_feeding_started",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "complementary_feeding_start_age_months",
+            "missing_count": 2479,
+            "missing_percentage": 26.58445040214477
+        },
+        {
+            "column": "meals_per_day",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "food_groups_consumed",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "supplement_use",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "supplement_type",
+            "missing_count": 5333,
+            "missing_percentage": 57.19034852546917
+        },
+        {
+            "column": "recent_illness",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "diarrhea_recent",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "fever_recent",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "respiratory_illness_recent",
+            "missing_count": 0,
+            "missing_percentage": 0.0
+        },
+        {
+            "column": "illness_duration_days",
+            "missing_count": 7687,
+            "missing_percentage": 82.43431635388741
+        }
+    ],
+    "anthropometric_stats": {
+        "birth_weight_kg": {
+            "min": 2.05,
+            "max": 4.39,
+            "mean": 3.1607034852546922,
+            "median": 3.13
+        },
+        "birth_length_cm": {
+            "min": 44.0,
+            "max": 56.0,
+            "mean": 50.04257372654155,
+            "median": 50.1
+        },
+        "weight_kg": {
+            "min": 2.32,
+            "max": 22.75,
+            "mean": 9.964109383378016,
+            "median": 10.1
+        },
+        "length_height_cm": {
+            "min": 45.0,
+            "max": 114.0,
+            "mean": 78.77997855227882,
+            "median": 81.5
+        }
+    },
+    "categorical_stats": {
+        "sex": {
+            "Female": 4904,
+            "Male": 4421
+        },
+        "delivery_type": {
+            "Normal": 6010,
+            "C-Section": 3315
+        },
+        "breastfeeding_status": {
+            "False": 5884,
+            "True": 3441
+        },
+        "formula_feeding": {
+            "False": 5090,
+            "True": 4235
+        },
+        "complementary_feeding_started": {
+            "True": 6846,
+            "False": 2479
+        },
+        "supplement_use": {
+            "False": 5333,
+            "True": 3992
+        },
+        "recent_illness": {
+            "False": 7687,
+            "True": 1638
+        },
+        "diarrhea_recent": {
+            "False": 8769,
+            "True": 556
+        },
+        "fever_recent": {
+            "False": 8402,
+            "True": 923
+        },
+        "respiratory_illness_recent": {
+            "False": 8680,
+            "True": 645
+        }
+    },
+    "leakage_flags": []
+}

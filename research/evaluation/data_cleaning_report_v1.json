@@ -1,0 +1,38 @@
+{
+    "input_file": "data/raw/chdr_dataset_v1.csv",
+    "output_file": "data/interim/chdr_cleaned_v1.csv",
+    "input_rows": 9325,
+    "unique_children": 500,
+    "invalid_dates": 0,
+    "age_inconsistencies": 0,
+    "duplicate_child_visit_records": 0,
+    "static_child_field_conflicts": {
+        "sex": 0,
+        "date_of_birth": 0,
+        "birth_weight_kg": 0,
+        "birth_length_cm": 0,
+        "gestational_age_weeks": 0,
+        "birth_order": 0,
+        "delivery_type": 0,
+        "apgar_score_5min": 0
+    },
+    "boolean_normalization_summary": {
+        "unparseable_values": []
+    },
+    "conditional_missingness": {
+        "complementary_feeding_expected_missing": 2479,
+        "complementary_feeding_unexpected_missing": 0,
+        "supplement_expected_missing": 5333,
+        "supplement_unexpected_missing": 0,
+        "illness_expected_missing": 7687,
+        "illness_unexpected_missing": 0
+    },
+    "logical_contradictions": [],
+    "invalid_anthropometric_values": [],
+    "height_missing_count": 0,
+    "height_available_count": 9325,
+    "rows_removed": 0,
+    "rows_modified": 0,
+    "warnings": [],
+    "output_rows": 9325
+}

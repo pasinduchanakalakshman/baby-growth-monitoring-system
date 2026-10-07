@@ -9,6 +9,8 @@ The system uses a Domain-Based Microservices architecture with a React frontend,
 ## Technology Stack
 - Python
 - FastAPI 
-- MongoDB 
+- SQLAlchemy
+- psycopg
+- PostgreSQL 
 - Docker
 - React (Future)

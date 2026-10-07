@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   gateway:
@@ -24,6 +24,16 @@ services:
       - ENVIRONMENT=development
     networks:
       - app-network
+
+  research:
+    build:
+      context: ./research-environment
+    volumes:
+      - ./data:/workspace/data
+      - ./research:/workspace/research
+      - ./models:/workspace/models
+      - ./docs:/workspace/docs
+    working_dir: /workspace
 
 networks:
   app-network:

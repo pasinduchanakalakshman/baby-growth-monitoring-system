@@ -2,3 +2,6 @@ pandas
 numpy
 pytest
 openpyxl
+scikit-learn
+joblib
+xgboost

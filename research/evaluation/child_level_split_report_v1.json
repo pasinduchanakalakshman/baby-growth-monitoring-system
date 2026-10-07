@@ -1,0 +1,59 @@
+{
+    "metadata": {
+        "version": "v1",
+        "random_seed": 42,
+        "strategy": "child_level_stratified",
+        "ratios": {
+            "train": 0.7,
+            "validation": 0.15,
+            "test": 0.15
+        },
+        "input_rows": 7690,
+        "input_children": 497,
+        "train": {
+            "children": 348,
+            "observations": 5380,
+            "positive_observations": 231,
+            "negative_observations": 5149,
+            "positive_percentage": 4.29368029739777,
+            "children_with_positive_targets": 110,
+            "children_with_zero_positive_targets": 238,
+            "child_positive_percentage": 31.60919540229885,
+            "mean_observations_per_child": 15.459770114942529,
+            "median_observations_per_child": 16.0
+        },
+        "validation": {
+            "children": 75,
+            "observations": 1143,
+            "positive_observations": 42,
+            "negative_observations": 1101,
+            "positive_percentage": 3.674540682414698,
+            "children_with_positive_targets": 24,
+            "children_with_zero_positive_targets": 51,
+            "child_positive_percentage": 32.0,
+            "mean_observations_per_child": 15.24,
+            "median_observations_per_child": 16.0
+        },
+        "test": {
+            "children": 74,
+            "observations": 1167,
+            "positive_observations": 50,
+            "negative_observations": 1117,
+            "positive_percentage": 4.284490145672665,
+            "children_with_positive_targets": 23,
+            "children_with_zero_positive_targets": 51,
+            "child_positive_percentage": 31.08108108108108,
+            "mean_observations_per_child": 15.77027027027027,
+            "median_observations_per_child": 16.5
+        },
+        "child_overlap": {
+            "train_validation": 0,
+            "train_test": 0,
+            "validation_test": 0
+        },
+        "row_reconciliation_passed": true,
+        "child_reconciliation_passed": true
+    },
+    "warnings": [],
+    "status": "PASSED"
+}

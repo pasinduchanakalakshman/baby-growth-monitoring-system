@@ -1,0 +1,87 @@
+{
+    "dataset_information": {
+        "input_observations": 9325,
+        "children": 500,
+        "horizon_days": 180
+    },
+    "follow_up": {
+        "index_observations": 9325,
+        "sufficient_followup": 8260,
+        "insufficient_followup": 1065
+    },
+    "candidates": {
+        "D1": {
+            "usable_observations": 8260,
+            "positive_observations": 1466,
+            "negative_observations": 6794,
+            "positive_percentage": 17.748184019370463,
+            "positive_to_negative_ratio": 0.21577862820135413,
+            "unique_children_represented": 500,
+            "children_with_positive_events": 378,
+            "overlap": {
+                "new_crossing_only": 51,
+                "waz_decline_only": 1323,
+                "both_conditions": 92
+            },
+            "current_status_stratification": {
+                "index_waz_above_threshold": {
+                    "total": 7690,
+                    "positive": 1338,
+                    "percentage": 17.39921976592978
+                },
+                "index_waz_below_threshold": {
+                    "total": 570,
+                    "positive": 128,
+                    "percentage": 22.45614035087719
+                }
+            },
+            "event_timing": {
+                "min": 20.0,
+                "max": 180.0,
+                "mean": 105.18963165075034,
+                "median": 92.0,
+                "25th_percentile": 85.0,
+                "75th_percentile": 152.0
+            }
+        },
+        "D2": {
+            "usable_observations": 8260,
+            "positive_observations": 340,
+            "negative_observations": 7920,
+            "positive_percentage": 4.116222760290557,
+            "positive_to_negative_ratio": 0.04292929292929293,
+            "unique_children_represented": 500,
+            "children_with_positive_events": 158,
+            "overlap": {
+                "new_crossing_only": 118,
+                "waz_decline_only": 197,
+                "both_conditions": 25
+            },
+            "current_status_stratification": {
+                "index_waz_above_threshold": {
+                    "total": 7690,
+                    "positive": 323,
+                    "percentage": 4.200260078023407
+                },
+                "index_waz_below_threshold": {
+                    "total": 570,
+                    "positive": 17,
+                    "percentage": 2.982456140350877
+                }
+            },
+            "event_timing": {
+                "min": 20.0,
+                "max": 180.0,
+                "mean": 128.88235294117646,
+                "median": 122.0,
+                "25th_percentile": 91.0,
+                "75th_percentile": 178.0
+            }
+        }
+    },
+    "modelling_feasibility": {
+        "D1": "D1 yields a moderate class imbalance and a high positive event rate, largely driven by the extremely sensitive 0.25 WAZ decline condition. This ensures robust statistical power but may flag too many minor fluctuations as false positives in a clinical setting.",
+        "D2": "D2 offers a highly precise definition capturing significant emergent risk while avoiding prevalent cases. Although the positive class is highly imbalanced (rare events), it is statistically sufficient to be modelled using sophisticated resampling techniques or sequence models, and avoids trivial noise."
+    },
+    "clinical_validation": "PENDING - Candidates strictly evaluated for statistical feasibility. Final target NOT yet selected."
+}

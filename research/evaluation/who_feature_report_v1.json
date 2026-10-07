@@ -1,0 +1,65 @@
+{
+    "input_file": "data/interim/chdr_cleaned_v1.csv",
+    "output_file": "data/processed/chdr_who_features_v1.csv",
+    "input_rows": 9325,
+    "output_rows": 9325,
+    "unique_children": 500,
+    "who_reference_files": {
+        "wfa_boys": "data/external/WHO Standards/wfa_boys_0-to-5-years_zscores.xlsx",
+        "wfa_girls": "data/external/WHO Standards/wfa_girls_0-to-5-years_zscores.xlsx",
+        "lhfa_boys": [
+            "data/external/WHO Standards/lhfa_boys_0-to-2-years_zscores.xlsx",
+            "data/external/WHO Standards/lhfa_boys_2-to-5-years_zscores.xlsx"
+        ],
+        "lhfa_girls": [
+            "data/external/WHO Standards/lhfa_girls_0-to-2-years_zscores.xlsx",
+            "data/external/WHO Standards/lhfa_girls_2-to-5-years_zscores.xlsx"
+        ]
+    },
+    "reference_validation": {
+        "wfa_male_age_min": 0.0,
+        "wfa_male_age_max": 1826.25,
+        "wfa_female_age_min": 0.0,
+        "wfa_female_age_max": 1826.25,
+        "lhfa_male_age_min": 0.0,
+        "lhfa_male_age_max": 1826.25,
+        "lhfa_female_age_min": 0.0,
+        "lhfa_female_age_max": 1826.25,
+        "missing_lms_values": 0,
+        "duplicate_reference_keys": 0
+    },
+    "waz": {
+        "calculated": 9325,
+        "missing": 0,
+        "lookup_failures": 0,
+        "statistics": {
+            "count": 9325.0,
+            "mean": -0.3440658780173146,
+            "std": 1.1494473062813146,
+            "min": -4.242384268893856,
+            "25%": -1.069696824586758,
+            "50%": -0.2439596166798039,
+            "75%": 0.44633745543681524,
+            "max": 2.5437103401767582
+        }
+    },
+    "haz": {
+        "calculated": 9325,
+        "missing": 0,
+        "lookup_failures": 0,
+        "statistics": {
+            "count": 9325.0,
+            "mean": -0.2540809950591387,
+            "std": 1.0360249558921182,
+            "min": -4.093121612669784,
+            "25%": -0.9402983450385548,
+            "50%": -0.21802711162818042,
+            "75%": 0.46019741847889445,
+            "max": 2.5447209747404016
+        }
+    },
+    "sex_mapping_failures": 0,
+    "age_coverage_failures": 0,
+    "invalid_measurements": 0,
+    "warnings": []
+}

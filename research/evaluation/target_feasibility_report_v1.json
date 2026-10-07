@@ -1,0 +1,291 @@
+{
+    "dataset_information": {
+        "input_observations": 9325,
+        "children": 500
+    },
+    "follow_up": {
+        "90_day": {
+            "index_observations": 9325,
+            "sufficient_followup": 8673,
+            "insufficient_followup": 652,
+            "percentage_usable": 93.00804289544236,
+            "children_represented": 500
+        },
+        "180_day": {
+            "index_observations": 9325,
+            "sufficient_followup": 8260,
+            "insufficient_followup": 1065,
+            "percentage_usable": 88.57908847184987,
+            "children_represented": 500
+        }
+    },
+    "candidate_threshold_crossing": {
+        "90_day": {
+            "A1_any_future_below_threshold": {
+                "positive": 304,
+                "negative": 8369,
+                "positive_percentage": 3.505130865905684,
+                "unique_children": 101
+            },
+            "A2_new_threshold_crossing": {
+                "positive": 54,
+                "negative": 8619,
+                "positive_percentage": 0.6226219301279834,
+                "unique_children": 45
+            }
+        },
+        "180_day": {
+            "A1_any_future_below_threshold": {
+                "positive": 669,
+                "negative": 7591,
+                "positive_percentage": 8.099273607748184,
+                "unique_children": 114
+            },
+            "A2_new_threshold_crossing": {
+                "positive": 143,
+                "negative": 8117,
+                "positive_percentage": 1.7312348668280872,
+                "unique_children": 101
+            }
+        }
+    },
+    "candidate_waz_decline": {
+        "90_day": {
+            "0.25": {
+                "positive": 641,
+                "negative": 8032,
+                "positive_percentage": 7.390752911334025,
+                "unique_children": 317
+            },
+            "0.5": {
+                "positive": 33,
+                "negative": 8640,
+                "positive_percentage": 0.38049117952265654,
+                "unique_children": 30
+            },
+            "0.75": {
+                "positive": 0,
+                "negative": 8673,
+                "positive_percentage": 0.0,
+                "unique_children": 0
+            }
+        },
+        "180_day": {
+            "0.25": {
+                "positive": 1415,
+                "negative": 6845,
+                "positive_percentage": 17.130750605326877,
+                "unique_children": 375
+            },
+            "0.5": {
+                "positive": 222,
+                "negative": 8038,
+                "positive_percentage": 2.6876513317191284,
+                "unique_children": 120
+            },
+            "0.75": {
+                "positive": 23,
+                "negative": 8237,
+                "positive_percentage": 0.2784503631961259,
+                "unique_children": 18
+            }
+        }
+    },
+    "candidate_combined": {
+        "90_day": {
+            "positive": 333,
+            "negative": 8340,
+            "positive_percentage": 3.8395019024558974,
+            "unique_children": 115
+        },
+        "180_day": {
+            "positive": 849,
+            "negative": 7411,
+            "positive_percentage": 10.278450363196127,
+            "unique_children": 165
+        }
+    },
+    "class_balance": {
+        "A1_90_day": {
+            "positive": 304,
+            "negative": 8369,
+            "ratio": 0.0363245310072888,
+            "percentage": 3.505130865905684
+        },
+        "A2_90_day": {
+            "positive": 54,
+            "negative": 8619,
+            "ratio": 0.006265227984684998,
+            "percentage": 0.6226219301279834
+        },
+        "B_decline_0.25_90_day": {
+            "positive": 641,
+            "negative": 8032,
+            "ratio": 0.07980577689243028,
+            "percentage": 7.390752911334025
+        },
+        "B_decline_0.5_90_day": {
+            "positive": 33,
+            "negative": 8640,
+            "ratio": 0.0038194444444444443,
+            "percentage": 0.38049117952265654
+        },
+        "B_decline_0.75_90_day": {
+            "positive": 0,
+            "negative": 8673,
+            "ratio": 0.0,
+            "percentage": 0.0
+        },
+        "C_combined_90_day": {
+            "positive": 333,
+            "negative": 8340,
+            "ratio": 0.039928057553956835,
+            "percentage": 3.8395019024558974
+        },
+        "A1_180_day": {
+            "positive": 669,
+            "negative": 7591,
+            "ratio": 0.08813068106968779,
+            "percentage": 8.099273607748184
+        },
+        "A2_180_day": {
+            "positive": 143,
+            "negative": 8117,
+            "ratio": 0.017617346310213132,
+            "percentage": 1.7312348668280872
+        },
+        "B_decline_0.25_180_day": {
+            "positive": 1415,
+            "negative": 6845,
+            "ratio": 0.20672023374726078,
+            "percentage": 17.130750605326877
+        },
+        "B_decline_0.5_180_day": {
+            "positive": 222,
+            "negative": 8038,
+            "ratio": 0.02761881064941528,
+            "percentage": 2.6876513317191284
+        },
+        "B_decline_0.75_180_day": {
+            "positive": 23,
+            "negative": 8237,
+            "ratio": 0.0027922787422605317,
+            "percentage": 0.2784503631961259
+        },
+        "C_combined_180_day": {
+            "positive": 849,
+            "negative": 7411,
+            "ratio": 0.11455943867224397,
+            "percentage": 10.278450363196127
+        }
+    },
+    "event_time": {
+        "A1_90_day": {
+            "min": 22.0,
+            "max": 90.0,
+            "mean": 79.50986842105263,
+            "median": 87.0,
+            "25th_percentile": 84.75,
+            "75th_percentile": 89.0
+        },
+        "A2_90_day": {
+            "min": 23.0,
+            "max": 90.0,
+            "mean": 72.33333333333333,
+            "median": 87.0,
+            "25th_percentile": 57.0,
+            "75th_percentile": 89.0
+        },
+        "B_decline_0.25_90_day": {
+            "min": 20.0,
+            "max": 90.0,
+            "mean": 65.72542901716069,
+            "median": 84.0,
+            "25th_percentile": 53.0,
+            "75th_percentile": 88.0
+        },
+        "B_decline_0.5_90_day": {
+            "min": 20.0,
+            "max": 90.0,
+            "mean": 74.87878787878788,
+            "median": 85.0,
+            "25th_percentile": 57.0,
+            "75th_percentile": 87.0
+        },
+        "B_decline_0.75_90_day": null,
+        "C_combined_90_day": {
+            "min": 20.0,
+            "max": 90.0,
+            "mean": 78.94294294294295,
+            "median": 87.0,
+            "25th_percentile": 84.0,
+            "75th_percentile": 89.0
+        },
+        "A1_180_day": {
+            "min": 22.0,
+            "max": 180.0,
+            "mean": 92.76083707025411,
+            "median": 92.0,
+            "25th_percentile": 88.0,
+            "75th_percentile": 94.0
+        },
+        "A2_180_day": {
+            "min": 23.0,
+            "max": 180.0,
+            "mean": 104.04895104895105,
+            "median": 93.0,
+            "25th_percentile": 89.0,
+            "75th_percentile": 98.5
+        },
+        "B_decline_0.25_180_day": {
+            "min": 20.0,
+            "max": 180.0,
+            "mean": 106.25583038869257,
+            "median": 92.0,
+            "25th_percentile": 85.0,
+            "75th_percentile": 154.0
+        },
+        "B_decline_0.5_180_day": {
+            "min": 20.0,
+            "max": 180.0,
+            "mean": 149.34234234234233,
+            "median": 175.0,
+            "25th_percentile": 119.0,
+            "75th_percentile": 179.0
+        },
+        "B_decline_0.75_180_day": {
+            "min": 143.0,
+            "max": 180.0,
+            "mean": 172.43478260869566,
+            "median": 177.0,
+            "25th_percentile": 174.5,
+            "75th_percentile": 179.5
+        },
+        "C_combined_180_day": {
+            "min": 20.0,
+            "max": 180.0,
+            "mean": 103.83981154299175,
+            "median": 92.0,
+            "25th_percentile": 89.0,
+            "75th_percentile": 98.0
+        }
+    },
+    "child_level_distribution": {
+        "children_with_at_least_one_event_180_A2_or_B05": 158,
+        "children_with_no_events": 342
+    },
+    "insufficient_followup_counts": {
+        "90_day": 652,
+        "180_day": 1065
+    },
+    "warnings": [
+        "Severe class imbalance detected in A1_90_day: 304 positive vs 8369 negative (ratio 0.036)",
+        "Severe class imbalance detected in A2_90_day: 54 positive vs 8619 negative (ratio 0.006)",
+        "Severe class imbalance detected in B_decline_0.5_90_day: 33 positive vs 8640 negative (ratio 0.004)",
+        "Severe class imbalance detected in C_combined_90_day: 333 positive vs 8340 negative (ratio 0.040)",
+        "Severe class imbalance detected in A2_180_day: 143 positive vs 8117 negative (ratio 0.018)",
+        "Severe class imbalance detected in B_decline_0.5_180_day: 222 positive vs 8038 negative (ratio 0.028)",
+        "Severe class imbalance detected in B_decline_0.75_180_day: 23 positive vs 8237 negative (ratio 0.003)"
+    ],
+    "final_target_selected": false
+}

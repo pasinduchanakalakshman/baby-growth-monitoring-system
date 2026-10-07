@@ -1,0 +1,85 @@
+{
+    "input_file": "data/processed/chdr_who_features_v1.csv",
+    "output_file": "data/features/chdr_temporal_features_v1.csv",
+    "input_rows": 9325,
+    "output_rows": 9325,
+    "unique_children": 500,
+    "features_created": [
+        "observation_count",
+        "days_since_previous_visit",
+        "weight_change_kg",
+        "weight_velocity_kg_per_day",
+        "weight_velocity_kg_per_30d",
+        "waz_change",
+        "waz_velocity_per_day",
+        "waz_velocity_per_30d",
+        "height_measurement_available",
+        "days_since_last_height_measurement",
+        "last_observed_height_cm",
+        "last_observed_haz",
+        "height_change_cm",
+        "haz_change",
+        "height_velocity_cm_per_day",
+        "height_velocity_cm_per_30d",
+        "haz_velocity_per_day",
+        "haz_velocity_per_30d",
+        "waz_rolling_mean_3",
+        "weight_rolling_mean_3"
+    ],
+    "first_observation_count": 500,
+    "days_since_previous_visit": {
+        "missing": 500,
+        "min": 20.0,
+        "max": 358.0,
+        "mean": 82.77903682719547,
+        "median": 90.0
+    },
+    "weight_change": {
+        "calculated": 8825,
+        "missing": 500,
+        "min": -0.620000000000001,
+        "max": 3.330000000000001,
+        "mean": 0.6483966005665723
+    },
+    "waz_change": {
+        "calculated": 8825,
+        "missing": 500,
+        "min": -1.3039276359509218,
+        "max": 0.5054096876627784,
+        "mean": -0.051518784739918534
+    },
+    "waz_velocity": {
+        "calculated": 8825,
+        "missing": 500
+    },
+    "height_measurement_available": {
+        "available": 9325,
+        "missing": 0
+    },
+    "height_change": {
+        "calculated": 8825,
+        "missing": 500
+    },
+    "haz_change": {
+        "calculated": 8825,
+        "missing": 500
+    },
+    "height_velocity": {
+        "calculated": 8825,
+        "missing": 500
+    },
+    "haz_velocity": {
+        "calculated": 8825,
+        "missing": 500
+    },
+    "dataset_invariants": {
+        "expected_non_first_records": 8825,
+        "waz_change_count_valid": true,
+        "height_change_count_valid_for_complete_height_dataset": true,
+        "haz_change_count_valid_for_complete_height_dataset": true
+    },
+    "leakage_check": {
+        "future_columns_found": []
+    },
+    "warnings": []
+}

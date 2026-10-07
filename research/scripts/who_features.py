@@ -44,8 +44,10 @@ def load_who_ref(file_path):
     df = pd.read_excel(file_path)
     df.columns = df.columns.str.strip()
     
+    has_day = False
     if 'Day' in df.columns:
         df['age_days_ref'] = df['Day'].astype(float)
+        has_day = True
     elif 'Month' in df.columns:
         df['age_days_ref'] = df['Month'].astype(float) * 30.4375
     else:
@@ -60,30 +62,49 @@ def load_who_ref(file_path):
     if df.duplicated(subset=['age_days_ref']).any():
         raise ValueError(f"Duplicate age reference keys found in {file_path}")
         
-    return df[['age_days_ref', 'L', 'M', 'S']].copy()
+    return df[['age_days_ref', 'L', 'M', 'S']].copy(), has_day
 
 def load_and_combine_lhfa(file_02, file_25):
-    df1 = load_who_ref(file_02)
-    df2 = load_who_ref(file_25)
+    df1, hd1 = load_who_ref(file_02)
+    df2, hd2 = load_who_ref(file_25)
     
     # WHO transition between day 730 (length) and 731 (height)
     df1 = df1[df1['age_days_ref'] <= 730]
     df2 = df2[df2['age_days_ref'] >= 731]
     
     combined = pd.concat([df1, df2], ignore_index=True)
-    return combined
+    return combined, (hd1 and hd2)
 
-def map_lms(child_df, ref_df, age_col='age_days'):
+def map_lms(child_df, ref_df, has_day, age_col='age_days'):
     if child_df.empty:
         return pd.Series([np.nan]*len(child_df), index=child_df.index), pd.Series([np.nan]*len(child_df), index=child_df.index), pd.Series([np.nan]*len(child_df), index=child_df.index)
         
-    # Exact match using map (avoids interpolation/nearest approx)
-    ref_idx = ref_df.set_index('age_days_ref')
-    l = child_df[age_col].map(ref_idx['L'])
-    m = child_df[age_col].map(ref_idx['M'])
-    s = child_df[age_col].map(ref_idx['S'])
-    
-    return l, m, s
+    if has_day:
+        # Exact match using map (avoids interpolation/nearest approx)
+        # MUST cast to float to match the float64 index of ref_df
+        age_lookup = child_df[age_col].astype(float)
+        ref_idx = ref_df.set_index('age_days_ref')
+        l = age_lookup.map(ref_idx['L'])
+        m = age_lookup.map(ref_idx['M'])
+        s = age_lookup.map(ref_idx['S'])
+        return l, m, s
+    else:
+        # Fallback to merge_asof if exact day-level data is NOT available (i.e. only monthly provided)
+        sorted_child = child_df.reset_index().sort_values(age_col)
+        # Ensure age keys have same dtype
+        sorted_child[age_col] = sorted_child[age_col].astype(float)
+        sorted_ref = ref_df.sort_values('age_days_ref')
+        sorted_ref['age_days_ref'] = sorted_ref['age_days_ref'].astype(float)
+        
+        merged = pd.merge_asof(
+            sorted_child,
+            sorted_ref,
+            left_on=age_col,
+            right_on='age_days_ref',
+            direction='nearest'
+        )
+        merged = merged.set_index('index').loc[child_df.index]
+        return merged['L'], merged['M'], merged['S']
 
 def process_features():
     print("==================================================")
@@ -135,10 +156,17 @@ def process_features():
     
     refs = {}
     try:
-        refs['wfa_male'] = load_who_ref(wfa_boys_path)
-        refs['wfa_female'] = load_who_ref(wfa_girls_path)
-        refs['lhfa_male'] = load_and_combine_lhfa(lhfa_boys_02_path, lhfa_boys_25_path)
-        refs['lhfa_female'] = load_and_combine_lhfa(lhfa_girls_02_path, lhfa_girls_25_path)
+        refs['wfa_male'], hd_wm = load_who_ref(wfa_boys_path)
+        refs['wfa_female'], hd_wf = load_who_ref(wfa_girls_path)
+        refs['lhfa_male'], hd_hm = load_and_combine_lhfa(lhfa_boys_02_path, lhfa_boys_25_path)
+        refs['lhfa_female'], hd_hf = load_and_combine_lhfa(lhfa_girls_02_path, lhfa_girls_25_path)
+        
+        refs_has_day = {
+            'wfa_male': hd_wm,
+            'wfa_female': hd_wf,
+            'lhfa_male': hd_hm,
+            'lhfa_female': hd_hf
+        }
     except Exception as e:
         print(f"Error loading WHO references: {e}")
         sys.exit(1)
@@ -174,7 +202,7 @@ def process_features():
     for mask, sex_key in [(male_mask, 'wfa_male'), (female_mask, 'wfa_female')]:
         sub_df = df[mask].copy()
         if not sub_df.empty:
-            l, m, s = map_lms(sub_df, refs[sex_key], 'age_days')
+            l, m, s = map_lms(sub_df, refs[sex_key], refs_has_day[sex_key], 'age_days')
             waz = [calculate_zscore(w, ll, mm, ss, is_weight=True) for w, ll, mm, ss in zip(sub_df['weight_kg'], l, m, s)]
             df.loc[mask, 'verified_waz'] = waz
             
@@ -187,7 +215,7 @@ def process_features():
         haz_mask = mask & df['length_height_cm'].notna()
         sub_df = df[haz_mask].copy()
         if not sub_df.empty:
-            l, m, s = map_lms(sub_df, refs[sex_key], 'age_days')
+            l, m, s = map_lms(sub_df, refs[sex_key], refs_has_day[sex_key], 'age_days')
             haz = [calculate_zscore(h, ll, mm, ss) for h, ll, mm, ss in zip(sub_df['length_height_cm'], l, m, s)]
             df.loc[haz_mask, 'verified_haz'] = haz
             

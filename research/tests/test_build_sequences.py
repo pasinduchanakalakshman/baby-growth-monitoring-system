@@ -150,11 +150,14 @@ def test_no_future_observations_in_history(synthetic_data, fitted_preprocessor):
     full_hist, train_df, val_df, test_df = synthetic_data
     preprocessor, avail_num, avail_bool, avail_cat = fitted_preprocessor
     
-    # Inject a future row for C1 to trigger leakage check
-    future_row = {col: None for col in full_hist.columns}
-    future_row['child_id'] = 'C1'
-    future_row['visit_date'] = pd.Timestamp('2099-01-01')
-    full_hist_bad = pd.concat([full_hist, pd.DataFrame([future_row])], ignore_index=True)
+    # Inject a future row for C1 to trigger leakage check.
+    # Build only the columns that matter so pd.concat doesn't warn about
+    # all-NA columns from a dict full of None values.
+    future_row_df = pd.DataFrame(
+        [{'child_id': 'C1', 'visit_date': pd.Timestamp('2099-01-01')}],
+        columns=full_hist.columns,
+    )
+    full_hist_bad = pd.concat([full_hist, future_row_df], ignore_index=True)
     
     # Take just the first index row (earliest date for C1)
     first_idx = train_df.sort_values('visit_date').iloc[[0]]

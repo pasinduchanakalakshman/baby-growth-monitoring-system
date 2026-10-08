@@ -1,0 +1,31 @@
+{
+    "model_type": "gru",
+    "version": "v1",
+    "input_shape": [
+        20,
+        49
+    ],
+    "parameter_count": 24193,
+    "class_weights": {
+        "0": 0.5224315401048747,
+        "1": 11.645021645021645
+    },
+    "epochs_trained": 20,
+    "best_epoch": 9,
+    "training_time_seconds": 26.0818030834198,
+    "validation_metrics": {
+        "roc_auc": 0.8304571601574327,
+        "pr_auc": 0.18434270861937307,
+        "precision": 0.108,
+        "recall": 0.6428571428571429,
+        "f1": 0.18493150684931506,
+        "specificity": 0.7974568574023615,
+        "brier_score": 0.12106818445938163,
+        "confusion_matrix": {
+            "tn": 878,
+            "fp": 223,
+            "fn": 15,
+            "tp": 27
+        }
+    }
+}

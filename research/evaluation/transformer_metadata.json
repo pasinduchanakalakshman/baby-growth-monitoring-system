@@ -1,0 +1,31 @@
+{
+    "model_type": "transformer",
+    "version": "v1",
+    "input_shape": [
+        20,
+        49
+    ],
+    "parameter_count": 16065,
+    "class_weights": {
+        "0": 0.5224315401048747,
+        "1": 11.645021645021645
+    },
+    "epochs_trained": 27,
+    "best_epoch": 16,
+    "training_time_seconds": 30.112375736236572,
+    "validation_metrics": {
+        "roc_auc": 0.8075559015613512,
+        "pr_auc": 0.18786134307703056,
+        "precision": 0.08734939759036145,
+        "recall": 0.6904761904761905,
+        "f1": 0.15508021390374332,
+        "specificity": 0.7247956403269755,
+        "brier_score": 0.14108083785485617,
+        "confusion_matrix": {
+            "tn": 798,
+            "fp": 303,
+            "fn": 13,
+            "tp": 29
+        }
+    }
+}

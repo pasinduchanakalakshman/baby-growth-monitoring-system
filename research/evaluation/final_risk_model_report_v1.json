@@ -1,0 +1,31 @@
+{
+    "primary_model": {
+        "model_type": "xgboost",
+        "model_version": "v1",
+        "threshold": 0.5
+    },
+    "sequence_research_model": {
+        "model_type": "transformer",
+        "role": "best_sequence_aware_research_model"
+    },
+    "target": "future_growth_faltering_180d",
+    "prediction_horizon_days": 180,
+    "artifact_validation": "pass",
+    "feature_schema_validation": "pass",
+    "batch_predictions": {
+        "train_count": 5380,
+        "validation_count": 1143,
+        "test_count": 1167,
+        "total_count": 7690,
+        "invalid_inputs": 0,
+        "outside_primary_cohort_count": 0
+    },
+    "dynamic_risk": {
+        "children_evaluated": 2,
+        "assessments_generated": 36,
+        "trajectory_validation": "pass"
+    },
+    "tests_passed": 27,
+    "applicability_handling": "Explicitly flagged verified_waz < -2 as outside primary early risk cohort.",
+    "warnings": []
+}

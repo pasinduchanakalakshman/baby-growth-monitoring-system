@@ -1,0 +1,42 @@
+{
+    "model_role": "best_sequence_aware_research_model",
+    "model_type": "transformer",
+    "model_version": "v1",
+    "target": "future_growth_faltering_180d",
+    "target_definition_version": "v1",
+    "prediction_horizon_days": 180,
+    "artifact_paths": {
+        "model": "models/trained/transformer/v1/final_transformer.keras",
+        "feature_schema": "data/schemas/sequence_feature_schema_v1.json",
+        "sequence_preprocessor_metadata": "models/metadata/sequence_preprocessor_metadata_v1.json"
+    },
+    "input_shape": [20, 49],
+    "max_sequence_length": 20,
+    "padding": "left",
+    "mask_value": -999.0,
+    "selection_basis": "Highest validation PR-AUC among LSTM, GRU, and Transformer (Stage 9).",
+    "is_primary_deployment_model": false,
+    "note": "The Transformer achieved the best validation PR-AUC among the three sequence-aware architectures evaluated. It was compared empirically against the XGBoost classical baseline on the frozen held-out test set. XGBoost outperformed the Transformer on PR-AUC and Brier score on this dataset. The Transformer is retained as the sequence-aware research contribution, preserving the longitudinal modelling capability for future research.",
+    "validation_metrics": {
+        "roc_auc": 0.8075559015613512,
+        "pr_auc": 0.18786134307703056,
+        "precision": 0.08734939759036145,
+        "recall": 0.6904761904761905,
+        "f1": 0.15508021390374332,
+        "specificity": 0.7247956403269755,
+        "brier_score": 0.14108083785485617
+    },
+    "held_out_test_metrics": {
+        "roc_auc": 0.7615040286481647,
+        "pr_auc": 0.18918278580624404,
+        "precision": 0.08478802992518704,
+        "recall": 0.68,
+        "f1": 0.15077605321507762,
+        "specificity": 0.6714413607878246,
+        "brier_score": 0.17053886702550558
+    },
+    "warnings": [
+        "Sequence-aware models were not assumed to outperform classical baselines. Comparative performance was determined empirically.",
+        "The Transformer was not the primary deployment model but is retained as the best sequence-aware research contribution."
+    ]
+}

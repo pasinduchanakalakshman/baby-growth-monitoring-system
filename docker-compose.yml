@@ -22,6 +22,9 @@ services:
       - .env
     environment:
       - ENVIRONMENT=development
+    volumes:
+      - ./data:/data
+      - ./models:/models
     networks:
       - app-network
 

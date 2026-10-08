@@ -118,7 +118,7 @@ def get_overview(db: Session = Depends(get_db), current_user: User = Depends(get
             "estimated_waz": f_out.get("estimated_future_waz"),
             "estimated_weight_kg": f_out.get("estimated_future_weight_kg"),
             "estimated_weight_change_kg": f_out.get("estimated_weight_change_kg"),
-            "horizon_days": f_out.get("forecast_horizon_days")
+            "horizon_days": f_out.get("nominal_horizon_days")
         }
     else:
         res["forecast_30d"] = {"available": False, "reason": f_out.get("reason")}

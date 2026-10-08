@@ -1,0 +1,53 @@
+{
+    "model_role": "primary_growth_faltering_risk_model",
+    "model_type": "xgboost",
+    "model_version": "v1",
+    "target": "future_growth_faltering_180d",
+    "target_definition_version": "v1",
+    "target_definition": {
+        "description": "Within 180 days: new WAZ crossing below -2 OR WAZ decline >= 0.50",
+        "conditions": [
+            "new verified_waz < -2 (crossing from >= -2)",
+            "OR verified_waz decline >= 0.50 within 180 days"
+        ],
+        "exclusion": "Index observation verified_waz < -2 excluded from primary early-risk cohort"
+    },
+    "prediction_horizon_days": 180,
+    "primary_cohort": "index verified_waz >= -2",
+    "model_selection_basis": "Highest PR-AUC on held-out validation set (Stage 7). Final classical vs sequence comparison frozen in Stage 9.",
+    "artifact_paths": {
+        "model": "models/trained/baselines/v1/xgboost.joblib",
+        "preprocessing_pipeline": "models/scalers/baseline_preprocessor_v1.joblib",
+        "feature_schema": "models/metadata/baseline_feature_metadata_v1.json",
+        "feature_schema_version": "v1"
+    },
+    "threshold": 0.5,
+    "threshold_policy": "Frozen from Stage 7 experiment. Not optimized post-test.",
+    "held_out_test_metrics": {
+        "roc_auc": 0.7499373321396597,
+        "pr_auc": 0.23751628050949436,
+        "precision": 0.42857142857142855,
+        "recall": 0.18,
+        "f1": 0.2535211267605634,
+        "specificity": 0.9892569382273948,
+        "brier_score": 0.04083992894788953,
+        "confusion_matrix": {
+            "tn": 1105,
+            "fp": 12,
+            "fn": 41,
+            "tp": 9
+        }
+    },
+    "selection_rationale": [
+        "Strongest held-out PR-AUC among all compared models (0.2375 vs 0.1892 Transformer)",
+        "Substantially better Brier score (0.0408 vs 0.1705 Transformer)",
+        "Strongest precision and specificity: fewer false alarms",
+        "Simpler, faster inference pipeline with no sequence construction required",
+        "Classical gradient boosting performs robustly on engineered temporal features with this dataset size"
+    ],
+    "warnings": [
+        "Test set was evaluated exactly once after model selection was frozen.",
+        "This model is a research output and has not been externally or clinically validated.",
+        "Risk probability is not a clinical diagnosis."
+    ]
+}

@@ -33,6 +33,7 @@ services:
       - ./research:/workspace/research
       - ./models:/workspace/models
       - ./docs:/workspace/docs
+      - ./services:/workspace/services
     working_dir: /workspace
 
 networks:

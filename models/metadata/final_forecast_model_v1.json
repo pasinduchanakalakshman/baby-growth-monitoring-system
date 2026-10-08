@@ -1,0 +1,49 @@
+{
+    "model_name": "Linear",
+    "model_version": "v1",
+    "selected_operational_window": "25-35 days",
+    "nominal_forecast_horizon": 30,
+    "primary_target": "target_verified_waz",
+    "derived_output": "target_weight_kg",
+    "training_sample_count": 1100,
+    "validation_sample_count": 239,
+    "test_sample_count": 234,
+    "feature_schema": "data/schemas/forecast_30d_model_feature_schema_v1.json",
+    "preprocessing_artifact": "models/forecasting/v1/final_preprocessor_v1.joblib",
+    "model_artifact": "models/forecasting/v1/final_model_v1.joblib",
+    "validation_metrics": {
+        "waz_mae": 0.06844390710754213,
+        "waz_rmse": 0.08462221265224994,
+        "waz_r2": 0.9927989809454396,
+        "waz_mean_error": -0.0006112204119032209,
+        "waz_median_abs_error": 0.062240165808604475,
+        "weight_mae": 0.047503116931529955,
+        "weight_rmse": 0.059406541021925365,
+        "weight_mean_error": -0.0014178735521426363,
+        "weight_median_abs_error": 0.039793874577639166,
+        "samples": 239,
+        "children": 74
+    },
+    "held_out_test_metrics": {
+        "waz_mae": 0.06402613898601467,
+        "waz_rmse": 0.08335961690018916,
+        "waz_r2": 0.990047362389932,
+        "waz_mean_error": 0.0006007047012380326,
+        "waz_median_abs_error": 0.05239763671360548,
+        "weight_mae": 0.04494954061747822,
+        "weight_rmse": 0.06019358562673965,
+        "weight_mean_error": 0.0009784080967679754,
+        "weight_median_abs_error": 0.03542880514137092,
+        "samples": 234,
+        "children": 73
+    },
+    "who_conversion_method": "Inverse WHO LMS Equations",
+    "research_core_version": "research-core-v1",
+    "limitations": [
+        "Forecast is approximately 30 days",
+        "Training targets from genuine visits 25-35 days later",
+        "Output is an estimate, not a guarantee",
+        "Not a diagnosis",
+        "Not clinically externally validated"
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "version": "forecast_30d_target_schema_v1",
+    "selected_forecast_window": "25-35 days",
+    "nominal_forecast_horizon": 30,
+    "target_selection_rule": "Min abs(gap - 30), tie-break earlier visit",
+    "primary_prediction_target": "target_verified_waz",
+    "secondary_observed_target": "target_weight_kg",
+    "evaluation_field": "weight_change_kg_30d_observed",
+    "stage_6_split_inheritance": true,
+    "forbidden_future_fields": [
+        "target_visit_date",
+        "target_age_days",
+        "target_weight_kg",
+        "target_verified_waz",
+        "target_verified_haz",
+        "weight_change_kg_30d_observed"
+    ],
+    "no_interpolation_policy": true,
+    "no_fabricated_monthly_measurements_policy": true,
+    "explicit_warning": "The Stage 14 forecast output MUST NOT be used as an input to the frozen 180-day XGBoost risk model without a completely new research experiment and revalidation."
+}

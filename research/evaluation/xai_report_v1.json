@@ -1,0 +1,37 @@
+{
+    "primary_model": "xgboost",
+    "xai_method": "SHAP TreeExplainer",
+    "number_of_explanations": 5380,
+    "local_explanation_validation": "pass",
+    "SHAP_additivity_validation": "pass",
+    "sequence_model": "transformer",
+    "temporal_xai_method": "Integrated Gradients",
+    "temporal_examples_explained": 100,
+    "padding_attribution_validation": "pass",
+    "leakage_validation": "pass",
+    "warnings": [
+        "SHAP and temporal attribution identify factors that influence the model's prediction. They do not establish clinical causality."
+    ],
+    "global_top_transformed_features": [
+        "weight_kg",
+        "verified_waz",
+        "food_groups_consumed",
+        "days_since_previous_visit",
+        "verified_haz"
+    ],
+    "global_top_original_features": [
+        "weight_kg",
+        "verified_waz",
+        "food_groups_consumed",
+        "days_since_previous_visit",
+        "verified_haz"
+    ],
+    "top_sequence_features": [
+        "weight_velocity_kg_per_30d",
+        "last_observed_height_cm",
+        "weight_rolling_mean_3",
+        "weight_change_kg",
+        "height_change_cm"
+    ],
+    "temporal_influence_summary": "recent visits"
+}

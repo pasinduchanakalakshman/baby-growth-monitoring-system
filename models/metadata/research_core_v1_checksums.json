@@ -1,0 +1,23 @@
+{
+    "version": "research-core-v1",
+    "algorithm": "SHA256",
+    "files": {
+        "data/processed/chdr_supervised_180d_v1.csv": "e0d82af5a52a09ec274f98b4e03ddcd0eef19f68c770d7506ec3c045a7cf5603",
+        "data/splits/v1/train.csv": "d11d575c374ea4ab3f8a74198e79b2f81996af7eb8eeda80e38c2c66d6cfa54d",
+        "data/splits/v1/validation.csv": "0f4d307281440fec478c612b1c2491c962f30be2b0561695d2ba2f6065e1c81d",
+        "data/splits/v1/test.csv": "a65ccf7393b3cb6c741bd79d45df25620f8838ed9e6bcb08ac4eedd802c15750",
+        "models/trained/baselines/v1/xgboost.joblib": "833632a4da7eb9a2791949bb54ca6081751428450f55626693050fe0d2410d85",
+        "models/scalers/baseline_preprocessor_v1.joblib": "a41cd422c14f1d806a1c78ccdcda9698d924cbdb9d9ccbe45b680228dc24a561",
+        "models/metadata/final_risk_model_v1.json": "690a99d2d751cfc8a77533e9b2b4df923967ae98814a5e22a0d33358779d6485",
+        "models/trained/transformer/v1/final_transformer_clean.keras": "ac5ed65a88e8889d4fae098ec790752b8bc12737ce125e29c095de354522165f",
+        "models/metadata/final_sequence_model_v1.json": "e931e06c143a77251d24d2dacd990ba2704996368b354d9a76fa4a017b35622c",
+        "data/external/WHO Standards/lhfa_boys_0-to-2-years_zscores.xlsx": "ccfd8e455141c9a39dd728d99b7d7e080a925b06ea4a4d7592229665713dba54",
+        "data/external/WHO Standards/lhfa_boys_2-to-5-years_zscores.xlsx": "a44ed06039e0a9dd6920e4a4d928395c541c9732662e49eacd489d2194ccc80d",
+        "data/external/WHO Standards/lhfa_girls_0-to-2-years_zscores.xlsx": "6757f5eb96b51ab5cdb4828105929c78b1fb3d73b0fd8fa65682ad9f60f8c083",
+        "data/external/WHO Standards/lhfa_girls_2-to-5-years_zscores.xlsx": "a976c56a6d36885cc32bf77c5539ca066e396ef2adad06011cd71d9eb0f0eb5c",
+        "data/external/WHO Standards/wfa_boys_0-to-5-years_zscores.xlsx": "f8f5a77b944ff7a8c1524e76f9d33f8a93cc423d23c2e7f2b10ba6b96a428e69",
+        "data/external/WHO Standards/wfa_girls_0-to-5-years_zscores.xlsx": "01e9a6fda2f3723dbc74d3c86bfbfcb9f6d474367d1d7b4a804501a2debd2ef1",
+        "models/metadata/baseline_feature_metadata_v1.json": "13028a6fff1444d0b5fc737e105fa9b46a2aefbb448c86192664348d11bf5eef",
+        "data/schemas/sequence_feature_schema_v1.json": "af280f0420ace450b11249e1c5b9b77522c6353e0f7f0081c4d92ae8d385cc97"
+    }
+}

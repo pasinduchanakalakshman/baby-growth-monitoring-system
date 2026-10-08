@@ -1,0 +1,98 @@
+{
+    "lstm": {
+        "model_type": "lstm",
+        "version": "v1",
+        "input_shape": [
+            20,
+            49
+        ],
+        "parameter_count": 31297,
+        "class_weights": {
+            "0": 0.5224315401048747,
+            "1": 11.645021645021645
+        },
+        "training_epochs": 28,
+        "best_epoch": 17,
+        "validation_metrics": {
+            "roc_auc": 0.7952510704554301,
+            "pr_auc": 0.15879322227064938,
+            "precision": 0.09547738693467336,
+            "recall": 0.4523809523809524,
+            "f1": 0.15767634854771784,
+            "specificity": 0.8365122615803815,
+            "brier_score": 0.1070634373115921,
+            "confusion_matrix": {
+                "tn": 921,
+                "fp": 180,
+                "fn": 23,
+                "tp": 19
+            }
+        },
+        "selected": false,
+        "test_evaluated": false
+    },
+    "gru": {
+        "model_type": "gru",
+        "version": "v1",
+        "input_shape": [
+            20,
+            49
+        ],
+        "parameter_count": 24193,
+        "class_weights": {
+            "0": 0.5224315401048747,
+            "1": 11.645021645021645
+        },
+        "training_epochs": 20,
+        "best_epoch": 9,
+        "validation_metrics": {
+            "roc_auc": 0.8304571601574327,
+            "pr_auc": 0.18434270861937307,
+            "precision": 0.108,
+            "recall": 0.6428571428571429,
+            "f1": 0.18493150684931506,
+            "specificity": 0.7974568574023615,
+            "brier_score": 0.12106818445938163,
+            "confusion_matrix": {
+                "tn": 878,
+                "fp": 223,
+                "fn": 15,
+                "tp": 27
+            }
+        },
+        "selected": false,
+        "test_evaluated": false
+    },
+    "transformer": {
+        "model_type": "transformer",
+        "version": "v1",
+        "input_shape": [
+            20,
+            49
+        ],
+        "parameter_count": 16065,
+        "class_weights": {
+            "0": 0.5224315401048747,
+            "1": 11.645021645021645
+        },
+        "training_epochs": 27,
+        "best_epoch": 16,
+        "validation_metrics": {
+            "roc_auc": 0.8075559015613512,
+            "pr_auc": 0.18786134307703056,
+            "precision": 0.08734939759036145,
+            "recall": 0.6904761904761905,
+            "f1": 0.15508021390374332,
+            "specificity": 0.7247956403269755,
+            "brier_score": 0.14108083785485617,
+            "confusion_matrix": {
+                "tn": 798,
+                "fp": 303,
+                "fn": 13,
+                "tp": 29
+            }
+        },
+        "selected": true,
+        "test_evaluated": true
+    }
+}

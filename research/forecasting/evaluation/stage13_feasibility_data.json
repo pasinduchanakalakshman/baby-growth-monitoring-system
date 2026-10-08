@@ -1,0 +1,107 @@
+{
+    "candidates": {
+        "A": {
+            "pairs": 183,
+            "children": 159,
+            "train": 125,
+            "val": 34,
+            "test": 24,
+            "mean_gap": 30.0,
+            "min_gap": 30,
+            "max_gap": 30,
+            "median_gap": 30.0
+        },
+        "B": {
+            "pairs": 888,
+            "children": 436,
+            "train": 618,
+            "val": 138,
+            "test": 132,
+            "mean_gap": 30.04954954954955,
+            "min_gap": 28,
+            "max_gap": 32,
+            "median_gap": 30.0
+        },
+        "C": {
+            "pairs": 1573,
+            "children": 493,
+            "train": 1100,
+            "val": 239,
+            "test": 234,
+            "mean_gap": 30.236490781945328,
+            "min_gap": 25,
+            "max_gap": 35,
+            "median_gap": 30.0
+        },
+        "D": {
+            "pairs": 1777,
+            "children": 495,
+            "train": 1249,
+            "val": 262,
+            "test": 266,
+            "mean_gap": 30.35846933033202,
+            "min_gap": 20,
+            "max_gap": 39,
+            "median_gap": 30.0
+        }
+    },
+    "selected": "C",
+    "waz_stats": {
+        "count": 1573.0,
+        "mean": 0.012681498771630627,
+        "std": 0.8896054938307446,
+        "min": -2.4306189280286543,
+        "25%": -0.6075591820714273,
+        "50%": 0.0329447943388639,
+        "75%": 0.5981210278964693,
+        "max": 2.3251252728244545
+    },
+    "weight_stats": {
+        "count": 1573.0,
+        "mean": 5.566052129688495,
+        "std": 1.1128704557246487,
+        "min": 2.97,
+        "25%": 4.69,
+        "50%": 5.58,
+        "75%": 6.38,
+        "max": 8.74
+    },
+    "weight_change_stats": {
+        "count": 1573.0,
+        "mean": 0.8555880483153211,
+        "std": 0.2315831961795602,
+        "min": 0.3799999999999999,
+        "25%": 0.6600000000000001,
+        "50%": 0.8499999999999996,
+        "75%": 1.0299999999999994,
+        "max": 1.5999999999999996
+    },
+    "manifest": {
+        "source_dataset": "data/features/chdr_temporal_features_v1.csv",
+        "selected_target_window": "25-35 days",
+        "creation_timestamp": "2026-10-08T18:30:07.705728",
+        "pair_count": 1573,
+        "unique_children": 493,
+        "train_pairs": 1100,
+        "train_children": 346,
+        "validation_pairs": 239,
+        "validation_children": 74,
+        "test_pairs": 234,
+        "test_children": 73,
+        "actual_horizon_statistics": {
+            "mean": 30.236490781945328,
+            "median": 30.0,
+            "min": 25,
+            "max": 35
+        },
+        "target_definitions": {
+            "primary": "target_verified_waz"
+        },
+        "stage12_research_core_version": "research-core-v1",
+        "stage12_checksum_verification_status": "PASS"
+    },
+    "correlation": {
+        "index_waz_vs_future_waz": 0.9867520605636003,
+        "index_weight_vs_future_weight": 0.9845203042610301
+    }
+}

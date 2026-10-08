@@ -1,0 +1,123 @@
+{
+    "feature_list": [
+        "age_days",
+        "weight_kg",
+        "verified_waz",
+        "verified_haz",
+        "observation_count",
+        "days_since_previous_visit",
+        "weight_change_kg",
+        "weight_velocity_kg_per_day",
+        "weight_velocity_kg_per_30d",
+        "waz_change",
+        "waz_velocity_per_day",
+        "waz_velocity_per_30d",
+        "waz_rolling_mean_3",
+        "weight_rolling_mean_3",
+        "last_observed_height_cm",
+        "last_observed_haz",
+        "days_since_last_height_measurement",
+        "height_change_cm",
+        "haz_change",
+        "height_velocity_cm_per_day",
+        "height_velocity_cm_per_30d",
+        "haz_velocity_per_day",
+        "haz_velocity_per_30d",
+        "breastfeeding_frequency_per_day",
+        "formula_feeds_per_day",
+        "meals_per_day",
+        "illness_duration_days",
+        "height_measurement_available",
+        "breastfeeding_status",
+        "formula_feeding",
+        "complementary_feeding_started",
+        "supplement_use",
+        "recent_illness",
+        "diarrhea_recent",
+        "fever_recent",
+        "respiratory_illness_recent",
+        "supplement_type",
+        "food_groups_consumed"
+    ],
+    "n_raw_features": 38,
+    "n_transformed_features": 49,
+    "max_sequence_length": 20,
+    "overall_sequence_length_distribution": {
+        "min": 1,
+        "max": 18,
+        "mean": 8.510663198959687,
+        "median": 8.0,
+        "p25": 4.0,
+        "p75": 12.0,
+        "p95": 16.0
+    },
+    "padding_policy": "left_pad",
+    "masking_policy": "mask_value=-999.0, True=valid timestep",
+    "train": {
+        "samples": 5380,
+        "positives": 231,
+        "tensor_shape": [
+            5380,
+            20,
+            49
+        ],
+        "sequence_length_distribution": {
+            "min": 1,
+            "max": 18,
+            "mean": 8.49907063197026,
+            "median": 8.0,
+            "p25": 4.0,
+            "p75": 12.0,
+            "p95": 16.0
+        }
+    },
+    "validation": {
+        "samples": 1143,
+        "positives": 42,
+        "tensor_shape": [
+            1143,
+            20,
+            49
+        ],
+        "sequence_length_distribution": {
+            "min": 1,
+            "max": 18,
+            "mean": 8.528433945756781,
+            "median": 8.0,
+            "p25": 4.0,
+            "p75": 12.0,
+            "p95": 16.0
+        }
+    },
+    "test": {
+        "samples": 1167,
+        "positives": 50,
+        "tensor_shape": [
+            1167,
+            20,
+            49
+        ],
+        "sequence_length_distribution": {
+            "min": 1,
+            "max": 18,
+            "mean": 8.546700942587831,
+            "median": 8.0,
+            "p25": 4.0,
+            "p75": 12.0,
+            "p95": 16.0
+        }
+    },
+    "checks": {
+        "child_overlap_train_val": 0,
+        "child_overlap_train_test": 0,
+        "child_overlap_val_test": 0,
+        "future_leakage_violations": 0,
+        "train_sample_reconciliation": true,
+        "val_sample_reconciliation": true,
+        "test_sample_reconciliation": true,
+        "train_target_reconciliation": true,
+        "val_target_reconciliation": true,
+        "test_target_reconciliation": true
+    },
+    "warnings": []
+}

@@ -1,0 +1,10 @@
+{
+    "version": "forecast_model_v1",
+    "algorithm": "SHA256",
+    "files": {
+        "data/schemas/forecast_30d_model_feature_schema_v1.json": "23841db3ae513357f8a8614f61a770712173c4e251a7f6fef5fa8b884969101d",
+        "models/metadata/final_forecast_model_v1.json": "3fada345f5669cfa3f8fd70d661b9ba38339ee58eac8d9a0208c037f1543b44e",
+        "models/forecasting/v1/final_preprocessor_v1.joblib": "6fa989044ce74aa9ea7db92af76a4e9e6798f0611f5cc1c738ed7196375df456",
+        "models/forecasting/v1/final_model_v1.joblib": "bf1a58c0e8de3d03284a7a6ade12ab8dde876753f708a84c8afd4877e83ce909"
+    }
+}

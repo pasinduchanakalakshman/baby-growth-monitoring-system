@@ -1,0 +1,30 @@
+{
+    "model_inputs": [
+        "forecast_horizon_days",
+        "index_age_days",
+        "index_weight_kg",
+        "index_verified_waz",
+        "index_observation_count",
+        "index_days_since_previous_visit",
+        "index_weight_change_kg",
+        "index_weight_velocity_kg_per_30d",
+        "index_waz_change",
+        "index_waz_velocity_per_30d",
+        "index_waz_rolling_mean_3",
+        "index_weight_rolling_mean_3",
+        "index_birth_weight_kg",
+        "index_sex"
+    ],
+    "sequence_features": null,
+    "padding": "left",
+    "mask_value": -999.0,
+    "nominal_horizon": 30,
+    "forecast_horizon_days_included": true,
+    "forbidden_leakage_fields": [
+        "target_verified_waz",
+        "target_weight_kg",
+        "target_verified_haz",
+        "weight_change_kg_30d_observed",
+        "future_growth_faltering_180d"
+    ]
+}

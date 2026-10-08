@@ -10,7 +10,10 @@
         "feature_schema": "data/schemas/sequence_feature_schema_v1.json",
         "sequence_preprocessor_metadata": "models/metadata/sequence_preprocessor_metadata_v1.json"
     },
-    "input_shape": [20, 49],
+    "input_shape": [
+        20,
+        49
+    ],
     "max_sequence_length": 20,
     "padding": "left",
     "mask_value": -999.0,
@@ -38,5 +41,11 @@
     "warnings": [
         "Sequence-aware models were not assumed to outperform classical baselines. Comparative performance was determined empirically.",
         "The Transformer was not the primary deployment model but is retained as the best sequence-aware research contribution."
-    ]
+    ],
+    "original_artifact": "models/trained/transformer/v1/final_transformer.keras",
+    "clean_artifact": "models/trained/transformer/v1/final_transformer_clean.keras",
+    "retraining_performed": false,
+    "weight_transfer_performed": true,
+    "equivalence_tolerance": 1e-06,
+    "max_prediction_difference": 0.0
 }

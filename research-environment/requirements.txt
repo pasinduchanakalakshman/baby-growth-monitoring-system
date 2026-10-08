@@ -6,3 +6,5 @@ scikit-learn
 joblib
 xgboost
 tensorflow-cpu
+shap
+matplotlib

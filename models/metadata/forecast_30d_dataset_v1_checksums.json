@@ -1,0 +1,12 @@
+{
+    "version": "forecast_dataset_v1",
+    "algorithm": "SHA256",
+    "files": {
+        "data/forecasting/chdr_30d_forecast_pairs_v1.csv": "35927cff2e1af68e5ad23ad38f2e36fe3b74e0abda0c498a675e5a2a02ef1083",
+        "data/forecasting/train_30d_forecast_v1.csv": "703dd78ccdd65a493e0b6267ec7b3309b65018fa7864718cc6c9955dd327ca80",
+        "data/forecasting/validation_30d_forecast_v1.csv": "c2aebc7ac635f10f87c93de553f903507f402294034707a7b903ddec68c606f9",
+        "data/forecasting/test_30d_forecast_v1.csv": "e9a791d04fbf932142da72766cf7b470cdeda1a2f592076ed10a82054a697f49",
+        "data/schemas/forecast_30d_target_schema_v1.json": "cb9ad6de845f20feb0e78cbaca2a3088434aa2fde006f21ff23a1fddb290a560",
+        "models/metadata/forecast_30d_dataset_v1_manifest.json": "ac58aaa8277813b32bf82812173b039a95beca1b5503aad7d779f5876caf16cc"
+    }
+}

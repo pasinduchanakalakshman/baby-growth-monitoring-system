@@ -1,0 +1,24 @@
+{
+    "source_dataset": "data/features/chdr_temporal_features_v1.csv",
+    "selected_target_window": "25-35 days",
+    "creation_timestamp": "2026-10-08T18:30:07.705728",
+    "pair_count": 1573,
+    "unique_children": 493,
+    "train_pairs": 1100,
+    "train_children": 346,
+    "validation_pairs": 239,
+    "validation_children": 74,
+    "test_pairs": 234,
+    "test_children": 73,
+    "actual_horizon_statistics": {
+        "mean": 30.236490781945328,
+        "median": 30.0,
+        "min": 25,
+        "max": 35
+    },
+    "target_definitions": {
+        "primary": "target_verified_waz"
+    },
+    "stage12_research_core_version": "research-core-v1",
+    "stage12_checksum_verification_status": "PASS"
+}

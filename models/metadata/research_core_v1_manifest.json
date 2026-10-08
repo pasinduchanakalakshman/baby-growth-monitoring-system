@@ -1,0 +1,65 @@
+{
+  "version": "research-core-v1",
+  "status": "frozen",
+  "research_component": "Explainable Sequence-Aware AI Framework for Early Prediction of Child Growth Faltering",
+  "created_at": "2026-10-08",
+  "prediction_task": {
+    "primary_model": "XGBoost",
+    "target": "future_growth_faltering_180d",
+    "prediction_horizon_days": 180,
+    "classification_threshold": 0.5,
+    "primary_cohort": "index WAZ >= -2"
+  },
+  "stages": {
+    "1": "Dataset Audit",
+    "2": "Data Cleaning",
+    "3": "WHO WAZ/HAZ Integration",
+    "4": "Temporal Feature Engineering",
+    "5": "180-Day Growth-Faltering Target",
+    "6": "Child-Level Data Split",
+    "7": "Classical Baseline Models",
+    "8": "Longitudinal Sequence Construction",
+    "9": "LSTM / GRU / Transformer Comparison",
+    "10": "Frozen XGBoost Risk Model + Dynamic Risk Assessment",
+    "11": "Explainable AI (SHAP + Integrated Gradients)"
+  },
+  "datasets": {
+    "chdr_cleaned": "data/processed/chdr_cleaned_v1.csv",
+    "chdr_who_features": "data/processed/chdr_who_features_v1.csv",
+    "chdr_temporal_features": "data/features/chdr_temporal_features_v1.csv",
+    "chdr_supervised": "data/processed/chdr_supervised_180d_v1.csv"
+  },
+  "splits": {
+    "train": "data/splits/v1/train.csv",
+    "validation": "data/splits/v1/validation.csv",
+    "test": "data/splits/v1/test.csv"
+  },
+  "models": {
+    "primary_risk_model": "models/trained/baselines/v1/xgboost.joblib",
+    "primary_risk_model_metadata": "models/metadata/final_risk_model_v1.json",
+    "sequence_model": "models/trained/transformer/v1/final_transformer_clean.keras",
+    "sequence_model_metadata": "models/metadata/final_sequence_model_v1.json",
+    "preprocessors": [
+      "models/scalers/baseline_preprocessor_v1.joblib",
+      "models/scalers/sequence_preprocessor_v1.joblib"
+    ]
+  },
+  "who_reference_files": [
+    "data/external/WHO Standards/lhfa_boys_0-to-2-years_zscores.xlsx",
+    "data/external/WHO Standards/lhfa_boys_2-to-5-years_zscores.xlsx",
+    "data/external/WHO Standards/lhfa_girls_0-to-2-years_zscores.xlsx",
+    "data/external/WHO Standards/lhfa_girls_2-to-5-years_zscores.xlsx",
+    "data/external/WHO Standards/wfa_boys_0-to-5-years_zscores.xlsx",
+    "data/external/WHO Standards/wfa_girls_0-to-5-years_zscores.xlsx"
+  ],
+  "evaluation_reports": [
+    "research/evaluation/xai_report_v1.json",
+    "research/evaluation/xai_global_feature_importance_v1.csv",
+    "research/evaluation/xai_global_transformed_feature_importance_v1.csv"
+  ],
+  "limitations": [
+    "Research model only",
+    "Not a diagnosis",
+    "Not externally clinically validated"
+  ]
+}

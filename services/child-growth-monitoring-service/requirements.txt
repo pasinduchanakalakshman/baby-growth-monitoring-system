@@ -6,3 +6,9 @@ pydantic
 pydantic-settings
 pytest
 httpx
+pandas
+xgboost
+shap
+scikit-learn
+joblib
+openpyxl

@@ -12,12 +12,16 @@ if database_url.startswith("postgresql://"):
 # Psycopg (libpq) does not recognize this parameter and will throw an error. We must strip it.
 database_url = database_url.replace("?pgbouncer=true", "").replace("&pgbouncer=true", "")
 
+engine_kwargs = {}
+if not database_url.startswith("sqlite"):
+    engine_kwargs["pool_size"] = 5
+    engine_kwargs["max_overflow"] = 10
+
 # Create database engine
 engine = create_engine(
     database_url,
     pool_pre_ping=True,  # Enable connection health checks
-    pool_size=5,
-    max_overflow=10
+    **engine_kwargs
 )
 
 # Create SessionLocal class for database sessions

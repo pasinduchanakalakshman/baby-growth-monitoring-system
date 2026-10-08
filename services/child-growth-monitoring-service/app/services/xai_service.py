@@ -87,9 +87,16 @@ class XAIService:
                         raw_val = features.get(cat_f)
                         break
             
+            tv = float(X_proc[0, i])
+            if np.isnan(tv):
+                tv = None
+                
+            if isinstance(raw_val, float) and np.isnan(raw_val):
+                raw_val = None
+
             technical.append({
                 "feature": name,
-                "transformed_value": float(X_proc[0, i]),
+                "transformed_value": tv,
                 "raw_value": raw_val,
                 "shap_contribution": sv
             })

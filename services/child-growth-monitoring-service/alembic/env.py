@@ -29,7 +29,9 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 # Set sqlalchemy.url from our application settings
-config.set_main_option("sqlalchemy.url", database_url)
+# ConfigParser uses % for interpolation, so we must escape it
+safe_database_url = database_url.replace('%', '%%')
+config.set_main_option("sqlalchemy.url", safe_database_url)
 
 
 def run_migrations_offline() -> None:

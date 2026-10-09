@@ -32,14 +32,17 @@ async def forward_request(request: Request, path: str):
         )
         return response
 
-@router.api_route("/api/v1/auth/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
 async def proxy_auth(request: Request, path: str):
     return await forward_request(request, f"auth/{path}")
 
-@router.api_route("/api/v1/baby/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
 async def proxy_baby(request: Request, path: str):
     return await forward_request(request, f"baby/{path}")
 
-@router.api_route("/api/v1/growth/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
 async def proxy_growth(request: Request, path: str):
     return await forward_request(request, f"growth/{path}")
+
+METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+for method in METHODS:
+    router.add_api_route("/api/v1/auth/{path:path}", proxy_auth, methods=[method], operation_id=f"proxy_auth_{method.lower()}")
+    router.add_api_route("/api/v1/baby/{path:path}", proxy_baby, methods=[method], operation_id=f"proxy_baby_{method.lower()}")
+    router.add_api_route("/api/v1/growth/{path:path}", proxy_growth, methods=[method], operation_id=f"proxy_growth_{method.lower()}")

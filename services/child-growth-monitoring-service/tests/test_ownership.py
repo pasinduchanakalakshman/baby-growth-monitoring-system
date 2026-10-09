@@ -9,34 +9,7 @@ from app.main import app
 from app.core.database import get_db
 from app.models import Base
 
-# Setup in-memory SQLite database for testing
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[get_db] = override_get_db
-
-client = TestClient(app)
-
-@pytest.fixture(autouse=True)
-def setup_db():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    yield
-
-def register_and_login(email: str, name: str = "Test Mother"):
+def register_and_login(client, email: str, name: str = "Test Mother"):
     client.post(
         "/api/v1/auth/register",
         json={"name": name, "email": email, "password": "securepassword"}
@@ -47,24 +20,25 @@ def register_and_login(email: str, name: str = "Test Mother"):
     )
     return response.cookies
 
-def test_baby_ownership_isolation():
+def test_baby_ownership_isolation(client):
     # User A creates a baby
-    cookies_a = register_and_login("mother_a@example.com")
+    cookies_a = register_and_login(client, "mother_a@example.com")
     baby_a_res = client.post(
         "/api/v1/baby/register",
         json={
             "name": "Baby A",
-            "sex": "M",
+            "sex": "Male",
             "date_of_birth": str(date.today()),
             "birth_weight_kg": 3.0,
             "birth_length_cm": 50.0
         },
         cookies=cookies_a
     )
+    print(baby_a_res.json())
     assert baby_a_res.status_code == 201
     
     # User B logs in
-    cookies_b = register_and_login("mother_b@example.com")
+    cookies_b = register_and_login(client, "mother_b@example.com")
     
     # User B should NOT see User A's baby
     baby_b_res = client.get("/api/v1/baby/profile", cookies=cookies_b)
@@ -75,7 +49,7 @@ def test_baby_ownership_isolation():
         "/api/v1/baby/register",
         json={
             "name": "Baby B",
-            "sex": "F",
+            "sex": "Female",
             "date_of_birth": str(date.today()),
             "birth_weight_kg": 2.8,
             "birth_length_cm": 49.0
@@ -92,15 +66,15 @@ def test_baby_ownership_isolation():
     baby_b_profile = client.get("/api/v1/baby/profile", cookies=cookies_b)
     assert baby_b_profile.json()["name"] == "Baby B"
 
-def test_growth_ownership_isolation():
-    cookies_a = register_and_login("mother_c@example.com")
+def test_growth_ownership_isolation(client):
+    cookies_a = register_and_login(client, "mother_c@example.com")
     
     # Baby A
     client.post(
         "/api/v1/baby/register",
         json={
             "name": "Baby C",
-            "sex": "M",
+            "sex": "Male",
             "date_of_birth": "2024-01-01",
             "birth_weight_kg": 3.0,
             "birth_length_cm": 50.0
@@ -119,7 +93,7 @@ def test_growth_ownership_isolation():
         cookies=cookies_a
     )
     
-    cookies_b = register_and_login("mother_d@example.com")
+    cookies_b = register_and_login(client, "mother_d@example.com")
     
     # Mother D has no baby yet, so should fail getting growth data
     growth_fail = client.get("/api/v1/growth/history", cookies=cookies_b)

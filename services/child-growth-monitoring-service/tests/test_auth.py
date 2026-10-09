@@ -8,36 +8,7 @@ from app.main import app
 from app.core.database import get_db
 from app.models import Base
 
-# Setup in-memory SQLite database for testing
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[get_db] = override_get_db
-
-client = TestClient(app)
-
-@pytest.fixture(autouse=True)
-def setup_db():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    yield
-
-def test_register_mother():
+def test_register_mother(client):
     response = client.post(
         "/api/v1/auth/register",
         json={"name": "Test Mother", "email": "test@example.com", "password": "securepassword"}
@@ -48,7 +19,7 @@ def test_register_mother():
     assert "password_hash" not in data
     assert "id" in data
 
-def test_duplicate_email_rejected():
+def test_duplicate_email_rejected(client):
     payload = {"name": "Test Mother", "email": "test@example.com", "password": "securepassword"}
     client.post("/api/v1/auth/register", json=payload)
     
@@ -56,7 +27,7 @@ def test_duplicate_email_rejected():
     assert response.status_code == 400
     assert response.json()["detail"] == "Email already registered"
 
-def test_login_success():
+def test_login_success(client):
     client.post(
         "/api/v1/auth/register",
         json={"name": "Test Mother", "email": "test2@example.com", "password": "securepassword"}
@@ -72,7 +43,7 @@ def test_login_success():
     assert data["email"] == "test2@example.com"
     assert "password_hash" not in data
 
-def test_login_wrong_password():
+def test_login_wrong_password(client):
     client.post(
         "/api/v1/auth/register",
         json={"name": "Test Mother", "email": "test3@example.com", "password": "securepassword"}
@@ -84,14 +55,14 @@ def test_login_wrong_password():
     )
     assert response.status_code == 401
 
-def test_login_unknown_email():
+def test_login_unknown_email(client):
     response = client.post(
         "/api/v1/auth/login",
         json={"email": "unknown@example.com", "password": "securepassword"}
     )
     assert response.status_code == 401
 
-def test_auth_me():
+def test_auth_me(client):
     client.post(
         "/api/v1/auth/register",
         json={"name": "Test Mother", "email": "test4@example.com", "password": "securepassword"}
@@ -107,11 +78,11 @@ def test_auth_me():
     assert response.status_code == 200
     assert response.json()["email"] == "test4@example.com"
 
-def test_auth_me_unauthenticated():
+def test_auth_me_unauthenticated(client):
     response = client.get("/api/v1/auth/me")
     assert response.status_code == 401
 
-def test_logout():
+def test_logout(client):
     client.post(
         "/api/v1/auth/register",
         json={"name": "Test Mother", "email": "test5@example.com", "password": "securepassword"}

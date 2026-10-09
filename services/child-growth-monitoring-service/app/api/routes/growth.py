@@ -8,7 +8,7 @@ from app.schemas.growth import (
     GrowthMeasurementCreate, GrowthMeasurementResponse, 
     GrowthOverviewResponse, CurrentGrowthOutput, Forecast30dOutput, Risk180dOutput
 )
-from app.api.routes.baby import get_current_user
+from app.api.deps import get_current_user
 
 # Import our ML services
 from app.services.who_service import who_service

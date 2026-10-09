@@ -7,15 +7,7 @@ import datetime
 
 router = APIRouter(prefix="/api/v1/baby", tags=["baby"])
 
-def get_current_user(db: Session = Depends(get_db)) -> User:
-    # Development owner abstraction (mocked authenticated mother)
-    user = db.query(User).filter(User.email == "dev_mother@example.com").first()
-    if not user:
-        user = User(email="dev_mother@example.com", name="Development Mother")
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-    return user
+from app.api.deps import get_current_user
 
 @router.post("/register", response_model=BabyResponse, status_code=status.HTTP_201_CREATED)
 def register_baby(baby_in: BabyCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

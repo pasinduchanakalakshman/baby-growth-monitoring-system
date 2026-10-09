@@ -9,6 +9,11 @@ httpx
 pandas
 xgboost
 shap
-scikit-learn
+scikit-learn==1.7.2
 joblib
 openpyxl
+alembic
+passlib[argon2]
+python-jose[cryptography]
+python-multipart
+email-validator

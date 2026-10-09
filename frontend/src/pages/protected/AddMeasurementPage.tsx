@@ -7,6 +7,7 @@ import { babyApi } from '@/api/baby';
 import { ApiClientError } from '@/api/client';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { GrowthMeasurementRequest } from '@/types/growth';
+import { PageHeader } from '@/components/ui/shared/PageHeader';
 
 export default function AddMeasurementPage() {
   const navigate = useNavigate();
@@ -137,11 +138,11 @@ export default function AddMeasurementPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-4 md:p-6 pb-24">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Add Growth Measurement</h1>
-        <p className="text-slate-500 mt-2">Record measurements from your child's latest growth visit.</p>
-      </div>
+    <div className="max-w-3xl mx-auto p-4 md:p-6 pb-24 space-y-8">
+      <PageHeader
+        title="Add Growth Measurement"
+        description="Record measurements from your child's latest growth visit."
+      />
 
       {error && (
         <div className="mb-6 p-4 bg-destructive/10 border-l-4 border-destructive text-destructive rounded-r-md flex items-start gap-3">

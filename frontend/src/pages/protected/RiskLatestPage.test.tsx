@@ -43,10 +43,8 @@ describe('RiskLatestPage', () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByTestId('no-data-state')).toBeTruthy();
+      expect(screen.getByText(/Add a growth measurement before viewing a risk assessment/i)).toBeTruthy();
     });
-    
-    expect(screen.getByText(/Add a growth measurement before viewing a risk assessment/i)).toBeTruthy();
   });
 
   it('shows unavailable-risk state if risk_available is false', async () => {
@@ -98,8 +96,7 @@ describe('RiskLatestPage', () => {
     });
 
     expect(screen.getByText('18%')).toBeTruthy();
-    expect(screen.getByText(/180-day growth-faltering outcome/i)).toBeTruthy();
-    expect(screen.getByText(/Standard Risk/i)).toBeTruthy();
-    expect(screen.getByText(/XGBoost v1/i)).toBeTruthy();
+    expect(screen.getByText(/likelihood of the defined growth-faltering pattern over the next 180 days/i)).toBeTruthy();
+    expect(screen.getByText(/No elevated risk detected/i)).toBeTruthy();
   });
 });

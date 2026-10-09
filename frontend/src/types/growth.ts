@@ -36,12 +36,24 @@ export interface CurrentGrowthOutput {
   haz?: number | null;
 }
 
-export interface Forecast30Day {
+export interface GrowthOverviewForecast {
   available: boolean;
   estimated_waz?: number | null;
   estimated_weight_kg?: number | null;
   estimated_weight_change_kg?: number | null;
   horizon_days?: number | null;
+  reason?: string | null;
+}
+
+export interface Forecast30Day {
+  forecast_available: boolean;
+  estimated_future_waz?: number | null;
+  estimated_future_weight_kg?: number | null;
+  estimated_weight_change_kg?: number | null;
+  nominal_horizon_days?: number | null;
+  training_window_days?: number[] | null;
+  model_version?: string | null;
+  methodology_note?: string | null;
   reason?: string | null;
 }
 
@@ -58,7 +70,7 @@ export interface Risk180Day {
 export interface GrowthOverview {
   baby: Record<string, any>;
   current_growth?: CurrentGrowthOutput | null;
-  forecast_30d?: Forecast30Day | null;
+  forecast_30d?: GrowthOverviewForecast | null;
   risk_180d?: Risk180Day | null;
 }
 

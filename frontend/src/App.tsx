@@ -21,6 +21,7 @@ import AddMeasurementPage from '@/pages/protected/AddMeasurementPage';
 import HistoryPage from '@/pages/protected/HistoryPage';
 import GrowthOverviewPage from '@/pages/protected/GrowthOverviewPage';
 import GrowthChartsPage from '@/pages/protected/GrowthChartsPage';
+import GrowthForecastPage from '@/pages/protected/GrowthForecastPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -56,6 +57,7 @@ function App() {
               <Route path="/growth/add" element={<AddMeasurementPage />} />
               <Route path="/growth/history" element={<HistoryPage />} />
               <Route path="/growth/charts" element={<GrowthChartsPage />} />
+              <Route path="/growth/forecast" element={<GrowthForecastPage />} />
               
               {/* Catch-all for authenticated */}
               <Route path="*" element={<Navigate to="/app" replace />} />

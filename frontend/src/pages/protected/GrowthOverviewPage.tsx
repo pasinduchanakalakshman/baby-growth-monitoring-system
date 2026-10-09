@@ -66,6 +66,12 @@ export default function GrowthOverviewPage() {
             Detailed Charts
           </button>
           <button
+            onClick={() => navigate('/growth/forecast')}
+            className="border bg-indigo-50 border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md font-medium transition-colors shadow-sm text-sm"
+          >
+            30-Day Forecast
+          </button>
+          <button
             onClick={() => navigate('/growth/add')}
             className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium transition-colors shadow-sm flex items-center gap-2 text-sm"
           >

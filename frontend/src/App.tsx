@@ -19,6 +19,8 @@ import BabyRegistrationPage from '@/pages/protected/BabyRegistrationPage';
 import BabyProfilePage from '@/pages/protected/BabyProfilePage';
 import AddMeasurementPage from '@/pages/protected/AddMeasurementPage';
 import HistoryPage from '@/pages/protected/HistoryPage';
+import GrowthOverviewPage from '@/pages/protected/GrowthOverviewPage';
+import GrowthChartsPage from '@/pages/protected/GrowthChartsPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -50,9 +52,10 @@ function App() {
               <Route path="/app" element={<Dashboard />} />
               <Route path="/account" element={<AccountPage />} />
               <Route path="/baby" element={<BabyProfilePage />} />
-              <Route path="/growth" element={<Navigate to="/growth/history" replace />} />
+              <Route path="/growth" element={<GrowthOverviewPage />} />
               <Route path="/growth/add" element={<AddMeasurementPage />} />
               <Route path="/growth/history" element={<HistoryPage />} />
+              <Route path="/growth/charts" element={<GrowthChartsPage />} />
               
               {/* Catch-all for authenticated */}
               <Route path="*" element={<Navigate to="/app" replace />} />

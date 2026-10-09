@@ -22,6 +22,9 @@ import HistoryPage from '@/pages/protected/HistoryPage';
 import GrowthOverviewPage from '@/pages/protected/GrowthOverviewPage';
 import GrowthChartsPage from '@/pages/protected/GrowthChartsPage';
 import GrowthForecastPage from '@/pages/protected/GrowthForecastPage';
+import RiskLatestPage from '@/pages/protected/RiskLatestPage';
+import RiskHistoryPage from '@/pages/protected/RiskHistoryPage';
+import RiskExplanationPage from '@/pages/protected/RiskExplanationPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -58,6 +61,9 @@ function App() {
               <Route path="/growth/history" element={<HistoryPage />} />
               <Route path="/growth/charts" element={<GrowthChartsPage />} />
               <Route path="/growth/forecast" element={<GrowthForecastPage />} />
+              <Route path="/growth/risk" element={<RiskLatestPage />} />
+              <Route path="/growth/risk/history" element={<RiskHistoryPage />} />
+              <Route path="/growth/explanation" element={<RiskExplanationPage />} />
               
               {/* Catch-all for authenticated */}
               <Route path="*" element={<Navigate to="/app" replace />} />

@@ -72,6 +72,12 @@ export default function GrowthOverviewPage() {
             30-Day Forecast
           </button>
           <button
+            onClick={() => navigate('/growth/risk')}
+            className="border bg-amber-50 border-amber-100 hover:bg-amber-100 text-amber-700 px-4 py-2 rounded-md font-medium transition-colors shadow-sm text-sm"
+          >
+            Early Growth Risk
+          </button>
+          <button
             onClick={() => navigate('/growth/add')}
             className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium transition-colors shadow-sm flex items-center gap-2 text-sm"
           >

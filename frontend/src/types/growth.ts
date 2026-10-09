@@ -58,12 +58,13 @@ export interface Forecast30Day {
 }
 
 export interface Risk180Day {
-  available: boolean;
-  applicable?: boolean | null;
-  probability?: number | null;
-  threshold?: number | null;
-  flag?: number | null;
-  horizon_days?: number | null;
+  risk_available: boolean;
+  risk_probability?: number | null;
+  risk_threshold?: number | null;
+  risk_flag?: number | null;
+  prediction_horizon_days?: number | null;
+  model_version?: string | null;
+  model_applicable?: boolean | null;
   reason?: string | null;
 }
 
@@ -75,14 +76,46 @@ export interface GrowthOverview {
 }
 
 export interface RiskTrajectoryPoint {
-  // Just placeholders for later stages
-  [key: string]: any;
+  visit_date: string;
+  age_days?: number | null;
+  weight_kg?: number | null;
+  verified_waz?: number | null;
+  risk_probability?: number | null;
+}
+
+export interface FrontendSafeExplanation {
+  feature: string;
+  display_label: string;
+  direction: string;
+  importance_rank: number;
+}
+
+export interface TechnicalExplanation {
+  base_value: number;
+  contributions: {
+    feature: string;
+    transformed_value: number | null;
+    raw_value: number | null;
+    shap_contribution: number;
+  }[];
 }
 
 export interface RiskExplanation {
-  [key: string]: any;
+  technical_explanation: TechnicalExplanation;
+  frontend_safe_explanation: FrontendSafeExplanation[];
+  disclaimer: string;
 }
 
 export interface ModelInfo {
-  [key: string]: any;
+  Risk: {
+    model: string;
+    horizon_days: number;
+    threshold: number;
+  };
+  Forecast: {
+    model: string;
+    nominal_horizon_days: number;
+    training_target: string;
+  };
+  Disclaimers: string[];
 }

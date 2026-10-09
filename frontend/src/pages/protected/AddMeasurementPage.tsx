@@ -40,9 +40,9 @@ export default function AddMeasurementPage() {
       queryClient.invalidateQueries({ queryKey: ['growth.history'] });
       queryClient.invalidateQueries({ queryKey: ['growth.overview'] });
       queryClient.invalidateQueries({ queryKey: ['growth.forecast'] });
-      queryClient.invalidateQueries({ queryKey: ['growth.risk.latest'] });
-      queryClient.invalidateQueries({ queryKey: ['growth.risk.trajectory'] });
-      queryClient.invalidateQueries({ queryKey: ['growth.risk.explanation'] });
+      queryClient.invalidateQueries({ queryKey: ['risk.latest'] });
+      queryClient.invalidateQueries({ queryKey: ['risk.trajectory'] });
+      queryClient.invalidateQueries({ queryKey: ['risk.explanation'] });
       setIsSuccess(true);
     },
     onError: (err) => {

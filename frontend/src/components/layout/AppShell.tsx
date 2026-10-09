@@ -1,9 +1,12 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/auth/AuthProvider';
 import { Button } from '@/components/ui/button';
-import { Baby, Home, LineChart, User, Settings, LogOut, Menu } from 'lucide-react';
+import { Baby, Home, LineChart, User, Settings, LogOut, Menu, Loader2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { babyApi } from '@/api/baby';
+import { ApiClientError } from '@/api/client';
 
 export default function AppShell() {
   const { user, logout } = useAuth();
@@ -12,6 +15,43 @@ export default function AppShell() {
   const handleLogout = async () => {
     await logout();
   };
+
+  // Fetch baby profile to determine onboarding status
+  const { data: baby, isLoading, error } = useQuery({
+    queryKey: ['baby.profile'],
+    queryFn: babyApi.getBabyProfile,
+    retry: (failureCount, err) => {
+      // Don't retry if it's a 404 (baby not found -> needs onboarding)
+      if (err instanceof ApiClientError && err.status === 404) return false;
+      return failureCount < 3;
+    }
+  });
+
+  const isBabyNotFound = error instanceof ApiClientError && error.status === 404;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-[#F8F9FB] gap-4">
+        <Loader2 className="h-10 w-10 text-primary animate-spin" />
+        <p className="text-muted-foreground font-medium animate-pulse">Loading application data...</p>
+      </div>
+    );
+  }
+
+  // If no baby is found, and we're not already on the registration page, redirect to onboarding.
+  if (isBabyNotFound && location.pathname !== '/baby/register') {
+    return <Navigate to="/baby/register" replace />;
+  }
+
+  // If baby exists and we're on the registration page, redirect to dashboard.
+  if (baby && location.pathname === '/baby/register') {
+    return <Navigate to="/app" replace />;
+  }
+
+  // If we are currently ON the onboarding page, we don't render the AppShell navigation.
+  if (location.pathname === '/baby/register') {
+    return <Outlet />;
+  }
 
   const navItems = [
     { name: 'Overview', href: '/app', icon: Home },

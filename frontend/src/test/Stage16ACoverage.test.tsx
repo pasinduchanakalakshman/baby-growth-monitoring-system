@@ -19,6 +19,12 @@ vi.mock('../api/auth', () => ({
   }
 }));
 
+vi.mock('../api/baby', () => ({
+  babyApi: {
+    getBabyProfile: vi.fn().mockResolvedValue({ id: 1, name: 'Emma' }),
+  }
+}));
+
 const createTestQueryClient = () => new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });

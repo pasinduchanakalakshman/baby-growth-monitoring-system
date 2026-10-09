@@ -1,10 +1,13 @@
 export interface GrowthMeasurementRequest {
-  date: string; // ISO date string
+  visit_date: string;
   weight_kg: number;
-  length_cm?: number;
-  head_circumference_cm?: number;
-  muac_cm?: number;
-  notes?: string;
+  length_height_cm?: number | null;
+  currently_breastfeeding?: boolean | null;
+  formula_feeding?: boolean | null;
+  solid_foods_started?: boolean | null;
+  diarrhea_last_14_days?: boolean | null;
+  fever_last_14_days?: boolean | null;
+  cough_last_14_days?: boolean | null;
 }
 
 export interface GrowthHistoryPoint {
@@ -12,70 +15,62 @@ export interface GrowthHistoryPoint {
   baby_id: number;
   visit_date: string;
   weight_kg: number;
-  length_cm?: number | null;
-  head_circumference_cm?: number | null;
-  muac_cm?: number | null;
+  length_height_cm?: number | null;
+  currently_breastfeeding?: boolean | null;
+  formula_feeding?: boolean | null;
+  solid_foods_started?: boolean | null;
+  diarrhea_last_14_days?: boolean | null;
+  fever_last_14_days?: boolean | null;
+  cough_last_14_days?: boolean | null;
   age_days?: number | null;
-  waz?: number | null;
-  haz?: number | null;
+  verified_waz?: number | null;
+  verified_haz?: number | null;
 }
 
-export interface GrowthOverview {
-  latest_measurement?: GrowthHistoryPoint | null;
-  total_measurements: number;
+export interface CurrentGrowthOutput {
+  visit_date: string;
+  age_days?: number | null;
+  weight_kg: number;
+  length_height_cm?: number | null;
   waz?: number | null;
   haz?: number | null;
-  weight_status?: string | null;
-  height_status?: string | null;
-}
-
-export interface ForecastPoint {
-  forecast_date: string;
-  predicted_weight_kg: number;
-  lower_bound?: number | null;
-  upper_bound?: number | null;
 }
 
 export interface Forecast30Day {
-  forecast_generated_at: string;
-  forecast_points: ForecastPoint[];
-  model_version?: string | null;
+  available: boolean;
+  estimated_waz?: number | null;
+  estimated_weight_kg?: number | null;
+  estimated_weight_change_kg?: number | null;
+  horizon_days?: number | null;
+  reason?: string | null;
 }
 
 export interface Risk180Day {
-  risk_probability: number;
-  risk_category: string;
-  assessment_date: string;
-  model_version?: string | null;
+  available: boolean;
+  applicable?: boolean | null;
+  probability?: number | null;
+  threshold?: number | null;
+  flag?: number | null;
+  horizon_days?: number | null;
+  reason?: string | null;
+}
+
+export interface GrowthOverview {
+  baby: Record<string, any>;
+  current_growth?: CurrentGrowthOutput | null;
+  forecast_30d?: Forecast30Day | null;
+  risk_180d?: Risk180Day | null;
 }
 
 export interface RiskTrajectoryPoint {
-  assessment_date: string;
-  risk_probability: number;
-  risk_category: string;
-}
-
-export interface ShapFeature {
-  feature_name: string;
-  feature_value: number | string;
-  shap_value: number;
-  impact_direction: 'positive' | 'negative' | 'neutral';
+  // Just placeholders for later stages
+  [key: string]: any;
 }
 
 export interface RiskExplanation {
-  risk_probability: number;
-  risk_category: string;
-  top_features: ShapFeature[];
-  assessment_date: string;
+  [key: string]: any;
 }
 
 export interface ModelInfo {
-  model_type: string;
-  trained_at?: string | null;
-  version?: string | null;
-  features_used?: string[] | null;
-}
-
-export interface ApiError {
-  detail: string | Array<{ loc: string[]; msg: string; type: string }>;
+  [key: string]: any;
 }

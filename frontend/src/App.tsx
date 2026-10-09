@@ -17,6 +17,8 @@ import Dashboard from '@/pages/protected/Dashboard';
 import AccountPage from '@/pages/protected/AccountPage';
 import BabyRegistrationPage from '@/pages/protected/BabyRegistrationPage';
 import BabyProfilePage from '@/pages/protected/BabyProfilePage';
+import AddMeasurementPage from '@/pages/protected/AddMeasurementPage';
+import HistoryPage from '@/pages/protected/HistoryPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -48,6 +50,9 @@ function App() {
               <Route path="/app" element={<Dashboard />} />
               <Route path="/account" element={<AccountPage />} />
               <Route path="/baby" element={<BabyProfilePage />} />
+              <Route path="/growth" element={<Navigate to="/growth/history" replace />} />
+              <Route path="/growth/add" element={<AddMeasurementPage />} />
+              <Route path="/growth/history" element={<HistoryPage />} />
               
               {/* Catch-all for authenticated */}
               <Route path="*" element={<Navigate to="/app" replace />} />

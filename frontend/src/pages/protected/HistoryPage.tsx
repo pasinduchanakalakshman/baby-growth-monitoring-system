@@ -2,7 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { growthApi } from '@/api/growth';
-import { Activity, Plus, Ruler, Scale } from 'lucide-react';
+import { Activity, Plus, Ruler, Scale, FileText } from 'lucide-react';
+import { PageHeader } from '@/components/ui/shared/PageHeader';
+import { LoadingState } from '@/components/ui/shared/LoadingState';
+import { EmptyState } from '@/components/ui/shared/EmptyState';
+import { ErrorStateUI } from '@/components/ui/shared/ErrorStateUI';
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -13,59 +17,47 @@ export default function HistoryPage() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="p-4 max-w-4xl mx-auto">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md border border-destructive/20">
-          Failed to load history. Please try again.
-        </div>
-      </div>
-    );
+    return <ErrorStateUI message="We couldn't load history right now. Please try again." />;
   }
 
   // Backend returns ascending order. We want most recent first.
   const reversedHistory = history ? [...history].reverse() : [];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Measurement History</h1>
-          <p className="text-slate-500 mt-2">Review your child's past growth recordings.</p>
-        </div>
-        <button
-          onClick={() => navigate('/growth/add')}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium transition-colors shadow-sm flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Add Measurement
-        </button>
-      </div>
-
-      {reversedHistory.length === 0 ? (
-        <div className="bg-card border rounded-xl shadow-sm p-12 text-center">
-          <div className="flex justify-center mb-4">
-            <Activity className="h-12 w-12 text-slate-300" />
-          </div>
-          <h3 className="text-lg font-semibold text-slate-800">No measurements yet</h3>
-          <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
-            You haven't recorded any growth measurements for your baby yet. Add your first measurement to start tracking their growth.
-          </p>
+    <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24 space-y-6">
+      <PageHeader
+        title="Measurement History"
+        description="Review your child's past growth recordings."
+        actions={
           <button
             onClick={() => navigate('/growth/add')}
-            className="mt-6 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-md font-medium transition-colors shadow-sm inline-flex items-center gap-2"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm"
           >
             <Plus className="h-4 w-4" />
-            Add First Measurement
+            Add Measurement
           </button>
-        </div>
+        }
+      />
+
+      {reversedHistory.length === 0 ? (
+        <EmptyState
+          icon={FileText}
+          title="No measurements yet"
+          description="You haven't recorded any growth measurements for your baby yet. Add your first measurement to start tracking their growth."
+          action={
+            <button
+              onClick={() => navigate('/growth/add')}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-xl font-medium transition-colors shadow-sm inline-flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Add First Measurement
+            </button>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {reversedHistory.map((meas) => (

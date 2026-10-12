@@ -78,7 +78,7 @@ export default function Dashboard() {
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 text-sm text-amber-900 mt-8">
         <Info className="h-5 w-5 flex-shrink-0 text-amber-600" />
         <p>
-          <strong>Research System Disclaimer:</strong> This system provides research-based growth estimates and risk assessments and is not a medical diagnosis. Always consult with a healthcare professional for medical advice.
+          <strong>System Disclaimer:</strong> This system provides growth estimates and risk assessments and is not a medical diagnosis. Always consult with a healthcare professional for medical advice.
         </p>
       </div>
     </div>

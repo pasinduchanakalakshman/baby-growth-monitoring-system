@@ -1,7 +1,12 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { growthApi } from '@/api/growth';
-import { AlertCircle, Brain, TrendingUp, TrendingDown, Info } from 'lucide-react';
+import { Brain, TrendingUp, TrendingDown, Info } from 'lucide-react';
+import { PageHeader } from '@/components/ui/shared/PageHeader';
+import { LoadingState } from '@/components/ui/shared/LoadingState';
+import { EmptyState } from '@/components/ui/shared/EmptyState';
+import { ErrorStateUI } from '@/components/ui/shared/ErrorStateUI';
+import { ResearchDisclaimer } from '@/components/ui/shared/ResearchDisclaimer';
 
 export default function RiskExplanationPage() {
   const { data: explanation, isLoading, error } = useQuery({
@@ -10,22 +15,11 @@ export default function RiskExplanationPage() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-12" data-testid="loading-state">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="p-4 max-w-4xl mx-auto" data-testid="error-state">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md border border-destructive/20 flex gap-3">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p>Failed to load explanation data. The risk assessment may not be available for the current record.</p>
-        </div>
-      </div>
-    );
+    return <ErrorStateUI message="We couldn't load explanation data right now. Please try again." />;
   }
 
   const hasNoData = !explanation?.frontend_safe_explanation || explanation.frontend_safe_explanation.length === 0;
@@ -35,20 +29,17 @@ export default function RiskExplanationPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Why This Risk?</h1>
-        <p className="text-slate-500 mt-2 max-w-2xl">
-          See which recorded factors most influenced the model's current risk estimate.
-        </p>
-      </div>
+      <PageHeader
+        title="Why This Risk?"
+        description="See which recorded factors most influenced the model's current risk estimate."
+      />
 
       {hasNoData ? (
-        <div className="bg-card border rounded-xl shadow-sm p-12 text-center" data-testid="no-data-state">
-          <div className="flex justify-center mb-4">
-            <Brain className="h-12 w-12 text-slate-300" />
-          </div>
-          <h3 className="text-lg font-semibold text-slate-800">No explanation available.</h3>
-        </div>
+        <EmptyState
+          icon={Brain}
+          title="No explanation available."
+          description="There is not enough data to generate an explanation for this risk assessment."
+        />
       ) : (
         <div className="space-y-6" data-testid="explanation-container">
           
@@ -128,17 +119,18 @@ export default function RiskExplanationPage() {
             </div>
           </div>
 
-          <div className="bg-slate-50 border rounded-lg p-5">
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
             <h4 className="font-semibold text-slate-800 mb-2 flex items-center gap-2">
-              <Info className="h-5 w-5 text-slate-500" />
+              <Info className="h-5 w-5 text-slate-400" />
               Interpretation Note
             </h4>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 pl-7">
               {explanation.disclaimer || "These features influenced the model-predicted risk. They do not establish clinical causality."}
             </p>
           </div>
         </div>
       )}
+      <ResearchDisclaimer />
     </div>
   );
 }

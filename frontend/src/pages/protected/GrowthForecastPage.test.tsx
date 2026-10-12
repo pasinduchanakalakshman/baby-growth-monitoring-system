@@ -63,7 +63,7 @@ describe('GrowthForecastPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('error-state')).toBeTruthy();
     });
-    expect(screen.getByText(/Failed to load forecast data/i)).toBeTruthy();
+    expect(screen.getByText(/We couldn't load the forecast right now/i)).toBeTruthy();
   });
 
   it('shows no-data state if there are no measurements', async () => {
@@ -98,7 +98,7 @@ describe('GrowthForecastPage', () => {
     renderComponent();
     
     await waitFor(() => {
-      expect(screen.getByTestId('insufficient-history-state')).toBeTruthy();
+      expect(screen.getByTestId('unavailable-forecast-state')).toBeTruthy();
     });
     expect(screen.getByText(/Not enough data points/i)).toBeTruthy();
   });
@@ -128,19 +128,19 @@ describe('GrowthForecastPage', () => {
     });
     
     // Check heading wording
-    expect(screen.getByText(/30-Day Growth Forecast/i)).toBeTruthy();
+    expect(screen.getByText(/30-Day Forecast/i)).toBeTruthy();
     expect(screen.getByText(/See an estimated view/i)).toBeTruthy();
     
     // Check Current values
-    expect(screen.getByText('7.20')).toBeTruthy(); // weight
+    expect(screen.getByText('7.20 kg')).toBeTruthy(); // weight
     expect(screen.getByText('-0.52')).toBeTruthy(); // WAZ
     
     // Check Forecast values
-    expect(screen.getByText('+0.65 kg')).toBeTruthy(); // change
-    expect(screen.getByText('7.85')).toBeTruthy(); // future weight
+    expect(screen.getByText('Expected Weight Change: +0.65 kg')).toBeTruthy(); // change
+    expect(screen.getByText('7.85 kg')).toBeTruthy(); // future weight
     expect(screen.getByText('-0.65')).toBeTruthy(); // future WAZ
     
     // Check disclaimer
-    expect(screen.getByText(/research-based estimate/i)).toBeTruthy();
+    expect(screen.getByText(/Monitoring information/i)).toBeTruthy();
   });
 });

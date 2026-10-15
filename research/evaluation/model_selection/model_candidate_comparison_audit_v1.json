@@ -1,0 +1,265 @@
+{
+    "task": "Task 3.6A - Final Model Candidate Comparison Audit",
+    "verdict": "PASS",
+    "status": "CANDIDATE_AUDIT_COMPLETE",
+    "timestamp_utc": "2026-10-15T07:10:11.111193+00:00",
+    "cohort_invariants": {
+        "validation_rows": 1143,
+        "validation_children": 75,
+        "positive_events": 42,
+        "negative_events": 1101,
+        "positive_children": 24,
+        "prevalence_pct": 3.674540682414698,
+        "uncertain_negative_count": 46
+    },
+    "model_comparison_ranking": [
+        {
+            "model_name": "90/10 XGBoost + Transformer Hybrid",
+            "family": "Late-Fusion Score Blend",
+            "generation": "v1 Hybrid",
+            "feature_space_description": "Multimodal blend: 346 tabular features + 3D sequence tensor (20x49)",
+            "transformed_dimension": "346 Tabular + (20x49) Sequence",
+            "includes_date_of_birth": true,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "baseline_preprocessor_v1.joblib + sequence_preprocessor_metadata_v1.json",
+            "loss_weighting": "Blended scores (0.90 unweighted XGBoost + 0.10 class-weighted Transformer)",
+            "validation_pr_auc": 0.3097404186570704,
+            "validation_roc_auc": 0.8374421521560487,
+            "validation_brier_score": 0.03556016366763332,
+            "model_role": "Top-ranked hybrid candidate",
+            "artifact_paths": {
+                "tabular_model": "models/trained/baselines/v1/xgboost.joblib",
+                "sequence_model": "models/trained/transformer/v1/final_transformer_clean.keras",
+                "predictions_file": "research/evaluation/hybrid_experiments/v1/hybrid_validation_predictions_v1.csv"
+            }
+        },
+        {
+            "model_name": "Standard XGBoost (Frozen Baseline v1)",
+            "family": "Gradient Boosted Trees",
+            "generation": "v1 Tabular",
+            "feature_space_description": "Tabular v1: 35 numeric, 9 boolean, 4 categorical (including 293 date_of_birth one-hot columns)",
+            "transformed_dimension": 346,
+            "includes_date_of_birth": true,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "models/scalers/baseline_preprocessor_v1.joblib (fitted on train v1)",
+            "loss_weighting": "Unweighted (scale_pos_weight=1.0)",
+            "validation_pr_auc": 0.2909354719532945,
+            "validation_roc_auc": 0.8228017819298473,
+            "validation_brier_score": 0.03612744304855849,
+            "model_role": "Top-ranked standalone candidate (v1 tabular)",
+            "artifact_paths": {
+                "model": "models/trained/baselines/v1/xgboost.joblib",
+                "preprocessor": "models/scalers/baseline_preprocessor_v1.joblib",
+                "predictions_file": "research/evaluation/baseline_validation_predictions_v1.csv"
+            }
+        },
+        {
+            "model_name": "Random Forest (Standard v1)",
+            "family": "Bagged Decision Trees",
+            "generation": "v1 Tabular",
+            "feature_space_description": "Tabular v1: 35 numeric, 9 boolean, 4 categorical (including 293 date_of_birth one-hot columns)",
+            "transformed_dimension": 346,
+            "includes_date_of_birth": true,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "models/scalers/baseline_preprocessor_v1.joblib (fitted on train v1)",
+            "loss_weighting": "Unweighted (class_weight=None)",
+            "validation_pr_auc": 0.28099772740955853,
+            "validation_roc_auc": 0.852190649193374,
+            "validation_brier_score": 0.030628433945756785,
+            "model_role": "Strongest ROC-AUC and Brier score among v1 tree models",
+            "artifact_paths": {
+                "model": "models/trained/baselines/v1/random_forest_standard.joblib",
+                "preprocessor": "models/scalers/baseline_preprocessor_v1.joblib",
+                "predictions_file": "research/evaluation/baseline_validation_predictions_v1.csv"
+            }
+        },
+        {
+            "model_name": "XGBoost + WAZ Slope (Experiment C, v2)",
+            "family": "Gradient Boosted Trees",
+            "generation": "v2 Modernized Tabular",
+            "feature_space_description": "Tabular v2: Cleaned (date_of_birth removed) + waz_trajectory_slope_3v added",
+            "transformed_dimension": 54,
+            "includes_date_of_birth": false,
+            "includes_waz_trajectory_slope": true,
+            "preprocessing_pipeline": "models/scalers/v2/experiment_c_preprocessor_v2.joblib (fitted on train v2)",
+            "loss_weighting": "Unweighted (scale_pos_weight=1.0)",
+            "validation_pr_auc": 0.2714790049986777,
+            "validation_roc_auc": 0.8132001211020284,
+            "validation_brier_score": 0.03451136185028977,
+            "model_role": "Top-ranked modernized standalone candidate (clean feature space)",
+            "artifact_paths": {
+                "model": "models/trained/temporal_experiments/v2/xgboost_experiment_c_v2.joblib",
+                "preprocessor": "models/scalers/v2/experiment_c_preprocessor_v2.joblib",
+                "predictions_file": "research/evaluation/temporal_experiments/v2/validation_predictions_v2.csv"
+            }
+        },
+        {
+            "model_name": "Cleaned XGBoost Control B (v2)",
+            "family": "Gradient Boosted Trees",
+            "generation": "v2 Modernized Tabular",
+            "feature_space_description": "Tabular v2: Cleaned (date_of_birth removed; waz_trajectory_slope withheld)",
+            "transformed_dimension": 53,
+            "includes_date_of_birth": false,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "models/scalers/v2/control_b_preprocessor_v2.joblib (fitted on train v2)",
+            "loss_weighting": "Unweighted (scale_pos_weight=1.0)",
+            "validation_pr_auc": 0.2607595913477262,
+            "validation_roc_auc": 0.8095670602482592,
+            "validation_brier_score": 0.03518799034286118,
+            "model_role": "Methodological control isolating pipeline modernization from feature addition",
+            "artifact_paths": {
+                "model": "models/trained/temporal_experiments/v2/xgboost_control_b_v2.joblib",
+                "preprocessor": "models/scalers/v2/control_b_preprocessor_v2.joblib",
+                "predictions_file": "research/evaluation/temporal_experiments/v2/validation_predictions_v2.csv"
+            }
+        },
+        {
+            "model_name": "Clean Transformer Sequence Model (v1)",
+            "family": "Attention Neural Network",
+            "generation": "v1 Sequence",
+            "feature_space_description": "Longitudinal visit sequences (up to 20 visits x 49 features; birth statics excluded)",
+            "transformed_dimension": "20 x 49",
+            "includes_date_of_birth": false,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "models/metadata/sequence_preprocessor_metadata_v1.json (fitted on train v1)",
+            "loss_weighting": "Balanced class weighting ({0: 0.522, 1: 11.645})",
+            "validation_pr_auc": 0.18786134307703056,
+            "validation_roc_auc": 0.8075559015613512,
+            "validation_brier_score": 0.14108083785485617,
+            "model_role": "Top-ranked standalone sequence-aware model",
+            "artifact_paths": {
+                "model": "models/trained/transformer/v1/final_transformer_clean.keras",
+                "metadata": "models/metadata/final_sequence_model_v1.json",
+                "predictions_file": "research/evaluation/sequence_validation_predictions_v1.csv"
+            }
+        },
+        {
+            "model_name": "GRU Sequence Model (v1)",
+            "family": "Recurrent Neural Network",
+            "generation": "v1 Sequence",
+            "feature_space_description": "Longitudinal visit sequences (up to 20 visits x 49 features; birth statics excluded)",
+            "transformed_dimension": "20 x 49",
+            "includes_date_of_birth": false,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "models/metadata/sequence_preprocessor_metadata_v1.json (fitted on train v1)",
+            "loss_weighting": "Balanced class weighting ({0: 0.522, 1: 11.645})",
+            "validation_pr_auc": 0.18434270861937307,
+            "validation_roc_auc": 0.8304571601574327,
+            "validation_brier_score": 0.12106818445938163,
+            "model_role": "Second-ranked standalone sequence model (strong sequence ROC-AUC)",
+            "artifact_paths": {
+                "model": "models/trained/gru/v1/final_gru.keras",
+                "predictions_file": "research/evaluation/sequence_validation_predictions_v1.csv"
+            }
+        },
+        {
+            "model_name": "LSTM Sequence Model (v1)",
+            "family": "Recurrent Neural Network",
+            "generation": "v1 Sequence",
+            "feature_space_description": "Longitudinal visit sequences (up to 20 visits x 49 features; birth statics excluded)",
+            "transformed_dimension": "20 x 49",
+            "includes_date_of_birth": false,
+            "includes_waz_trajectory_slope": false,
+            "preprocessing_pipeline": "models/metadata/sequence_preprocessor_metadata_v1.json (fitted on train v1)",
+            "loss_weighting": "Balanced class weighting ({0: 0.522, 1: 11.645})",
+            "validation_pr_auc": 0.15879322227064938,
+            "validation_roc_auc": 0.7952510704554301,
+            "validation_brier_score": 0.1070634373115921,
+            "model_role": "Third-ranked standalone sequence model",
+            "artifact_paths": {
+                "model": "models/trained/lstm/v1/final_lstm.keras",
+                "predictions_file": "research/evaluation/sequence_validation_predictions_v1.csv"
+            }
+        }
+    ],
+    "strongest_candidates": {
+        "strongest_hybrid": {
+            "name": "90/10 XGBoost + Transformer Hybrid",
+            "pr_auc": 0.3097404186570704,
+            "delta_vs_standalone_xgboost": 0.018804946703775915
+        },
+        "strongest_standalone_v1": {
+            "name": "Standard XGBoost (Frozen Baseline v1)",
+            "pr_auc": 0.2909354719532945,
+            "note": "Includes 293 date_of_birth one-hot features."
+        },
+        "strongest_standalone_v2_clean": {
+            "name": "XGBoost + WAZ Slope (Experiment C, v2)",
+            "pr_auc": 0.2714790049986777,
+            "note": "Excludes date_of_birth; includes validated waz_trajectory_slope_3v."
+        }
+    },
+    "hybrid_operating_points": {
+        "recall_70_percent": {
+            "target": "Balanced Screening (Recall >= 70%)",
+            "cutoff_threshold": 0.064055,
+            "true_positives": 30,
+            "false_positives": 237,
+            "false_negatives": 12,
+            "true_negatives": 864,
+            "precision": 0.11236,
+            "recall": 0.714286,
+            "specificity": 0.784741,
+            "alert_rate_pct": 23.35958,
+            "alerts_generated": 267,
+            "children_detected": 21,
+            "children_total": 24,
+            "children_coverage_pct": 87.5,
+            "comparison_vs_xgboost": {
+                "false_positives_eliminated": 42,
+                "fp_reduction_pct": 15.05,
+                "alert_rate_drop_pct_points": 3.67,
+                "additional_children_detected": 1
+            }
+        },
+        "recall_80_percent": {
+            "target": "High-Sensitivity Screening (Recall >= 80%)",
+            "cutoff_threshold": 0.04744,
+            "true_positives": 34,
+            "false_positives": 345,
+            "false_negatives": 8,
+            "true_negatives": 756,
+            "precision": 0.08971,
+            "recall": 0.809524,
+            "specificity": 0.686649,
+            "alert_rate_pct": 33.158355,
+            "alerts_generated": 379,
+            "children_detected": 23,
+            "children_total": 24,
+            "children_coverage_pct": 95.83,
+            "comparison_vs_xgboost": {
+                "false_positives_eliminated": 73,
+                "fp_reduction_pct": 17.46,
+                "alert_rate_drop_pct_points": 6.39,
+                "additional_children_detected": 2
+            }
+        }
+    },
+    "deployment_and_generalization_assessment": {
+        "date_of_birth_encoding_concern": "Standard XGBoost v1 and Random Forest v1 include 293 one-hot dummy variables for date_of_birth. In deployment, future infants born on new calendar dates will produce all zeros across these 293 columns. While cohort memorization has NOT been conclusively proven, this raises a legitimate generalization and maintenance risk for clinical deployment. Experiment C resolves this by eliminating date_of_birth entirely.",
+        "exploratory_status_of_hybrid_and_thresholds": "The 90/10 fusion weight and the operating thresholds (0.0641, 0.0474) were selected based on validation data. These results are exploratory and do not constitute independent proof of superiority.",
+        "preserved_limitations": [
+            "46 validation observations had zero follow-up in (0, 180] days and were defaulted to negative.",
+            "Small positive sample size: only 42 events across 24 children in validation.",
+            "Dataset contains approximately 400 real clinic records and 100 synthetic child profiles with undocumented parameters."
+        ]
+    },
+    "pre_test_decisions_required": [
+        {
+            "decision_item": "Candidate Architecture Lock",
+            "recommendation": "Decide between: (1) 90/10 Hybrid (strongest overall validation discrimination [PR-AUC 0.3097], but requires two inference pipelines and includes date_of_birth in the tabular branch); (2) Standalone Standard XGBoost v1 (established baseline [PR-AUC 0.2909], but includes date_of_birth one-hot encoding); or (3) Cleaned XGBoost + WAZ Slope Experiment C (strongest clean standalone model [PR-AUC 0.2715], completely free of date_of_birth encoding)."
+        },
+        {
+            "decision_item": "Preprocessing Pipeline Freezing",
+            "recommendation": "Permanently freeze all feature encoders, median imputers, and standard scalers. Under no circumstances may preprocessors be re-fitted on the test split."
+        },
+        {
+            "decision_item": "Decision Threshold Freezing",
+            "recommendation": "Select and permanently freeze exact operating decision thresholds on validation data prior to unlocking test data. For screening, freeze the balanced cutoff (e.g., tau=0.0641 for ~70% recall) or high-sensitivity cutoff (e.g., tau=0.0474 for ~80% recall). Test split data must never be used to pick or adjust thresholds."
+        },
+        {
+            "decision_item": "Statistical Evaluation Protocol",
+            "recommendation": "Execute single-pass evaluation on held-out test data (N=1,167) using paired child-clustered bootstrap (resampling whole children across the 74 test children) to report final 95% confidence intervals."
+        }
+    ]
+}

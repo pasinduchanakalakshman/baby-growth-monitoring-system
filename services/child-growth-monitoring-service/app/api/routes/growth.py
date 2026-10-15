@@ -190,8 +190,10 @@ def get_overview(db: Session = Depends(get_db), current_user: User = Depends(get
         "available": r_out["risk_available"],
         "applicable": r_out.get("model_applicable"),
         "probability": r_out.get("risk_probability"),
+        "risk_score": r_out.get("risk_score"),
         "threshold": r_out.get("risk_threshold"),
         "flag": r_out.get("risk_flag"),
+        "screening_status": r_out.get("screening_status"),
         "horizon_days": r_out.get("prediction_horizon_days"),
         "reason": r_out.get("reason")
     }
@@ -257,11 +259,14 @@ def get_model_info():
     risk_meta = artifact_loader.get_risk_metadata()
     f_meta = artifact_loader.get_forecast_metadata()
     manifest = artifact_loader.get_hybrid_manifest()
+    threshold = artifact_loader.get_research_screening_threshold()
     return {
         "Risk": {
             "model": manifest.get("selected_architecture", "XGBoost + Transformer Late Fusion Hybrid"),
             "horizon_days": risk_meta.get("prediction_horizon_days", 180),
-            "threshold": risk_meta.get("threshold", 0.50),
+            "threshold": threshold,
+            "screening_status_elevated": "Elevated screening risk",
+            "screening_status_below": "Below screening threshold",
             "fusion": manifest.get("fusion_specification", {}).get("formula", "0.90 * XGBoost + 0.10 * Transformer")
         },
         "Forecast": {

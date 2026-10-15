@@ -139,13 +139,18 @@ class RiskService:
         if not np.isfinite(hybrid_score) or not (0.0 <= hybrid_score <= 1.0):
             raise ValueError(f"Hybrid score {hybrid_score} is not finite or outside [0, 1].")
 
-        threshold = meta.get("threshold", 0.50)
+        threshold = artifact_loader.get_research_screening_threshold()
+        is_elevated = bool(hybrid_score >= threshold)
+        screening_status = "Elevated screening risk" if is_elevated else "Below screening threshold"
 
         return {
             "risk_available": True,
             "risk_probability": hybrid_score,
+            "risk_score": hybrid_score,
             "risk_threshold": threshold,
-            "risk_flag": 1 if hybrid_score >= threshold else 0,
+            "risk_flag": 1 if is_elevated else 0,
+            "screening_status": screening_status,
+            "screening_threshold_note": "Research screening threshold only; not a clinical diagnosis.",
             "prediction_horizon_days": meta.get("prediction_horizon_days", 180),
             "model_version": meta.get("model_version", "v1"),
             "model_type": manifest.get("selected_architecture", "XGBoost + Transformer Late Fusion Hybrid"),

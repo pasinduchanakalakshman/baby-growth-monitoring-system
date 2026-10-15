@@ -74,6 +74,6 @@ describe('RiskHistoryPage', () => {
       expect(screen.getByTestId('trajectory-chart-container')).toBeTruthy();
     });
 
-    expect(screen.getByText(/Each point represents the model's estimated risk at the time of a/i)).toBeTruthy();
+    expect(screen.getByText(/Each point represents the experimental 180-day risk score at the time of a/i)).toBeTruthy();
   });
 });

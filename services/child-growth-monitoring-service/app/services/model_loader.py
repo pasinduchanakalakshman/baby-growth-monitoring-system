@@ -193,6 +193,21 @@ class ArtifactLoader:
                 raise RuntimeError(f"Failed to load Clean Transformer model: {str(e)}") from e
         return self._cache["transformer_model"]
 
+    def get_locked_evaluation_policy(self) -> Dict[str, Any]:
+        if "locked_evaluation_policy" not in self._cache:
+            self._cache["locked_evaluation_policy"] = self._load_json("models/metadata/locked_evaluation_policy_v1.json")
+        return self._cache["locked_evaluation_policy"]
+
+    def get_research_screening_threshold(self) -> float:
+        try:
+            policy = self.get_locked_evaluation_policy()
+            val = policy.get("locked_decision_threshold", {}).get("threshold_value")
+            if val is not None:
+                return float(val)
+        except Exception:
+            pass
+        return 0.06405469514
+
     def clear_cache(self):
         self._cache = {}
 

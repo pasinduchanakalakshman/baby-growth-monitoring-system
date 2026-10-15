@@ -31,7 +31,7 @@ export default function RiskExplanationPage() {
     <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24 space-y-6">
       <PageHeader
         title="Why This Risk?"
-        description="See which recorded factors most influenced the model's current risk estimate."
+        description="See which recorded factors most influenced the model's current 180-day growth-faltering risk score."
       />
 
       {hasNoData ? (
@@ -48,7 +48,7 @@ export default function RiskExplanationPage() {
             <div className="bg-white border rounded-xl shadow-sm p-6">
               <h3 className="text-sm font-semibold text-amber-600 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
-                Factors increasing predicted risk
+                Factors increasing predicted risk score
               </h3>
               
               {increasingFactors.length > 0 ? (
@@ -63,7 +63,7 @@ export default function RiskExplanationPage() {
                             #{factor.importance_rank}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-600 mt-1">This factor increased the model-predicted risk.</p>
+                        <p className="text-sm text-slate-600 mt-1">This factor increased the model-predicted risk score.</p>
                         {techVal && (
                           <div className="mt-3 pt-3 border-t border-amber-200/50 flex justify-between text-sm">
                             <span className="text-slate-500">Recorded Value</span>
@@ -85,7 +85,7 @@ export default function RiskExplanationPage() {
             <div className="bg-white border rounded-xl shadow-sm p-6">
               <h3 className="text-sm font-semibold text-green-600 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <TrendingDown className="h-4 w-4" />
-                Factors reducing predicted risk
+                Factors reducing predicted risk score
               </h3>
               
               {decreasingFactors.length > 0 ? (
@@ -100,7 +100,7 @@ export default function RiskExplanationPage() {
                             #{factor.importance_rank}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-600 mt-1">This factor reduced the model-predicted risk.</p>
+                        <p className="text-sm text-slate-600 mt-1">This factor reduced the model-predicted risk score.</p>
                         {techVal && (
                           <div className="mt-3 pt-3 border-t border-green-200/50 flex justify-between text-sm">
                             <span className="text-slate-500">Recorded Value</span>
@@ -125,7 +125,7 @@ export default function RiskExplanationPage() {
               Interpretation Note
             </h4>
             <p className="text-sm text-slate-600 pl-7">
-              {explanation.disclaimer || "These features influenced the model-predicted risk. They do not establish clinical causality."}
+              {explanation.disclaimer || "This is an experimental AI screening score, not a medical diagnosis or an exact probability. These features influenced the model-predicted risk score and do not establish clinical causality."}
             </p>
           </div>
         </div>

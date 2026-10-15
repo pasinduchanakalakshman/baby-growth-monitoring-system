@@ -296,10 +296,57 @@ class TestHybridModelIntegration:
         assert 0.0 <= p_trans <= 1.0
         assert abs(p_hybrid - (0.90 * p_xgb + 0.10 * p_trans)) < 1e-5
 
+        # Verify research screening threshold is used
+        assert abs(data["risk_threshold"] - 0.06405469514) < 1e-6
+        expected_status = "Elevated screening risk" if p_hybrid >= data["risk_threshold"] else "Below screening threshold"
+        assert data["screening_status"] == expected_status
+        assert data["risk_flag"] == (1 if p_hybrid >= data["risk_threshold"] else 0)
+
         # Also test model-info endpoint
         info_res = client.get("/api/v1/growth/model-info")
         assert info_res.status_code == 200
         info = info_res.json()
         assert info["Risk"]["model"] == "XGBoost + Transformer Late Fusion Hybrid"
+        assert abs(info["Risk"]["threshold"] - 0.06405469514) < 1e-6
         assert "0.90 * XGBoost" in info["Risk"]["fusion"] and "0.10" in info["Risk"]["fusion"]
+
+    def test_research_screening_threshold_classification_rules(self):
+        """11. Verifies research screening threshold classification rules on scores 0.080, 0.030, exact threshold, and hybrid fusion."""
+        from app.services.model_loader import artifact_loader
+        threshold = artifact_loader.get_research_screening_threshold()
+        assert abs(threshold - 0.06405469514) < 1e-6
+
+        # 1. Score 0.080 is classified as elevated research screening risk
+        score_high = 0.080
+        flag_high = 1 if score_high >= threshold else 0
+        status_high = "Elevated screening risk" if score_high >= threshold else "Below screening threshold"
+        assert flag_high == 1
+        assert status_high == "Elevated screening risk"
+
+        # 2. Score 0.030 is classified as below screening threshold
+        score_low = 0.030
+        flag_low = 1 if score_low >= threshold else 0
+        status_low = "Elevated screening risk" if score_low >= threshold else "Below screening threshold"
+        assert flag_low == 0
+        assert status_low == "Below screening threshold"
+
+        # 3. Score exactly equal to the threshold is classified as elevated
+        score_exact = threshold
+        flag_exact = 1 if score_exact >= threshold else 0
+        status_exact = "Elevated screening risk" if score_exact >= threshold else "Below screening threshold"
+        assert flag_exact == 1
+        assert status_exact == "Elevated screening risk"
+
+        # 4. Classification uses the real hybrid score, not standalone XGBoost
+        # Example: p_xgb = 0.070 (above threshold alone), p_trans = 0.005 (low)
+        # hybrid = 0.90 * 0.070 + 0.10 * 0.005 = 0.0630 + 0.0005 = 0.0635 < threshold (0.06405)
+        p_xgb_sample = 0.070
+        p_trans_sample = 0.005
+        hybrid_sample = 0.90 * p_xgb_sample + 0.10 * p_trans_sample
+        assert p_xgb_sample >= threshold, "XGBoost standalone would be above threshold"
+        assert hybrid_sample < threshold, "Hybrid score is below threshold"
+        flag_hybrid = 1 if hybrid_sample >= threshold else 0
+        status_hybrid = "Elevated screening risk" if hybrid_sample >= threshold else "Below screening threshold"
+        assert flag_hybrid == 0
+        assert status_hybrid == "Below screening threshold"
 

@@ -1,0 +1,282 @@
+{
+  "audit_version": "v1.0.0",
+  "project_name": "Baby-growth-monitoring-system",
+  "audit_date": "2026-10-15",
+  "overall_verdict": "PARTIALLY WORKING / P0 BLOCKERS DETECTED",
+  "summary": {
+    "total_frontend_features_audited": 14,
+    "working_end_to_end": 7,
+    "partially_working": 4,
+    "missing": 1,
+    "frontend_only": 2,
+    "backend_ai_hybrid_status": "DISCONNECTED (XGBoost baseline only loaded; Clean Transformer and 90/10 fusion missing from backend)",
+    "forecasting_status": "WORKING END TO END (Linear regression + inverse WHO LMS)",
+    "xai_status": "PARTIALLY WORKING (TreeExplainer on XGBoost only; Transformer unrepresented)",
+    "nutrition_status": "MISSING (Folder empty, no API routes, no frontend UI)",
+    "docker_status": "NEEDS FIXES (Missing keras/tensorflow dependency in child service requirements; Vite dev host proxy differences)"
+  },
+  "component_status": {
+    "frontend": {
+      "framework": "React 19 + TypeScript + Vite",
+      "styling": "Tailwind CSS v4 + Radix UI",
+      "state_management": "TanStack React Query v5",
+      "routing": "React Router v7",
+      "visual_polish": "High (clean medical-grade theme, responsive sidebar/bottom nav, empty/loading states, disclaimer banners)"
+    },
+    "backend": {
+      "framework": "FastAPI + SQLAlchemy + Pydantic v2",
+      "services": [
+        "child-growth-monitoring-service",
+        "gateway"
+      ],
+      "database_orm": "SQLAlchemy with PostgreSQL (Supabase pooler) or SQLite",
+      "auth_mechanism": "JWT stored in HTTP-only Lax Cookie"
+    },
+    "ai_models": {
+      "selected_hybrid": {
+        "formula": "Hybrid_Score = 0.90 * XGBoost + 0.10 * Clean_Transformer",
+        "status_in_research": "FROZEN AND VERIFIED (Task 3.9A and Task 3.9B PASS)",
+        "status_in_backend": "NOT INTEGRATED (Backend only loads models/trained/baselines/v1/xgboost.joblib)",
+        "task_3_9b_status": "PASS (Locked Evaluation Policy verified on disk)",
+        "task_3_9c_status": "NOT RUN (Held-out test split preserved without evaluation)"
+      },
+      "forecasting": {
+        "model_type": "Ridge / Linear Regression (final_model_v1.joblib)",
+        "target": "target_verified_waz at 25-35 days follow-up",
+        "conversion": "Inverse WHO LMS Equations to weight (kg)",
+        "status_in_backend": "WORKING END TO END"
+      },
+      "xai": {
+        "method": "SHAP TreeExplainer on XGBoost",
+        "status_in_backend": "WORKING FOR XGBOOST ONLY (Zero Transformer sequence attribution)"
+      }
+    }
+  },
+  "feature_matrix": [
+    {
+      "id": 1,
+      "feature": "User registration and login",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/pages/public/RegisterPage.tsx",
+        "frontend/src/pages/public/LoginPage.tsx",
+        "frontend/src/auth/AuthProvider.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/api/routes/auth.py",
+        "services/child-growth-monitoring-service/app/core/security.py"
+      ],
+      "notes": "Full JWT HTTP-only cookie authentication cycle functioning."
+    },
+    {
+      "id": 2,
+      "feature": "User profile management",
+      "status": "PARTIALLY WORKING",
+      "frontend_files": [
+        "frontend/src/pages/protected/AccountPage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/api/routes/auth.py"
+      ],
+      "notes": "Displays current mother details. Edit button is hardcoded disabled with 'Edit Profile (Stage 16B)'. Backend has GET /me but lacks update endpoint."
+    },
+    {
+      "id": 3,
+      "feature": "Adding a child",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/pages/protected/BabyRegistrationPage.tsx",
+        "frontend/src/api/baby.ts"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/api/routes/baby.py",
+        "services/child-growth-monitoring-service/app/models/baby.py"
+      ],
+      "notes": "Onboarding redirects users without a baby to register. Enforces 1 baby per user in prototype."
+    },
+    {
+      "id": 4,
+      "feature": "Editing and viewing child information",
+      "status": "PARTIALLY WORKING",
+      "frontend_files": [
+        "frontend/src/pages/protected/BabyProfilePage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/api/routes/baby.py"
+      ],
+      "notes": "Viewing birth parameters and calculated age works. Edit button is hardcoded disabled with 'Edit Profile (Stage 16C)' despite backend PUT /api/v1/baby/profile existing."
+    },
+    {
+      "id": 5,
+      "feature": "Recording weight and height measurements",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/pages/protected/AddMeasurementPage.tsx",
+        "frontend/src/api/growth.ts"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/api/routes/growth.py",
+        "services/child-growth-monitoring-service/app/services/who_service.py"
+      ],
+      "notes": "Saves weight, height, feeding, illness. WHO LMS Z-scores calculated dynamically on submission."
+    },
+    {
+      "id": 6,
+      "feature": "Viewing previous clinic visits",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/pages/protected/HistoryPage.tsx",
+        "frontend/src/api/growth.ts"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/api/routes/growth.py"
+      ],
+      "notes": "List rendered chronologically in reverse with badges for feeding and illness."
+    },
+    {
+      "id": 7,
+      "feature": "WHO-based growth calculations and growth charts",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/features/growth/components/GrowthCharts.tsx",
+        "frontend/src/pages/protected/GrowthChartsPage.tsx",
+        "frontend/src/pages/protected/GrowthOverviewPage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/services/who_service.py"
+      ],
+      "notes": "Recharts rendering Weight, Height, WAZ, HAZ with WHO -2 and -3 threshold reference lines. No interpolation across missing visits."
+    },
+    {
+      "id": 8,
+      "feature": "30-day weight forecasting",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/pages/protected/GrowthForecastPage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/services/forecast_service.py"
+      ],
+      "notes": "Uses genuine trained Linear model on 25-35 day visits to predict WAZ, inverted to kg via WHO LMS."
+    },
+    {
+      "id": 9,
+      "feature": "180-day growth-faltering risk assessment",
+      "status": "PARTIALLY WORKING",
+      "frontend_files": [
+        "frontend/src/pages/protected/RiskLatestPage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/services/risk_service.py"
+      ],
+      "notes": "Only evaluates XGBoost (Transformer missing). Backend uses threshold 0.50 instead of locked 0.064055. Frontend presents uncalibrated score as percentage."
+    },
+    {
+      "id": 10,
+      "feature": "\"Why This Risk?\" AI explanations",
+      "status": "PARTIALLY WORKING",
+      "frontend_files": [
+        "frontend/src/pages/protected/RiskExplanationPage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/services/xai_service.py"
+      ],
+      "notes": "Uses SHAP TreeExplainer on XGBoost branch only. Returns top 3 positive and negative contributors. Sequence branch has no explanation."
+    },
+    {
+      "id": 11,
+      "feature": "Personalized Sri Lankan nutrition recommendations",
+      "status": "MISSING",
+      "frontend_files": [],
+      "backend_files": [
+        "services/child-growth-monitoring-service/nutrition"
+      ],
+      "notes": "Nutrition folder is completely empty. No routes, schemas, models, or frontend UI."
+    },
+    {
+      "id": 12,
+      "feature": "Follow-up monitoring and previous assessments",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/pages/protected/RiskHistoryPage.tsx"
+      ],
+      "backend_files": [
+        "services/child-growth-monitoring-service/app/services/dynamic_risk_service.py"
+      ],
+      "notes": "Dynamic risk trajectory plots point-in-time model risk at each genuine visit."
+    },
+    {
+      "id": 13,
+      "feature": "Mobile responsiveness",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/components/layout/AppShell.tsx"
+      ],
+      "backend_files": [],
+      "notes": "Responsive sidebar, mobile header sheet drawer, and mobile bottom navigation bar."
+    },
+    {
+      "id": 14,
+      "feature": "Loading states, validation and error messages",
+      "status": "WORKING END TO END",
+      "frontend_files": [
+        "frontend/src/components/ui/shared/LoadingState.tsx",
+        "frontend/src/components/ui/shared/ErrorStateUI.tsx",
+        "frontend/src/components/ui/shared/EmptyState.tsx"
+      ],
+      "backend_files": [],
+      "notes": "Clean UI feedback states for empty data, network errors, loading spinners, and validation alerts."
+    }
+  ],
+  "critical_bugs_and_inconsistencies": [
+    {
+      "id": "BUG-01",
+      "severity": "P0 - Critical",
+      "component": "Backend ML Integration (growth.py & risk_service.py)",
+      "description": "Column name mismatch between growth history dictionary and preprocessor schema causes all mother-entered feeding (breastfeeding, formula, solids) and illness symptoms (diarrhea, fever, cough) as well as child demographics (DOB, gestational age, birth length, delivery type, APGAR) to be silently dropped and replaced with median/zero imputation.",
+      "evidence": "growth.py format_history_for_ml uses 'currently_breastfeeding', 'solid_foods_started', 'diarrhea_last_14_days' whereas baseline_feature_metadata_v1.json expects 'breastfeeding_status', 'complementary_feeding_started', 'diarrhea_recent'."
+    },
+    {
+      "id": "BUG-02",
+      "severity": "P0 - Critical",
+      "component": "Backend Model Loading (model_loader.py & risk_service.py)",
+      "description": "Selected research architecture (90% XGBoost + 10% Clean Transformer) is not implemented in production service. Backend only loads and executes XGBoost.",
+      "evidence": "model_loader.py has get_risk_model() loading xgboost.joblib. No loader for final_transformer_clean.keras or sequence_preprocessor_v1.joblib exists."
+    },
+    {
+      "id": "BUG-03",
+      "severity": "P0 - Critical",
+      "component": "Docker Environment (requirements.txt)",
+      "description": "services/child-growth-monitoring-service/requirements.txt lacks tensorflow or keras. If Clean Transformer loading code is executed in Docker, it will throw ModuleNotFoundError.",
+      "evidence": "child-growth-monitoring-service/requirements.txt only lists xgboost, shap, scikit-learn, joblib."
+    },
+    {
+      "id": "BUG-04",
+      "severity": "P0 - Critical",
+      "component": "Frontend User Experience (Dashboard.tsx)",
+      "description": "Main landing dashboard (/app) has disabled buttons for 'Growth Monitoring' and 'Add Measurement' with placeholder text 'Available in Stage 16C', blocking users from accessing existing features through the main dashboard cards.",
+      "evidence": "frontend/src/pages/protected/Dashboard.tsx lines 53-55 and 70-72."
+    },
+    {
+      "id": "BUG-05",
+      "severity": "P1 - High",
+      "component": "Clinical Risk Communication (RiskLatestPage.tsx & risk_service.py)",
+      "description": "Risk score is displayed as an uncalibrated probability percentage (e.g. 23%) despite explicit manifest warnings that scores are ordinal ranking indices. In addition, backend uses arbitrary threshold 0.50 instead of locked research threshold 0.064055.",
+      "evidence": "RiskLatestPage.tsx line 98 renderProbability(prob) => (prob * 100).toFixed(0)% and risk_service.py line 63 threshold = 0.50."
+    }
+  ],
+  "single_most_important_next_task": {
+    "task_id": "TASK-NEXT-01",
+    "name": "Implement Full 90/10 Hybrid Prediction Pipeline & Align Feature Schema in Backend",
+    "priority": "P0",
+    "complexity": "Medium",
+    "acceptance_criteria": [
+      "Add keras/tensorflow-cpu to services/child-growth-monitoring-service/requirements.txt",
+      "Update format_history_for_ml in growth.py to correctly map feeding, illness, and demographic fields to schema names",
+      "Add Clean Transformer and sequence preprocessor loading to model_loader.py",
+      "Build (1, 20, 49) left-padded sequence tensor in risk service using past visits",
+      "Implement fusion formula: hybrid_score = 0.90 * xgb_score + 0.10 * trans_score",
+      "Update operating threshold to locked research value tau = 0.064055"
+    ]
+  }
+}

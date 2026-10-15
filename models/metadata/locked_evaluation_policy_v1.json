@@ -1,0 +1,122 @@
+{
+    "policy_name": "Final Held-Out Evaluation Policy v1",
+    "timestamp_utc": "2026-10-15T08:42:03.507912+00:00",
+    "selected_model": {
+        "name": "XGBoost + Clean Transformer Late Fusion Hybrid",
+        "tabular_branch": "Standard XGBoost v1 (models/trained/baselines/v1/xgboost.joblib)",
+        "sequence_branch": "Clean Transformer v1 (models/trained/transformer/v1/final_transformer_clean.keras)",
+        "fusion_formula": "hybrid_score = 0.90 * xgboost_score + 0.10 * transformer_score",
+        "target": "future_growth_faltering_180d"
+    },
+    "evaluation_metrics": {
+        "primary_metric": {
+            "name": "PR-AUC",
+            "function": "sklearn.metrics.average_precision_score",
+            "rationale": "Recommended primary metric for highly imbalanced medical screening cohorts (~3.7-4.3% prevalence)."
+        },
+        "secondary_metrics": [
+            {
+                "name": "ROC-AUC",
+                "function": "sklearn.metrics.roc_auc_score"
+            },
+            {
+                "name": "Accuracy",
+                "function": "sklearn.metrics.accuracy_score"
+            },
+            {
+                "name": "Precision",
+                "function": "sklearn.metrics.precision_score"
+            },
+            {
+                "name": "Recall (Sensitivity)",
+                "function": "sklearn.metrics.recall_score"
+            },
+            {
+                "name": "F1-Score",
+                "function": "sklearn.metrics.f1_score"
+            },
+            {
+                "name": "Specificity",
+                "function": "TN / (TN + FP)"
+            },
+            {
+                "name": "Brier Score",
+                "function": "sklearn.metrics.brier_score_loss"
+            },
+            {
+                "name": "Confusion Matrix",
+                "function": "sklearn.metrics.confusion_matrix (TN, FP, FN, TP)"
+            },
+            {
+                "name": "Clinic Alert Rate",
+                "function": "(TP + FP) / Total Visits"
+            },
+            {
+                "name": "Unique Positive Children Detected",
+                "function": "Distinct positive children with at least one true positive visit alert"
+            }
+        ]
+    },
+    "locked_decision_threshold": {
+        "threshold_value": 0.06405469514,
+        "threshold_role": "Exploratory Research Alert Threshold (Balanced Screening Target)",
+        "is_clinically_approved": false,
+        "warning": "This is strictly an exploratory research operating threshold derived from the validation cohort. It is NOT an approved clinical alert threshold and must not be used for medical decisions.",
+        "validation_performance_at_threshold": {
+            "cohort_size": 1143,
+            "positive_events": 42,
+            "tp": 30,
+            "fp": 237,
+            "fn": 12,
+            "tn": 864,
+            "recall": 0.7142857142857143,
+            "precision": 0.11235955056179775,
+            "specificity": 0.7847411444141689,
+            "f1_score": 0.1941747572815534,
+            "alert_rate_pct": 23.359579999999998,
+            "children_detected": 21,
+            "children_total": 24,
+            "children_coverage_pct": 87.5
+        }
+    },
+    "statistical_inference_policy": {
+        "method": "Paired Child-Clustered Bootstrap",
+        "n_resamples": 2000,
+        "resampling_unit": "whole children (child_id clusters)",
+        "confidence_level": 0.95,
+        "percentile_interval": [
+            2.5,
+            97.5
+        ],
+        "random_seed": 42
+    },
+    "documented_limitations": [
+        {
+            "issue": "date_of_birth one-hot encoding",
+            "detail": "293 sparse columns in the tabular branch represent exact calendar dates (2018-2022). Unseen birth dates evaluate to all zeros."
+        },
+        {
+            "issue": "Uncalibrated risk scores",
+            "detail": "Hybrid scores blend unweighted XGBoost and 22:1 class-weighted Transformer scores. Blended values are ranking indices, not true clinical probabilities."
+        },
+        {
+            "issue": "Uncertain-negative outcome labels",
+            "detail": "Visits without follow-up encounters in (0, 180] days were defaulted to 0 (interval-censored)."
+        },
+        {
+            "issue": "Unknown real vs. synthetic child provenance",
+            "detail": "Dataset combines ~400 real clinic records and ~100 synthetic profiles whose exact parameters are undocumented."
+        },
+        {
+            "issue": "Small positive outcome sample size",
+            "detail": "Validation contains 42 positive events (24 children); test contains 50 positive events. Small positive counts widen bootstrap confidence intervals."
+        }
+    ],
+    "execution_rules": {
+        "single_pass_only": true,
+        "no_hyperparameter_tuning": true,
+        "no_threshold_adaptation": true,
+        "no_weight_search": true,
+        "disclose_prior_access": "An earlier baseline reproduction was performed in Stage 10; disclosed transparently."
+    }
+}

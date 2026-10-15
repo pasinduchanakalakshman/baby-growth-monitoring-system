@@ -1,0 +1,190 @@
+{
+    "manifest_version": "v1.0.0",
+    "timestamp_utc": "2026-10-15T08:34:39.821565+00:00",
+    "selected_architecture": "XGBoost + Transformer Late Fusion Hybrid",
+    "fusion_specification": {
+        "formula": "Hybrid_Score = 0.90 * XGBoost_Probability + 0.10 * Clean_Transformer_Probability",
+        "alpha_xgboost": 0.9,
+        "weight_transformer": 0.1,
+        "selection_evidence": "Task 3.5B grid sweep over alpha in {0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}",
+        "validation_pr_auc": 0.3097404186570704,
+        "validation_roc_auc": 0.8374421521560487,
+        "validation_brier_score": 0.03556016366763332
+    },
+    "target_specification": {
+        "target_variable": "future_growth_faltering_180d",
+        "clinical_definition": "Growth faltering occurring within (0, 180] days following the index visit, defined as either: (1) Crossing a WHO growth faltering threshold (WAZ < -2.00 or WAZ < -3.00), or (2) An acute weight-for-age z-score drop of >= 0.50 standard deviations within 180 days.",
+        "censoring_rule": "Visits with zero follow-up encounters in (0, 180] days were defaulted to 0 (negative). Task 3.5C confirmed the hybrid's advantage is stable when these 46 visits are excluded."
+    },
+    "artifact_lineage": {
+        "tabular_model": {
+            "filepath": "models/trained/baselines/v1/xgboost.joblib",
+            "type": "XGBClassifier (Joblib)",
+            "size_bytes": 198210,
+            "sha256": "833632a4da7eb9a2791949bb54ca6081751428450f55626693050fe0d2410d85"
+        },
+        "tabular_preprocessor": {
+            "filepath": "models/scalers/baseline_preprocessor_v1.joblib",
+            "type": "ColumnTransformer (Joblib)",
+            "size_bytes": 12977,
+            "sha256": "a41cd422c14f1d806a1c78ccdcda9698d924cbdb9d9ccbe45b680228dc24a561"
+        },
+        "tabular_feature_schema": {
+            "filepath": "data/schemas/supervised_180d_feature_schema_v1.json",
+            "type": "JSON Feature Schema",
+            "size_bytes": 2010,
+            "sha256": "50229a2d17f6296eef4f447cfd5bd0680072b26efaea84e890025b796ed08632"
+        },
+        "sequence_model": {
+            "filepath": "models/trained/transformer/v1/final_transformer_clean.keras",
+            "type": "Keras Model (HDF5/Keras)",
+            "size_bytes": 136726,
+            "sha256": "ac5ed65a88e8889d4fae098ec790752b8bc12737ce125e29c095de354522165f"
+        },
+        "sequence_preprocessor_metadata": {
+            "filepath": "models/metadata/sequence_preprocessor_metadata_v1.json",
+            "type": "JSON Preprocessor Metadata",
+            "size_bytes": 1539,
+            "sha256": "f24c55e69b21451fccff1bb7f63c0691d15fdd58f8b9cbb9ca7d3046fe1aa91c"
+        },
+        "sequence_feature_schema": {
+            "filepath": "data/schemas/sequence_feature_schema_v1.json",
+            "type": "JSON Sequence Feature Schema",
+            "size_bytes": 3499,
+            "sha256": "94c1470810a885195d2294020fbc8e39ae2bfcc7d279da61d753c6ea36997dbe"
+        },
+        "sequence_model_metadata": {
+            "filepath": "models/metadata/final_sequence_model_v1.json",
+            "type": "JSON Model Metadata",
+            "size_bytes": 2505,
+            "sha256": "d32498ba3b3a219372fa95be7767753783f8d3536c98e613cabf2bce94b41f31"
+        },
+        "validation_predictions_baseline": {
+            "filepath": "research/evaluation/baseline_validation_predictions_v1.csv",
+            "type": "CSV Predictions",
+            "size_bytes": 131797,
+            "sha256": "38a328510a2e6073c47c2ef12bc45f200e1e40ddf0531a4b78e829e602d98596"
+        },
+        "validation_predictions_hybrid": {
+            "filepath": "research/evaluation/hybrid_experiments/v1/hybrid_validation_predictions_v1.csv",
+            "type": "CSV Hybrid Predictions",
+            "size_bytes": 179594,
+            "sha256": "def859e59365a0ee09189739bad7cb742d16d5dfd968624f372d58f1a4675f01"
+        }
+    },
+    "tabular_pipeline_specification": {
+        "preprocessor": "models/scalers/baseline_preprocessor_v1.joblib",
+        "raw_feature_count": 48,
+        "transformed_feature_count": 346,
+        "numeric_features": [
+            "birth_weight_kg",
+            "birth_length_cm",
+            "gestational_age_weeks",
+            "birth_order",
+            "apgar_score_5min",
+            "age_days",
+            "weight_kg",
+            "length_height_cm",
+            "breastfeeding_frequency_per_day",
+            "formula_feeds_per_day",
+            "complementary_feeding_start_age_months",
+            "meals_per_day",
+            "food_groups_consumed",
+            "illness_duration_days",
+            "verified_waz",
+            "verified_haz",
+            "observation_count",
+            "days_since_previous_visit",
+            "weight_change_kg",
+            "waz_change",
+            "weight_velocity_kg_per_day",
+            "weight_velocity_kg_per_30d",
+            "waz_velocity_per_day",
+            "waz_velocity_per_30d",
+            "last_observed_height_cm",
+            "last_observed_haz",
+            "days_since_last_height_measurement",
+            "height_change_cm",
+            "haz_change",
+            "height_velocity_cm_per_day",
+            "height_velocity_cm_per_30d",
+            "haz_velocity_per_day",
+            "haz_velocity_per_30d",
+            "waz_rolling_mean_3",
+            "weight_rolling_mean_3"
+        ],
+        "boolean_features": [
+            "breastfeeding_status",
+            "formula_feeding",
+            "complementary_feeding_started",
+            "supplement_use",
+            "recent_illness",
+            "diarrhea_recent",
+            "fever_recent",
+            "respiratory_illness_recent",
+            "height_measurement_available"
+        ],
+        "categorical_features": [
+            "sex",
+            "date_of_birth",
+            "delivery_type",
+            "supplement_type"
+        ],
+        "onehot_handle_unknown": "ignore",
+        "date_of_birth_handling": {
+            "column_name": "date_of_birth",
+            "one_hot_column_count": 293,
+            "encoder_behavior_on_unseen": "The OneHotEncoder was fitted with handle_unknown='ignore'. When an infant with an unseen calendar birth date (any date outside 2018-2022) is evaluated at inference, all 293 one-hot columns evaluate to 0.0 without throwing a runtime error.",
+            "deployment_limitation": "In future clinical deployments, newly born infants will yield all zeros across 84.7% of the model's transformed feature inputs (293 out of 346 columns). While the model continues to function using age_days and clinical measurements, these 293 columns represent historical cohort markers that cannot distinguish between future birth dates. This represents a significant architectural generalization risk.",
+            "freezing_policy": "FROZEN AS VERIFIED. In accordance with Task 3.9A rules, no retuning or pipeline modification is performed."
+        }
+    },
+    "sequence_pipeline_specification": {
+        "input_shape": [
+            20,
+            49
+        ],
+        "max_sequence_length": 20,
+        "transformed_features_per_timestep": 49,
+        "mask_value": -999.0,
+        "padding_direction": "left",
+        "padding_policy": "left_pad_with_mask_value",
+        "mask_convention": "True = valid timestep, False = padding (-999.0)",
+        "static_features_status": "Birth and demographic statics (sex, birth weight, delivery type, DOB) excluded from 3D tensor"
+    },
+    "point_in_time_safety": {
+        "tabular_branch": "Verified. Input features include current encounter measurements and strictly historical rolling summaries (e.g., waz_rolling_mean_3, weight_velocity_kg_per_30d). No future visits or target fields enter the input matrix.",
+        "sequence_branch": "Verified. Sequence tensor contains up to 20 historical encounters strictly occurring at or prior to the index encounter date (t <= index_visit_date). Visits are sorted chronologically; encounters strictly following the index date are never included in the tensor."
+    },
+    "calibration_status": {
+        "status": "NOT ESTABLISHED AS CLINICALLY CALIBRATED PROBABILITIES",
+        "details": "The hybrid score is a linear blend between unweighted XGBoost (calibrated near empirical prevalence ~0.037) and class-weighted Transformer (trained with ~22:1 positive weighting, shifting raw scores to mean ~0.24). The blended scores serve as a highly effective risk-ranking index for triage, but cannot be interpreted as true posterior event probabilities without post-hoc calibration (e.g., Platt scaling or isotonic regression)."
+    },
+    "threshold_status": {
+        "status": "THRESHOLD NOT YET LOCKED",
+        "rationale": "No clinical alert threshold has been formally approved or locked for clinical deployment. The illustrative threshold 0.50, the balanced screening threshold 0.064055 (~70% recall), and the high-sensitivity screening threshold 0.047440 (~80% recall) were derived post-hoc on the validation dataset and serve strictly as exploratory operating benchmarks.",
+        "recommendation": "Before held-out test evaluation, clinical stakeholders must decide whether to evaluate a fixed screening cutoff (e.g., tau = 0.064055) or evaluate threshold-free ranking metrics (PR-AUC, ROC-AUC)."
+    },
+    "unresolved_pre_test_requirements": [
+        {
+            "item": "Operational Decision Alert Threshold Lock",
+            "status": "UNRESOLVED / PENDING STAKEHOLDER APPROVAL",
+            "action_required": "Formally lock either tau = 0.064055 (balanced screening) or tau = 0.047440 (high-sensitivity), or commit to pure threshold-free evaluation."
+        },
+        {
+            "item": "Probability Calibration Layer Decision",
+            "status": "DOCUMENTED AS ORDINAL RANKING INDEX",
+            "action_required": "Stakeholders must decide if raw risk scores are acceptable for clinical ranking or if a post-hoc calibration layer is required for risk communication."
+        },
+        {
+            "item": "Acceptance of date_of_birth Generalization Risk",
+            "status": "FLAGGED AND DOCUMENTED",
+            "action_required": "Research team must accept that 293 date_of_birth columns will evaluate to zero for future infants in deployment."
+        },
+        {
+            "item": "Single-Pass Held-Out Test Execution Commitment",
+            "status": "PROTOCOL ESTABLISHED",
+            "action_required": "Held-out test split must be evaluated strictly once using child-clustered bootstrap with zero parameter or threshold tuning."
+        }
+    ]
+}

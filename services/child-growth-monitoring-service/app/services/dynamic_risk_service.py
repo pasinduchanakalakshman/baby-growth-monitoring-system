@@ -30,8 +30,8 @@ class DynamicRiskService:
                 if k not in features:
                     features[k] = v
             
-            # Predict risk
-            risk_out = risk_service.calculate_risk(features)
+            # Predict risk using genuine historical sequence up to this point
+            risk_out = risk_service.calculate_risk(features, history=history)
             
             trajectory.append({
                 "visit_date": str(pd.to_datetime(latest.get('visit_date')).date()),

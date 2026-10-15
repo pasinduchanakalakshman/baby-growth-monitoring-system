@@ -148,6 +148,51 @@ class ArtifactLoader:
             self._cache["who_lhfa_girls_2_5"] = self._load_excel("data/external/WHO Standards/lhfa_girls_2-to-5-years_zscores.xlsx")
         return self._cache["who_lhfa_girls_2_5"]
 
+    def get_hybrid_manifest(self) -> Dict[str, Any]:
+        if "hybrid_manifest" not in self._cache:
+            manifest = self._load_json("models/metadata/frozen_hybrid_pipeline_manifest_v1.json")
+            if manifest.get("selected_architecture") != "XGBoost + Transformer Late Fusion Hybrid":
+                raise ValueError("Hybrid manifest architecture mismatch.")
+            fusion_spec = manifest.get("fusion_specification", {})
+            if fusion_spec.get("alpha_xgboost") != 0.9 or fusion_spec.get("weight_transformer") != 0.1:
+                raise ValueError("Hybrid fusion weights mismatch.")
+            self._cache["hybrid_manifest"] = manifest
+        return self._cache["hybrid_manifest"]
+
+    def get_sequence_schema(self) -> Dict[str, Any]:
+        if "sequence_schema" not in self._cache:
+            schema = self._load_json("data/schemas/sequence_feature_schema_v1.json")
+            if schema.get("sequence_length") != 20:
+                raise ValueError("Sequence length mismatch in schema.")
+            if schema.get("n_transformed_features") != 49:
+                raise ValueError("Transformed features count mismatch in schema.")
+            self._cache["sequence_schema"] = schema
+        return self._cache["sequence_schema"]
+
+    def get_sequence_preprocessor(self):
+        if "sequence_preprocessor" not in self._cache:
+            path = "models/scalers/sequence_preprocessor_v1.joblib"
+            self._cache["sequence_preprocessor"] = self._load_joblib(path)
+        return self._cache["sequence_preprocessor"]
+
+    def get_transformer_model(self):
+        if "transformer_model" not in self._cache:
+            try:
+                import keras
+                from .transformer_layers import TRANSFORMER_CUSTOM_OBJECTS
+                model_path = self._get_path("models/trained/transformer/v1/final_transformer_clean.keras")
+                if not os.path.exists(model_path):
+                    raise FileNotFoundError(f"Missing transformer model artifact: {model_path}")
+                model = keras.models.load_model(
+                    model_path,
+                    custom_objects=TRANSFORMER_CUSTOM_OBJECTS,
+                    compile=False
+                )
+                self._cache["transformer_model"] = model
+            except Exception as e:
+                raise RuntimeError(f"Failed to load Clean Transformer model: {str(e)}") from e
+        return self._cache["transformer_model"]
+
     def clear_cache(self):
         self._cache = {}
 

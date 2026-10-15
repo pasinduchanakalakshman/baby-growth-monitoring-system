@@ -185,7 +185,7 @@ def get_overview(db: Session = Depends(get_db), current_user: User = Depends(get
         if k not in temporal_feats:
             temporal_feats[k] = v
     
-    r_out = risk_service.calculate_risk(temporal_feats)
+    r_out = risk_service.calculate_risk(temporal_feats, history=history)
     res["risk_180d"] = {
         "available": r_out["risk_available"],
         "applicable": r_out.get("model_applicable"),
@@ -224,7 +224,7 @@ def get_latest_risk(db: Session = Depends(get_db), current_user: User = Depends(
         if k not in features:
             features[k] = v
             
-    return risk_service.calculate_risk(features)
+    return risk_service.calculate_risk(features, history=history)
 
 @router.get("/risk/trajectory")
 def get_risk_trajectory(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -246,7 +246,7 @@ def get_risk_explanation(db: Session = Depends(get_db), current_user: User = Dep
         if k not in features:
             features[k] = v
             
-    r_out = risk_service.calculate_risk(features)
+    r_out = risk_service.calculate_risk(features, history=history)
     if not r_out["risk_available"]:
         raise HTTPException(status_code=400, detail="Risk not available. Cannot generate explanation.")
         
@@ -256,11 +256,13 @@ def get_risk_explanation(db: Session = Depends(get_db), current_user: User = Dep
 def get_model_info():
     risk_meta = artifact_loader.get_risk_metadata()
     f_meta = artifact_loader.get_forecast_metadata()
+    manifest = artifact_loader.get_hybrid_manifest()
     return {
         "Risk": {
-            "model": risk_meta.get("model_type", "XGBoost"),
+            "model": manifest.get("selected_architecture", "XGBoost + Transformer Late Fusion Hybrid"),
             "horizon_days": risk_meta.get("prediction_horizon_days", 180),
-            "threshold": risk_meta.get("threshold", 0.50)
+            "threshold": risk_meta.get("threshold", 0.50),
+            "fusion": manifest.get("fusion_specification", {}).get("formula", "0.90 * XGBoost + 0.10 * Transformer")
         },
         "Forecast": {
             "model": f_meta.get("model_name", "Linear Regression"),

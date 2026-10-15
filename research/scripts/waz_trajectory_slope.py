@@ -113,63 +113,64 @@ def calculate_waz_trajectory_slope_series(
     work_df['waz'] = pd.to_numeric(df[waz_col], errors='coerce')
     work_df['orig_idx'] = df.index
 
-    # Results container prefilled with NaN
-    results = pd.Series(np.nan, index=df.index, dtype=np.float64, name='waz_trajectory_slope_3v')
+    out_dict = {}
 
     # Group by child_id
     for _, child_group in work_df.groupby('child_id', sort=False):
-        # Identify rows with valid current measurements
-        valid_current = child_group[
+        valid_records = child_group[
             child_group['visit_date_dt'].notna() &
             child_group['age_days'].notna() &
             child_group['waz'].notna()
         ]
 
-        if valid_current.empty:
+        if valid_records.empty:
             continue
 
-        for curr_orig_idx, curr_row in valid_current.iterrows():
+        # Sort strictly earlier historical candidates chronologically
+        sorted_valid = valid_records.sort_values(by=['visit_date_dt', 'age_days'], ascending=[True, True])
+
+        # Aggregate by distinct date once per child (mean WAZ and mean age for same-day encounters)
+        date_agg = (
+            sorted_valid.groupby('visit_date_dt', as_index=False)
+            .agg({'age_days': 'mean', 'waz': 'mean'})
+            .sort_values(by='visit_date_dt', ascending=True)
+        )
+        date_history = date_agg.to_dict('records')
+
+        for curr_orig_idx, curr_row in child_group.iterrows():
             curr_date = curr_row['visit_date_dt']
             curr_age = curr_row['age_days']
             curr_waz = curr_row['waz']
 
+            # If current observation is missing essential values -> np.nan
+            if pd.isna(curr_date) or pd.isna(curr_age) or pd.isna(curr_waz):
+                out_dict[curr_orig_idx] = np.nan
+                continue
+
             # Zero Intraday Precedence Rule:
             # Historical candidates must have strictly earlier visit_date AND strictly younger age_days.
             # Same-day records or non-positive intervals (delta_t <= 0) are strictly excluded.
-            prior_candidates = child_group[
-                (child_group['visit_date_dt'] < curr_date) &
-                (child_group['age_days'] < curr_age) &
-                child_group['visit_date_dt'].notna() &
-                child_group['age_days'].notna() &
-                child_group['waz'].notna()
+            eligible_priors = [
+                r for r in date_history
+                if r['visit_date_dt'] < curr_date and r['age_days'] < curr_age
             ]
 
-            if prior_candidates.empty:
+            if not eligible_priors:
                 # First visit or no valid strictly earlier history -> np.nan
-                results.loc[curr_orig_idx] = np.nan
+                out_dict[curr_orig_idx] = np.nan
                 continue
 
-            # Sort strictly earlier historical candidates chronologically
-            prior_sorted = prior_candidates.sort_values(by=['visit_date_dt', 'age_days'], ascending=[True, True])
-
-            # If duplicate records exist on the same prior calendar date, aggregate by distinct
-            # date (mean WAZ and mean age) to ensure determinism independent of row ordering.
-            prior_by_date = (
-                prior_sorted.groupby('visit_date_dt', as_index=False)
-                .agg({'age_days': 'mean', 'waz': 'mean'})
-                .sort_values(by='visit_date_dt', ascending=True)
-            )
-
             # Take up to 2 most recent prior distinct dates
-            recent_priors = prior_by_date.tail(2)
+            recent_priors = eligible_priors[-2:]
 
-            history_ages = recent_priors['age_days'].tolist() + [curr_age]
-            history_wazs = recent_priors['waz'].tolist() + [curr_waz]
+            history_ages = [r['age_days'] for r in recent_priors] + [curr_age]
+            history_wazs = [r['waz'] for r in recent_priors] + [curr_waz]
 
             slope_val = compute_ols_slope_30d(np.array(history_ages), np.array(history_wazs))
-            results.loc[curr_orig_idx] = slope_val
+            out_dict[curr_orig_idx] = slope_val
 
-    return results
+    results = pd.Series(out_dict, dtype=np.float64, name='waz_trajectory_slope_3v')
+    return results.reindex(df.index)
 
 
 def add_waz_trajectory_slope_feature(

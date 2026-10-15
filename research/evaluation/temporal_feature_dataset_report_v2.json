@@ -1,0 +1,55 @@
+{
+    "task": "Task 3.4C - Create and Validate Versioned Temporal Feature Datasets",
+    "verdict": "PASS",
+    "status": "DATASETS_VERIFIED_AND_SAVED",
+    "timestamp": "October 2026",
+    "generated_files": {
+        "features_v2": "data\\features\\v2\\chdr_temporal_features_v2.csv",
+        "train_v2": "data\\splits\\v2\\train_v2.csv",
+        "validation_v2": "data\\splits\\v2\\validation_v2.csv",
+        "schema_v2": "models\\metadata\\v2\\feature_schema_v2.json"
+    },
+    "unit_tests_status": "11/11 PASSED",
+    "invariants_verification": {
+        "train_row_count": 5380,
+        "train_children_count": 348,
+        "train_positive_count": 231,
+        "val_row_count": 1143,
+        "val_children_count": 75,
+        "val_positive_count": 42,
+        "child_overlap_train_val": 0,
+        "train_duplicate_keys": 0,
+        "val_duplicate_keys": 0,
+        "new_columns_added": [
+            "waz_trajectory_slope_3v"
+        ]
+    },
+    "missing_value_summary": {
+        "train": {
+            "total_rows": 5380,
+            "missing_slope_count": 347,
+            "missing_slope_pct": 0.06449814126394052,
+            "valid_slope_count": 5033,
+            "valid_slope_pct": 0.9355018587360595
+        },
+        "validation": {
+            "total_rows": 1143,
+            "missing_slope_count": 73,
+            "missing_slope_pct": 0.06386701662292213,
+            "valid_slope_count": 1070,
+            "valid_slope_pct": 0.9361329833770778
+        }
+    },
+    "prefix_invariance_audit": {
+        "random_seed": 42,
+        "samples_tested": 50,
+        "passed_count": 50
+    },
+    "experimental_arms_feature_counts": {
+        "control_b_features": 47,
+        "experiment_c_features": 48,
+        "exact_feature_difference": [
+            "waz_trajectory_slope_3v"
+        ]
+    }
+}

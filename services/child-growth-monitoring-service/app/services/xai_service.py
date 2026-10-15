@@ -4,6 +4,7 @@ import pandas as pd
 from typing import Dict, Any, List
 
 from .model_loader import artifact_loader
+from .risk_service import prepare_feature_dataframe
 
 def patch_shap_xgboost():
     """Matches the exact SHAP UBJSON patching mechanism required for the frozen XGBoost tree."""
@@ -54,18 +55,9 @@ class XAIService:
         self._init_explainer()
         
         schema = artifact_loader.get_risk_schema()
-        expected_features = (
-            schema.get('numeric_features', []) +
-            schema.get('boolean_features', []) +
-            schema.get('categorical_features', [])
-        )
         
-        # Build identical dataframe shape as risk_service
-        row_dict = {}
-        for f in expected_features:
-            row_dict[f] = features.get(f, np.nan)
-            
-        df = pd.DataFrame([row_dict])
+        # Build identical dataframe shape as risk_service matching frozen preprocessor schema
+        df = prepare_feature_dataframe(features, schema)
         preprocessor = artifact_loader.get_risk_preprocessor()
         X_proc = preprocessor.transform(df)
         

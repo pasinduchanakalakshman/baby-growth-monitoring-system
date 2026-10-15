@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from app.core.database import get_db
 from app.models import Baby, User, GrowthMeasurement
 from app.schemas.growth import (
@@ -27,26 +27,82 @@ def get_baby(db: Session, user: User) -> Baby:
         raise HTTPException(status_code=404, detail="Baby not found. Please register a baby first.")
     return baby
 
+def normalize_delivery_type(val: Optional[str]) -> Optional[str]:
+    """Normalizes delivery type to match frozen preprocessor categories: 'Normal' or 'C-Section'."""
+    if not val:
+        return None
+    val_clean = str(val).strip().lower()
+    if val_clean in ["normal", "vaginal", "spontaneous", "svd"]:
+        return "Normal"
+    elif val_clean in ["c-section", "caesarean", "cesarean", "c_section", "cesarian"]:
+        return "C-Section"
+    return val
+
+def derive_recent_illness(diarrhea: Optional[bool], fever: Optional[bool], cough: Optional[bool]) -> Optional[bool]:
+    """
+    Derives the composite recent_illness flag while preserving unrecorded missing answers.
+    - True if any illness is True.
+    - False if all illnesses are False.
+    - None (unknown) if all are unrecorded, or none are True and some are unrecorded.
+    """
+    flags = [diarrhea, fever, cough]
+    if any(f is True for f in flags):
+        return True
+    if all(f is False for f in flags):
+        return False
+    return None
+
 def format_history_for_ml(baby: Baby, db: Session) -> List[Dict[str, Any]]:
-    # ML services expect history as list of dicts with all base fields
+    # ML services expect history as list of dicts with all base fields matching frozen schemas
     measurements = db.query(GrowthMeasurement).filter(GrowthMeasurement.baby_id == baby.id).order_by(GrowthMeasurement.visit_date).all()
     history = []
+
+    sex_val = baby.sex.value if hasattr(baby.sex, 'value') else baby.sex
+    dob_str = str(baby.date_of_birth) if baby.date_of_birth else None
+    delivery_norm = normalize_delivery_type(baby.delivery_type)
+
     for m in measurements:
+        recent_illness_val = derive_recent_illness(
+            m.diarrhea_last_14_days,
+            m.fever_last_14_days,
+            m.cough_last_14_days
+        )
         history.append({
+            # Measurement base
             "visit_date": str(m.visit_date),
             "weight_kg": m.weight_kg,
             "length_height_cm": m.length_height_cm,
             "age_days": m.age_days,
             "verified_waz": m.verified_waz,
             "verified_haz": m.verified_haz,
-            "currently_breastfeeding": m.currently_breastfeeding,
+
+            # Feeding variables mapped to exact ML schema names
+            "breastfeeding_status": m.currently_breastfeeding,
             "formula_feeding": m.formula_feeding,
+            "complementary_feeding_started": m.solid_foods_started,
+
+            # Illness variables mapped to exact ML schema names
+            "diarrhea_recent": m.diarrhea_last_14_days,
+            "fever_recent": m.fever_last_14_days,
+            "respiratory_illness_recent": m.cough_last_14_days,
+            "recent_illness": recent_illness_val,
+
+            # Baby birth and demographic variables under exact expected schema names
+            "sex": sex_val,
+            "date_of_birth": dob_str,
+            "birth_weight_kg": baby.birth_weight_kg,
+            "birth_length_cm": baby.birth_length_cm,
+            "gestational_age_weeks": baby.gestational_age_weeks,
+            "birth_order": baby.birth_order,
+            "delivery_type": delivery_norm,
+            "apgar_score_5min": baby.apgar_score_5min,
+
+            # Retain legacy field names for backward compatibility
+            "currently_breastfeeding": m.currently_breastfeeding,
             "solid_foods_started": m.solid_foods_started,
             "diarrhea_last_14_days": m.diarrhea_last_14_days,
             "fever_last_14_days": m.fever_last_14_days,
-            "cough_last_14_days": m.cough_last_14_days,
-            "sex": baby.sex.value,
-            "birth_weight_kg": baby.birth_weight_kg
+            "cough_last_14_days": m.cough_last_14_days
         })
     return history
 

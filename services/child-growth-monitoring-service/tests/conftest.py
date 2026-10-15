@@ -8,8 +8,10 @@ from app.main import app
 from app.core.database import get_db
 from app.models import Base
 
-# Setup file SQLite database for testing
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+import os
+
+# Setup file SQLite database for testing (allows overriding to avoid host volume lock issues)
+SQLALCHEMY_DATABASE_URL = os.getenv("TEST_DATABASE_URL", os.getenv("DATABASE_URL", "sqlite:///./test.db"))
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

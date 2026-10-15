@@ -4,6 +4,51 @@ from typing import Dict, Any
 
 from .model_loader import artifact_loader
 
+def prepare_feature_dataframe(features: Dict[str, Any], schema: Dict[str, Any]) -> pd.DataFrame:
+    """
+    Constructs a 1-row DataFrame strictly following the frozen preprocessor schema.
+    Converts missing values (None / pd.isna) to np.nan for numeric and boolean columns
+    so that scikit-learn's SimpleImputer(missing_values=np.nan) can properly impute them.
+    Converts Python booleans to float (1.0/0.0).
+    Converts categorical columns to str or np.nan.
+    Guarantees that no target labels or future leakage columns enter the predictor DataFrame.
+    """
+    row_dict = {}
+
+    # Numeric features
+    for col in schema.get('numeric_features', []):
+        val = features.get(col)
+        if val is None or pd.isna(val):
+            row_dict[col] = np.nan
+        else:
+            try:
+                row_dict[col] = float(val)
+            except (ValueError, TypeError):
+                row_dict[col] = np.nan
+
+    # Boolean features
+    for col in schema.get('boolean_features', []):
+        val = features.get(col)
+        if val is None or pd.isna(val):
+            row_dict[col] = np.nan
+        elif isinstance(val, (bool, np.bool_)):
+            row_dict[col] = 1.0 if val else 0.0
+        else:
+            try:
+                row_dict[col] = float(val)
+            except (ValueError, TypeError):
+                row_dict[col] = np.nan
+
+    # Categorical features
+    for col in schema.get('categorical_features', []):
+        val = features.get(col)
+        if val is None or pd.isna(val):
+            row_dict[col] = np.nan
+        else:
+            row_dict[col] = str(val)
+
+    return pd.DataFrame([row_dict])
+
 class RiskService:
     def __init__(self):
         # Trigger lazy load validation for production instantiation
@@ -21,11 +66,6 @@ class RiskService:
 
     def calculate_risk(self, features: Dict[str, Any]) -> Dict[str, Any]:
         schema = artifact_loader.get_risk_schema()
-        expected_features = (
-            schema.get('numeric_features', []) +
-            schema.get('boolean_features', []) +
-            schema.get('categorical_features', [])
-        )
         
         # Check applicability using the verified_waz present in index features
         waz = features.get('verified_waz')
@@ -45,12 +85,8 @@ class RiskService:
                 "model_applicable": False
             }
             
-        # Extract features
-        row_dict = {}
-        for f in expected_features:
-            row_dict[f] = features.get(f, np.nan)
-            
-        df = pd.DataFrame([row_dict])
+        # Extract features into properly prepared DataFrame matching frozen preprocessor schema
+        df = prepare_feature_dataframe(features, schema)
         
         preprocessor = artifact_loader.get_risk_preprocessor()
         model = artifact_loader.get_risk_model()

@@ -1,0 +1,220 @@
+{
+    "task": "Task 3.2 - Existing Class-Weighting Analysis (Scientifically Corrected)",
+    "cohort": {
+        "dataset": "data/splits/v1/validation.csv",
+        "observations": 1143,
+        "unique_children": 75,
+        "positive_events": 42,
+        "negative_events": 1101,
+        "prevalence": 0.03674540682414698,
+        "interval_censored_unobserved_outcomes": 46
+    },
+    "evaluation_protocol": "model_comparison_protocol_v1.md",
+    "statistical_scope_note": "All reported pairwise differences and metric values represent validation sample point estimates, not proof of statistically significant superiority or inferiority.",
+    "pairwise_model_comparisons": [
+        {
+            "model_family": "Logistic Regression",
+            "feature_space": "Tabular (346 features)",
+            "standard_variant": {
+                "name": "Logistic Regression (Standard)",
+                "weighting": "Unweighted",
+                "pr_auc": 0.1755221596167881,
+                "roc_auc": 0.7539250032438043,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1_score": 0.0,
+                "specificity": 1.0,
+                "brier_score": 0.033352948694394494,
+                "tp": 0,
+                "fp": 0,
+                "tn": 1101,
+                "fn": 42
+            },
+            "balanced_variant": {
+                "name": "Logistic Regression (Balanced)",
+                "weighting": "Balanced (class_weight)",
+                "pr_auc": 0.1387272642020465,
+                "roc_auc": 0.7499675619566628,
+                "recall": 0.5,
+                "precision": 0.10194174757281553,
+                "f1_score": 0.1693548387096774,
+                "specificity": 0.8319709355131698,
+                "brier_score": 0.12165665482341502,
+                "tp": 21,
+                "fp": 185,
+                "tn": 916,
+                "fn": 21
+            },
+            "delta_balanced_minus_standard": {
+                "delta_pr_auc": -0.036794895414741596,
+                "relative_pr_auc_change_pct": -20.963105453507815,
+                "delta_roc_auc": -0.003957441287141483,
+                "delta_recall": 0.5,
+                "delta_precision": 0.10194174757281553,
+                "delta_f1_score": 0.1693548387096774,
+                "delta_specificity": -0.1680290644868302,
+                "delta_brier_score": 0.08830370612902053,
+                "delta_tp": 21,
+                "delta_fp": 185,
+                "delta_tn": -185,
+                "delta_fn": -21
+            }
+        },
+        {
+            "model_family": "Random Forest",
+            "feature_space": "Tabular (346 features)",
+            "standard_variant": {
+                "name": "Random Forest (Standard)",
+                "weighting": "Unweighted",
+                "pr_auc": 0.28099772740955853,
+                "roc_auc": 0.852190649193374,
+                "recall": 0.11904761904761904,
+                "precision": 0.38461538461538464,
+                "f1_score": 0.18181818181818182,
+                "specificity": 0.9927338782924614,
+                "brier_score": 0.030628433945756785,
+                "tp": 5,
+                "fp": 8,
+                "tn": 1093,
+                "fn": 37
+            },
+            "balanced_variant": {
+                "name": "Random Forest (Balanced)",
+                "weighting": "Balanced (class_weight)",
+                "pr_auc": 0.2398975795472018,
+                "roc_auc": 0.8291055750183816,
+                "recall": 0.047619047619047616,
+                "precision": 0.3333333333333333,
+                "f1_score": 0.08333333333333333,
+                "specificity": 0.9963669391462306,
+                "brier_score": 0.03147699037620297,
+                "tp": 2,
+                "fp": 4,
+                "tn": 1097,
+                "fn": 40
+            },
+            "delta_balanced_minus_standard": {
+                "delta_pr_auc": -0.04110014786235672,
+                "relative_pr_auc_change_pct": -14.626505431644512,
+                "delta_roc_auc": -0.023085074174992393,
+                "delta_recall": -0.07142857142857142,
+                "delta_precision": -0.05128205128205132,
+                "delta_f1_score": -0.0984848484848485,
+                "delta_specificity": 0.0036330608537692433,
+                "delta_brier_score": 0.0008485564304461825,
+                "delta_tp": -3,
+                "delta_fp": -4,
+                "delta_tn": 4,
+                "delta_fn": 3
+            }
+        },
+        {
+            "model_family": "XGBoost",
+            "feature_space": "Tabular (346 features)",
+            "standard_variant": {
+                "name": "XGBoost (Standard)",
+                "weighting": "Unweighted",
+                "pr_auc": 0.2909354719532945,
+                "roc_auc": 0.8228017819298473,
+                "recall": 0.2857142857142857,
+                "precision": 0.4,
+                "f1_score": 0.3333333333333333,
+                "specificity": 0.9836512261580381,
+                "brier_score": 0.03612744304855849,
+                "tp": 12,
+                "fp": 18,
+                "tn": 1083,
+                "fn": 30
+            },
+            "balanced_variant": {
+                "name": "XGBoost (Balanced)",
+                "weighting": "scale_pos_weight=22.29",
+                "pr_auc": 0.22116547223128902,
+                "roc_auc": 0.7872929371566975,
+                "recall": 0.35714285714285715,
+                "precision": 0.3333333333333333,
+                "f1_score": 0.3448275862068966,
+                "specificity": 0.9727520435967303,
+                "brier_score": 0.04364390870405225,
+                "tp": 15,
+                "fp": 30,
+                "tn": 1071,
+                "fn": 27
+            },
+            "delta_balanced_minus_standard": {
+                "delta_pr_auc": -0.06976999972200548,
+                "relative_pr_auc_change_pct": -23.98126266748458,
+                "delta_roc_auc": -0.03550884477314986,
+                "delta_recall": 0.07142857142857145,
+                "delta_precision": -0.06666666666666671,
+                "delta_f1_score": 0.01149425287356326,
+                "delta_specificity": -0.01089918256130784,
+                "delta_brier_score": 0.0075164656554937564,
+                "delta_tp": 3,
+                "delta_fp": 12,
+                "delta_tn": -12,
+                "delta_fn": -3
+            }
+        }
+    ],
+    "key_synthesis_findings": {
+        "pr_auc_point_estimate_drops": {
+            "finding": "In these validation experiments, each model family exhibited lower PR-AUC point estimates when trained with heavy inverse-class weights.",
+            "evidence": {
+                "logistic_regression": "-21.0% relative PR-AUC drop in point estimate (0.1755 -> 0.1387)",
+                "random_forest": "-14.6% relative PR-AUC drop in point estimate (0.2810 -> 0.2399)",
+                "xgboost": "-24.0% relative PR-AUC drop in point estimate (0.2909 -> 0.2212)"
+            }
+        },
+        "recall_gain_divergence": {
+            "logistic_regression": "Gained nominal recall at 0.50 (0.0% -> 50.0%, +21 TP observations) due to intercept shift upward, but generated 185 false alarms (precision 10.19%).",
+            "xgboost": "Gained modest recall at 0.50 (28.57% -> 35.71%, +3 TP observations), while false alarms increased from 18 to 30.",
+            "random_forest": "Observed lower recall at 0.50 (11.90% -> 4.76%, -3 TP observations, dropping from 5 to 2). A plausible contributing factor is that unconstrained tree depth in a 346-feature space containing 293 sparse dummy columns from date_of_birth may have led weighted trees to isolate positive training noise on sparse splits, reducing generalization. However, definitive attribution requires controlled ablation."
+        },
+        "brier_score_observations": {
+            "finding": "In these experiments, class-balanced variants exhibited higher (worse) Brier scores than their unweighted counterparts. Brier score reflects overall mean squared error relative to the low base rate (3.67%), which was worsened by score inflation under balanced loss. However, formal clinical calibration across risk deciles (slope, intercept, reliability curves) has not been assessed.",
+            "evidence": {
+                "logistic_regression": "Brier score worsened from 0.0334 to 0.1217",
+                "xgboost": "Brier score worsened from 0.0361 to 0.0436",
+                "random_forest": "Brier score worsened from 0.0306 to 0.0315"
+            }
+        },
+        "threshold_tuning_vs_class_weighting": {
+            "finding": "Current validation evidence favors investigating decision threshold adjustment for existing unweighted models rather than training heavily class-weighted variants. Operating comparisons derived strictly from Task 3.1 validation sweep data (with zero test-set access) demonstrate that adjusting the unweighted model cutoff achieves competitive or higher sensitivity with fewer false alarms than the balanced models at threshold 0.50.",
+            "validation_point_estimate_evidence": [
+                "Standard XGBoost at validation cutoff T=0.20 achieves Recall 40.48% (17 TP) and Precision 34.00% (33 FP, PR-AUC 0.2909), compared to Balanced XGBoost at 0.50 (Recall 35.71%, Precision 33.33%, PR-AUC 0.2212).",
+                "Standard XGBoost at validation cutoff T=0.13 achieves Recall 47.62% (20 TP) and Precision 32.79% (41 FP, PR-AUC 0.2909), catching 5 more true cases than Balanced XGBoost with a higher validation F1 (0.3883 vs 0.3448).",
+                "Standard Logistic Regression at validation cutoff T\u22480.1036 matches 50% recall with 127 FP (Precision 14.19%, F1 0.2211), compared to Balanced Logistic Regression at 0.50 which produces 185 FP (Precision 10.19%, F1 0.1694)."
+            ]
+        }
+    },
+    "proposed_future_weighting_experiments": [
+        {
+            "experiment_id": "EXP-WEIGHT-01",
+            "strategy": "Moderate / Sub-Linear Class Weighting (w1 = sqrt(N0 / N1) \u2248 4.72)",
+            "target_architectures": [
+                "XGBoost",
+                "Sequence Transformer"
+            ],
+            "hypothesis": "Test whether a milder square-root weighting factor offers a better empirical trade-off between minority sensitivity and ranking quality than full inverse weighting (w1 \u2248 22.3).",
+            "scientific_disclaimer": "Untested research hypothesis only. There is no guarantee that moderate weighting will yield fewer false alerts or higher PR-AUC than the unweighted baseline.",
+            "execution_status": "Proposed concept only; strictly not executed in Task 3.2."
+        },
+        {
+            "experiment_id": "EXP-WEIGHT-02",
+            "strategy": "Focal Loss Formulation (gamma in [1.0, 2.0], alpha \u2248 0.25)",
+            "target_architectures": [
+                "Transformer / GRU Sequence Models"
+            ],
+            "hypothesis": "Test whether dynamically down-weighting easy, well-classified examples focuses gradient updates more effectively on borderline trajectories than scalar class multipliers.",
+            "scientific_disclaimer": "Untested research hypothesis only. There is no guarantee that focal loss will achieve superior calibration or higher PR-AUC on this cohort.",
+            "execution_status": "Proposed concept only; strictly not executed in Task 3.2."
+        }
+    ],
+    "limitations": {
+        "provenance": "Unresolved mixture of real clinic records (approx 400 children) and synthetic records (approx 100 children).",
+        "interval_censoring": "46 validation observation rows have zero recorded visits within (0, 180] days and are labeled negative under the heuristic.",
+        "child_clustering": "75 children across 1,143 visits; longitudinal clustering affects variance.",
+        "feature_disparity": "Tabular models receive 346 features with 293 date_of_birth dummy columns and static perinatal factors; sequence models receive 20 timesteps of 49 dynamic features without static birth factors."
+    }
+}

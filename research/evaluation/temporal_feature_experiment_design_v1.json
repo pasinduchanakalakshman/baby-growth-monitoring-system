@@ -1,0 +1,184 @@
+{
+    "task": "Task 3.4A-2 - Final Temporal Experiment Design Safeguards",
+    "experiment_design_version": "v1.2",
+    "design_timestamp": "October 2026",
+    "design_verdict": "PASS",
+    "status": "APPROVED_FOR_EXECUTION",
+    "project": "Baby-growth-monitoring-system",
+    "clinical_goal": "Evaluate whether adding longitudinal multi-visit WAZ trajectory slope (waz_trajectory_slope_3v) improves early detection of child growth faltering within 180 days.",
+    "strict_rule_compliance": {
+        "datasets_generated": false,
+        "feature_engineering_code_written": false,
+        "models_retrained": false,
+        "v1_artifacts_modified": false,
+        "test_split_accessed": false,
+        "thresholds_tuned": false,
+        "hybrid_model_implemented": false,
+        "experiment_executed": false
+    },
+    "longitudinal_dataset_timestamp_audit": {
+        "available_identifiers_and_timestamps": [
+            "child_id (string identifier, e.g. 'CH001')",
+            "date_of_birth (calendar date string YYYY-MM-DD)",
+            "visit_date (calendar date string YYYY-MM-DD)",
+            "age_days (integer days elapsed since date_of_birth)",
+            "days_since_previous_visit (elapsed integer days since prior recorded visit)"
+        ],
+        "intraday_timestamps_present": false,
+        "visit_time_of_day_recorded": false,
+        "duplicate_check_findings": {
+            "train_set_duplicates": 0,
+            "validation_set_duplicates": 0,
+            "full_features_file_duplicates": 0,
+            "interpretation": "In the existing frozen datasets, every recorded visit for a child occurs on a distinct calendar date. There are zero same-day duplicate visits in train, validation, or the full temporal features file."
+        }
+    },
+    "temporal_safety_and_duplicate_policy": {
+        "zero_intraday_precedence_policy": "Because the CHDR dataset records only calendar dates (visit_date) and lacks intraday timestamps (hours/minutes), temporal ordering within a single calendar day cannot be established. Therefore, no same-day record may ever be treated as known historical information or as a lagged baseline for another same-day record.",
+        "historical_window_rule": "For an index observation at (child_id, visit_date_t), all historical visits used for trajectory slope calculation must satisfy visit_date < visit_date_t. The current index visit provides the terminal point (age_days_t, verified_waz_t), and the preceding 1 or 2 visits must come from strictly earlier calendar dates.",
+        "invalid_interval_handling": {
+            "non_positive_intervals": "Any historical candidate visit with visit_date >= visit_date_t or age_days >= age_days_t has an elapsed interval <= 0 days and is strictly rejected from the historical trajectory window.",
+            "missing_timestamps": "Any record with missing or unparseable visit_date or age_days cannot be chronologically placed and is rejected from the trajectory window; if valid points k < 2, slope is assigned np.nan.",
+            "same_day_duplicate_encounter_guard": "If duplicate visits on the same calendar date occur in future data ingestion, they represent simultaneous measurements from the same clinical encounter. They must never be sorted arbitrarily and diffed against each other (which would produce delta_t = 0 and infinite velocity)."
+        }
+    },
+    "feature_specification": {
+        "feature_name": "waz_trajectory_slope_3v",
+        "category": "Longitudinal WAZ Dynamics",
+        "description": "Multi-visit Ordinary Least Squares (OLS) linear slope of WHO Weight-for-Age Z-scores over the last 3 observed clinic visits, standardized to a 30-day rate of change using actual elapsed days.",
+        "units": "WAZ Z-score units per 30 days",
+        "mathematical_formula": "30.0 * (Sum((d_i - mean_d) * (z_i - mean_z)) / Sum((d_i - mean_d)^2))",
+        "history_window": "Terminal point at index visit t, plus up to 2 distinct prior visits on strictly earlier dates (visit_date < visit_date_t) within the same child_id",
+        "deterministic_missing_value_policy": {
+            "policy_summary": "Assign np.nan for any observation where a valid slope cannot be mathematically calculated; impute downstream via SimpleImputer(strategy='median') fitted exclusively on the training split.",
+            "rules": [
+                {
+                    "condition": "Single-visit history (k < 2 / observation_count == 1)",
+                    "action": "Assign np.nan (insufficient points to define a line)."
+                },
+                {
+                    "condition": "Missing WAZ in window",
+                    "action": "Pairwise drop visits with NaN in verified_waz or age_days. If remaining valid visits k >= 2, compute slope across available valid visits; if k < 2, assign np.nan."
+                },
+                {
+                    "condition": "Duplicate dates / zero age variance (Sum((d_i - mean_d)^2) < 1e-6)",
+                    "action": "Assign np.nan (vertical line; slope is undefined)."
+                }
+            ],
+            "downstream_imputation": "All np.nan values in waz_trajectory_slope_3v are imputed using SimpleImputer(strategy='median') fitted strictly on train_v2.csv."
+        }
+    },
+    "frozen_baseline_anchor": {
+        "model_name": "Frozen Standard XGBoost Baseline (v1)",
+        "model_type": "XGBClassifier",
+        "artifact_path": "models/trained/baselines/v1/xgboost.joblib",
+        "preprocessor_path": "models/scalers/baseline_preprocessor_v1.joblib",
+        "metadata_path": "models/metadata/baseline_feature_metadata_v1.json",
+        "transformed_feature_dimension": 346,
+        "includes_dob_one_hot": true,
+        "dob_one_hot_column_count": 293,
+        "verified_validation_metrics": {
+            "pr_auc": 0.2909354719532945,
+            "roc_auc": 0.8228017819298473,
+            "precision": 0.4,
+            "recall": 0.2857142857142857,
+            "f1": 0.3333333333333333,
+            "specificity": 0.9836512261580381,
+            "brier_score": 0.03612744304855849,
+            "confusion_matrix": {
+                "tn": 1083,
+                "fp": 18,
+                "fn": 30,
+                "tp": 12
+            },
+            "threshold": 0.5
+        }
+    },
+    "original_xgboost_hyperparameters": {
+        "random_state": 42,
+        "eval_metric": "logloss",
+        "learning_rate": 0.3,
+        "max_depth": 6,
+        "n_estimators": 100,
+        "subsample": 1.0,
+        "colsample_bytree": 1.0,
+        "min_child_weight": 1,
+        "gamma": 0.0,
+        "scale_pos_weight": 1.0,
+        "objective": "binary:logistic",
+        "booster": "gbtree",
+        "tree_method": "auto"
+    },
+    "experimental_architecture": {
+        "control_a": {
+            "name": "Control A: Frozen Standard XGBoost Baseline (v1)",
+            "role": "Historical benchmark anchor.",
+            "model_artifact": "models/trained/baselines/v1/xgboost.joblib",
+            "preprocessor_artifact": "models/scalers/baseline_preprocessor_v1.joblib",
+            "validation_pr_auc": 0.2909354719532945,
+            "feature_space": "v1 (346 transformed features, including 293 date_of_birth one-hot columns)"
+        },
+        "control_b": {
+            "name": "Control B: Modernized Cleaned XGBoost (v2, Without Slope)",
+            "role": "Primary scientific control to isolate pipeline modernization from feature addition.",
+            "training_split": "data/splits/v2/train_v2.csv",
+            "validation_split": "data/splits/v2/validation_v2.csv",
+            "model_hyperparameters": "Identical to original frozen XGBoost (random_state=42, eval_metric='logloss')",
+            "preprocessing_strategy": {
+                "fit_split": "train_v2.csv ONLY",
+                "numeric": "SimpleImputer(strategy='median') + StandardScaler()",
+                "boolean": "SimpleImputer(strategy='constant', fill_value=0) + StandardScaler()",
+                "categorical": "SimpleImputer(strategy='constant', fill_value='missing') + OneHotEncoder(handle_unknown='ignore', sparse_output=False)",
+                "feature_cleaning": "date_of_birth one-hot encoding removed; all other baseline features retained."
+            },
+            "new_feature_included": false
+        },
+        "experiment_c": {
+            "name": "Experiment C: Experimental XGBoost (v2, With waz_trajectory_slope_3v)",
+            "role": "Experimental arm evaluating the marginal predictive contribution of the new slope feature.",
+            "training_split": "data/splits/v2/train_v2.csv",
+            "validation_split": "data/splits/v2/validation_v2.csv",
+            "model_hyperparameters": "Exactly identical to Control B (random_state=42, eval_metric='logloss')",
+            "preprocessing_strategy": "Exactly identical to Control B, fitted on train_v2.csv ONLY",
+            "feature_set": "Exactly identical to Control B, with exactly one feature added: waz_trajectory_slope_3v",
+            "new_feature_included": true
+        }
+    },
+    "statistical_uncertainty_and_inference_protocol": {
+        "clustering_unit": "child_id (75 clusters in validation cohort)",
+        "bootstrap_iterations": 2000,
+        "metric_evaluated": "Delta PR-AUC = PR-AUC(Experiment C) - PR-AUC(Control B)",
+        "confidence_level": 0.95,
+        "purpose_of_bootstrap": "The 2,000-iteration paired child-clustered bootstrap estimates the sampling variability and standard error of the validation PR-AUC difference between Control B and Experiment C, accounting for within-child correlation.",
+        "claims_guardrail": "Exclusion of zero by the validation bootstrap 95% confidence interval indicates that the validation difference is unlikely to be explained solely by child-level resampling variance. It does NOT automatically prove independently confirmed, generalizable, or clinically meaningful improvement. A statistically detectable delta can be clinically negligible and may reflect validation-set specific patterns.",
+        "exploratory_vs_confirmatory_distinction": "Validation-set evidence is strictly exploratory and hypothesis-generating. Confirmatory claims of improvement require subsequent evaluation on the untouched held-out test split (test_v2.csv), which must only be unlocked after model choice, preprocessors, and decision thresholds are permanently frozen."
+    },
+    "threshold_policy_clarification": {
+        "primary_comparison_basis": "Threshold-independent PR-AUC (Average Precision)",
+        "exploratory_threshold_statement": "The 0.13 decision threshold identified in Task 3.1 is strictly exploratory and specific to the frozen Control A model. Because Control B and Experiment C are newly retrained on a modernized feature space without date_of_birth one-hot columns, their probability distributions will shift. The 0.13 cutoff will be reported as an exploratory operational point, but is not assumed or expected to be optimal for the new models."
+    },
+    "data_preservation_and_invariants": {
+        "v1_preservation": "All files in data/splits/v1/ and data/features/chdr_temporal_features_v1.csv are write-protected and will not be touched.",
+        "v2_destination_directories": {
+            "features": "data/features/v2/",
+            "splits": "data/splits/v2/",
+            "scalers": "models/scalers/v2/",
+            "metadata": "models/metadata/v2/",
+            "models": "models/trained/temporal_experiments/v2/",
+            "reports": "research/evaluation/temporal_experiments/v2/"
+        },
+        "validation_cohort_invariants": {
+            "total_observations": 1143,
+            "unique_children": 75,
+            "positive_faltering_events": 42,
+            "negative_events": 1101,
+            "first_visit_observations": 73,
+            "alignment_requirement": "Exact match row-for-row on child_id, visit_date, and future_growth_faltering_180d between validation_v2.csv and validation.csv."
+        }
+    },
+    "known_limitations_acknowledged": {
+        "interval_censoring": "46 validation records have no follow-up within 180 days and are assigned y=0 under the evaluation heuristic.",
+        "data_provenance": "Dataset contains approx. 400 real clinic records and 100 synthetic records with undocumented generation parameters.",
+        "clustering": "1,143 observations from 75 children require child-clustered standard errors to prevent artificially deflated confidence intervals."
+    }
+}

@@ -1,0 +1,238 @@
+{
+    "task": "Task 3.5D - Hybrid Validation Detection Analysis",
+    "verdict": "PASS",
+    "status": "DETECTION_ANALYSIS_COMPLETE",
+    "timestamp_utc": "2026-10-15T06:53:28.646518+00:00",
+    "validation_invariants": {
+        "total_observations": 1143,
+        "unique_children": 75,
+        "positive_events": 42,
+        "negative_events": 1101,
+        "positive_children_total": 24,
+        "positive_prevalence_pct": 3.674540682414698
+    },
+    "model_summary": {
+        "standard_xgboost": {
+            "alpha": 1.0,
+            "pr_auc": 0.2909354719532945,
+            "roc_auc": 0.8228017819298473,
+            "brier_score": 0.03612744306306054
+        },
+        "hybrid_090": {
+            "alpha": 0.9,
+            "pr_auc": 0.3097404186570704,
+            "roc_auc": 0.8374421521560487,
+            "brier_score": 0.03556016366763332,
+            "delta_pr_auc": 0.018804946703775915
+        }
+    },
+    "operating_points": {
+        "illustrative_threshold_050": {
+            "standard_xgboost": {
+                "model_name": "Standard XGBoost",
+                "operating_target": "Illustrative Threshold 0.50",
+                "threshold": 0.5,
+                "tp": 12,
+                "fp": 18,
+                "fn": 30,
+                "tn": 1083,
+                "precision": 0.4,
+                "recall": 0.2857142857142857,
+                "f1": 0.3333333333333333,
+                "specificity": 0.9836512261580381,
+                "alert_rate_pct": 2.6246719160104988,
+                "positive_children_detected": 12,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 50.0
+            },
+            "hybrid_090": {
+                "model_name": "90/10 Hybrid",
+                "operating_target": "Illustrative Threshold 0.50",
+                "threshold": 0.5,
+                "tp": 13,
+                "fp": 19,
+                "fn": 29,
+                "tn": 1082,
+                "precision": 0.40625,
+                "recall": 0.30952380952380953,
+                "f1": 0.3513513513513513,
+                "specificity": 0.9827429609445958,
+                "alert_rate_pct": 2.799650043744532,
+                "positive_children_detected": 13,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 54.166666666666664
+            },
+            "note": "Threshold 0.50 is purely illustrative and is NOT a validated or clinically appropriate threshold."
+        },
+        "matched_recall_target_50": {
+            "standard_xgboost": {
+                "model_name": "Standard XGBoost",
+                "operating_target": "Target Recall >= 50%",
+                "threshold": 0.12455869,
+                "tp": 21,
+                "fp": 45,
+                "fn": 21,
+                "tn": 1056,
+                "precision": 0.3181818181818182,
+                "recall": 0.5,
+                "f1": 0.3888888888888889,
+                "specificity": 0.9591280653950953,
+                "alert_rate_pct": 5.774278215223097,
+                "positive_children_detected": 17,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 70.83333333333334
+            },
+            "hybrid_090": {
+                "model_name": "90/10 Hybrid",
+                "operating_target": "Target Recall >= 50%",
+                "threshold": 0.1623680751299999,
+                "tp": 21,
+                "fp": 47,
+                "fn": 21,
+                "tn": 1054,
+                "precision": 0.3088235294117647,
+                "recall": 0.5,
+                "f1": 0.38181818181818183,
+                "specificity": 0.9573115349682108,
+                "alert_rate_pct": 5.94925634295713,
+                "positive_children_detected": 17,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 70.83333333333334
+            },
+            "comparison": {
+                "recall_target": "50% (21/42 cases)",
+                "xgb_threshold": 0.12455869,
+                "hyb_threshold": 0.1623680751299999,
+                "xgb_fp": 45,
+                "hyb_fp": 47,
+                "fp_difference": 2,
+                "xgb_precision": 0.3181818181818182,
+                "hyb_precision": 0.3088235294117647,
+                "xgb_alert_rate_pct": 5.774278215223097,
+                "hyb_alert_rate_pct": 5.94925634295713,
+                "xgb_children_detected": 17,
+                "hyb_children_detected": 17
+            }
+        },
+        "matched_recall_target_70": {
+            "standard_xgboost": {
+                "model_name": "Standard XGBoost",
+                "operating_target": "Target Recall >= 70%",
+                "threshold": 0.0054520946,
+                "tp": 30,
+                "fp": 279,
+                "fn": 12,
+                "tn": 822,
+                "precision": 0.0970873786407767,
+                "recall": 0.7142857142857143,
+                "f1": 0.17094017094017094,
+                "specificity": 0.7465940054495913,
+                "alert_rate_pct": 27.034120734908136,
+                "positive_children_detected": 20,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 83.33333333333334
+            },
+            "hybrid_090": {
+                "model_name": "90/10 Hybrid",
+                "operating_target": "Target Recall >= 70%",
+                "threshold": 0.0640546951399999,
+                "tp": 30,
+                "fp": 237,
+                "fn": 12,
+                "tn": 864,
+                "precision": 0.11235955056179775,
+                "recall": 0.7142857142857143,
+                "f1": 0.1941747572815534,
+                "specificity": 0.784741144414169,
+                "alert_rate_pct": 23.35958005249344,
+                "positive_children_detected": 21,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 87.5
+            },
+            "comparison": {
+                "recall_target": "70% (30/42 cases)",
+                "xgb_threshold": 0.0054520946,
+                "hyb_threshold": 0.0640546951399999,
+                "xgb_fp": 279,
+                "hyb_fp": 237,
+                "fp_difference": -42,
+                "fp_reduction_count": 42,
+                "fp_reduction_pct": 15.053763440860216,
+                "xgb_precision": 0.0970873786407767,
+                "hyb_precision": 0.11235955056179775,
+                "xgb_alert_rate_pct": 27.034120734908136,
+                "hyb_alert_rate_pct": 23.35958005249344,
+                "xgb_children_detected": 20,
+                "hyb_children_detected": 21
+            }
+        },
+        "matched_recall_target_80": {
+            "standard_xgboost": {
+                "model_name": "Standard XGBoost",
+                "operating_target": "Target Recall >= 80%",
+                "threshold": 0.0025527282,
+                "tp": 34,
+                "fp": 418,
+                "fn": 8,
+                "tn": 683,
+                "precision": 0.0752212389380531,
+                "recall": 0.8095238095238095,
+                "f1": 0.13765182186234817,
+                "specificity": 0.620345140781108,
+                "alert_rate_pct": 39.54505686789152,
+                "positive_children_detected": 21,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 87.5
+            },
+            "hybrid_090": {
+                "model_name": "90/10 Hybrid",
+                "operating_target": "Target Recall >= 80%",
+                "threshold": 0.0474404435559999,
+                "tp": 34,
+                "fp": 345,
+                "fn": 8,
+                "tn": 756,
+                "precision": 0.08970976253298153,
+                "recall": 0.8095238095238095,
+                "f1": 0.16152019002375298,
+                "specificity": 0.6866485013623979,
+                "alert_rate_pct": 33.1583552055993,
+                "positive_children_detected": 23,
+                "positive_children_total": 24,
+                "child_detection_rate_pct": 95.83333333333334
+            },
+            "comparison": {
+                "recall_target": "80% (34/42 cases)",
+                "xgb_threshold": 0.0025527282,
+                "hyb_threshold": 0.0474404435559999,
+                "xgb_fp": 418,
+                "hyb_fp": 345,
+                "fp_difference": -73,
+                "fp_reduction_count": 73,
+                "fp_reduction_pct": 17.464114832535884,
+                "xgb_precision": 0.0752212389380531,
+                "hyb_precision": 0.08970976253298153,
+                "xgb_alert_rate_pct": 39.54505686789152,
+                "hyb_alert_rate_pct": 33.1583552055993,
+                "xgb_children_detected": 21,
+                "hyb_children_detected": 23
+            }
+        }
+    },
+    "clinical_conclusions": {
+        "screening_benefit": "At clinically relevant screening recall targets (>= 70% and >= 80%), the 90/10 Hybrid achieves substantially lower false-alert burdens than Standard XGBoost. At >= 70% recall, the Hybrid eliminates 42 false alerts (a 15.1% reduction). At >= 80% recall, the Hybrid eliminates 73 false alerts (a 17.5% reduction) while detecting 2 additional faltering children (23/24 vs 21/24, 95.8% coverage).",
+        "matched_recall_necessity": "Comparing models at the identical numerical cutoff (e.g., 0.50) is fundamentally flawed because the hybrid's score distribution is shifted upward by the Transformer. Evaluating at matched recall operating points provides an honest, clinically grounded assessment of workload and detection efficiency."
+    },
+    "methodological_guardrails": {
+        "exploratory_nature": "All reported operating thresholds are strictly exploratory, derived on the validation cohort. None of these thresholds are claimed to be clinically validated, safe, or deployment-ready. Confirmatory evaluation on the untouched held-out test split is mandatory before any clinical deployment.",
+        "known_limitations": [
+            "46 validation observations lack follow-up in the 180-day window and are treated as negatives by default.",
+            "Dataset contains approximately 400 real clinic records and 100 synthetic child profiles with undocumented parameters.",
+            "Validation cohort contains only 42 true positive events across 24 children, creating estimation uncertainty."
+        ]
+    },
+    "output_artifacts": {
+        "results_json": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_validation_detection_results_v1.json",
+        "report_markdown": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_validation_detection_report_v1.md"
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "task": "Task 3.4D - Controlled XGBoost Temporal Feature Experiment",
+    "timestamp_utc": "2026-10-15T05:25:02.811117+00:00",
+    "random_seed": 42,
+    "models": {
+        "control_a": {
+            "name": "Frozen Standard XGBoost Baseline (v1)",
+            "raw_feature_count": 48,
+            "transformed_feature_count": 346,
+            "includes_date_of_birth_onehot": true,
+            "includes_waz_trajectory_slope_3v": false,
+            "model_artifact": "models/trained/baselines/v1/xgboost.joblib",
+            "preprocessor_artifact": "models/scalers/baseline_preprocessor_v1.joblib"
+        },
+        "control_b": {
+            "name": "Cleaned Control XGBoost (v2, Without Slope)",
+            "raw_feature_count": 47,
+            "transformed_feature_count": 53,
+            "includes_date_of_birth_onehot": false,
+            "includes_waz_trajectory_slope_3v": false,
+            "model_artifact": "models\\trained\\temporal_experiments\\v2\\xgboost_control_b_v2.joblib",
+            "preprocessor_artifact": "models\\scalers\\v2\\control_b_preprocessor_v2.joblib",
+            "hyperparameters": {
+                "random_state": 42,
+                "eval_metric": "logloss"
+            }
+        },
+        "experiment_c": {
+            "name": "Experimental XGBoost (v2, With Slope)",
+            "raw_feature_count": 48,
+            "transformed_feature_count": 54,
+            "includes_date_of_birth_onehot": false,
+            "includes_waz_trajectory_slope_3v": true,
+            "model_artifact": "models\\trained\\temporal_experiments\\v2\\xgboost_experiment_c_v2.joblib",
+            "preprocessor_artifact": "models\\scalers\\v2\\experiment_c_preprocessor_v2.joblib",
+            "hyperparameters": {
+                "random_state": 42,
+                "eval_metric": "logloss"
+            }
+        }
+    },
+    "preprocessing_pipeline": {
+        "fit_split": "train_v2.csv ONLY",
+        "numeric_transformer": "SimpleImputer(strategy='median') + StandardScaler()",
+        "boolean_transformer": "SimpleImputer(strategy='constant', fill_value=0) + StandardScaler()",
+        "categorical_transformer": "SimpleImputer(strategy='constant', fill_value='missing') + OneHotEncoder(handle_unknown='ignore', sparse_output=False)"
+    }
+}

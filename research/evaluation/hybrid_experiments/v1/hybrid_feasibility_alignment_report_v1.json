@@ -1,0 +1,153 @@
+{
+    "task": "Task 3.5A - Hybrid Fusion Feasibility and Prediction Alignment",
+    "verdict": "PASS",
+    "status": "FEASIBILITY_CONFIRMED_READY_FOR_FUSION_EXPERIMENT",
+    "timestamp_utc": "2026-10-15T06:04:32.384298+00:00",
+    "strict_constraints_compliance": {
+        "test_split_accessed": false,
+        "models_retrained": false,
+        "fusion_classifier_trained": false,
+        "fusion_scores_evaluated": false,
+        "thresholds_tuned": false,
+        "frozen_artifacts_modified": false
+    },
+    "model_inventory": {
+        "model_1_tabular": {
+            "name": "Standard XGBoost Baseline (Frozen v1)",
+            "artifact_path": "models/trained/baselines/v1/xgboost.joblib",
+            "preprocessor_artifact": "models/scalers/baseline_preprocessor_v1.joblib",
+            "feature_metadata": "models/metadata/baseline_feature_metadata_v1.json",
+            "prediction_file": "research\\evaluation\\baseline_validation_predictions_v1.csv",
+            "prediction_column": "XGBoost",
+            "key_columns": [
+                "child_id",
+                "visit_date"
+            ],
+            "target_column": "future_growth_faltering_180d",
+            "weighting_strategy": "Unweighted (scale_pos_weight=1.0)"
+        },
+        "model_2_sequence": {
+            "name": "Clean Transformer Sequence Model (Frozen v1)",
+            "artifact_path": "models/trained/transformer/v1/final_transformer_clean.keras",
+            "preprocessor_metadata": "models/metadata/sequence_preprocessor_metadata_v1.json",
+            "feature_schema": "data/schemas/sequence_feature_schema_v1.json",
+            "prediction_file": "research\\evaluation\\sequence_validation_predictions_v1.csv",
+            "prediction_column": "transformer_probability",
+            "key_columns": [
+                "child_id",
+                "index_visit_date"
+            ],
+            "target_column": "true_target (verified identical to future_growth_faltering_180d)",
+            "weighting_strategy": "Balanced class weights ({0: 0.522, 1: 11.645})"
+        }
+    },
+    "alignment_audit_results": {
+        "validation_rows": 1143,
+        "validation_children": 75,
+        "positive_labels": 42,
+        "negative_labels": 1101,
+        "duplicate_keys": 0,
+        "missing_probabilities": 0,
+        "out_of_bounds_probabilities": 0,
+        "key_alignment_pct": 100.0,
+        "target_label_alignment_pct": 100.0,
+        "row_order_exact_match": true
+    },
+    "probability_distributions": {
+        "xgboost": {
+            "min": 3.9223364e-06,
+            "p25": 0.000343607,
+            "median": 0.001452295,
+            "p75": 0.0062141182,
+            "p90": 0.03819499639999999,
+            "max": 0.997361,
+            "mean": 0.035737584441162734,
+            "std": 0.14136574508326305,
+            "pr_auc": 0.2909354719532945,
+            "roc_auc": 0.8228017819298473,
+            "brier_score": 0.03612744306306054
+        },
+        "transformer": {
+            "min": 0.00018798644,
+            "p25": 0.00174853455,
+            "median": 0.04131469,
+            "p75": 0.57041175,
+            "p90": 0.6555467199999999,
+            "max": 0.98945075,
+            "mean": 0.24226869731748904,
+            "std": 0.2987067477282491,
+            "pr_auc": 0.18786134307703056,
+            "roc_auc": 0.8075559015613512,
+            "brier_score": 0.14108083759070694
+        },
+        "pearson_correlation": 0.34275671509915845,
+        "spearman_rank_correlation": 0.5979679855150434
+    },
+    "late_fusion_experiment_specification": {
+        "fusion_type": "Late Score Blending (Post-Model Linear Combination)",
+        "formula": "Score_alpha = alpha * P_XGBoost + (1 - alpha) * P_Transformer",
+        "candidate_weights_alpha": [
+            {
+                "weight_xgb": 1.0,
+                "weight_transformer": 0.0,
+                "role": "XGBoost-only standalone baseline",
+                "description": "Upper anchor for tabular performance; 0% deep sequence weighting."
+            },
+            {
+                "weight_xgb": 0.9,
+                "weight_transformer": 0.1,
+                "role": "XGBoost-heavy blend (90/10)",
+                "description": "Preserves primary XGBoost calibration while introducing subtle sequence attention signal."
+            },
+            {
+                "weight_xgb": 0.8,
+                "weight_transformer": 0.2,
+                "role": "XGBoost-heavy blend (80/20)",
+                "description": "Conservative sequence infusion; tests if 20% sequence attention refines ranking."
+            },
+            {
+                "weight_xgb": 0.7,
+                "weight_transformer": 0.3,
+                "role": "XGBoost-heavy blend (70/30)",
+                "description": "Moderate sequence infusion."
+            },
+            {
+                "weight_xgb": 0.6,
+                "weight_transformer": 0.4,
+                "role": "Moderate blend (60/40)",
+                "description": "Balanced toward XGBoost with substantial sequence weighting."
+            },
+            {
+                "weight_xgb": 0.5,
+                "weight_transformer": 0.5,
+                "role": "Equal-weight simple average (50/50)",
+                "description": "Standard ensemble benchmark; assumes equal contribution regardless of calibration disparity."
+            },
+            {
+                "weight_xgb": 0.0,
+                "weight_transformer": 1.0,
+                "role": "Transformer-only standalone baseline",
+                "description": "Anchor for sequence-aware neural network performance; 0% tabular weighting."
+            }
+        ],
+        "calibration_asymmetry_warning": "CRITICAL WARNING: XGBoost was trained unweighted (scale_pos_weight=1.0), yielding probabilities calibrated near the ~4.2% population prevalence (mean 0.0306, median 0.0015). Conversely, the Transformer was trained with severe class weighting (penalty ~22:1), yielding systematically elevated scores (mean 0.2858, median 0.0413). Consequently, linear combinations of these scores do NOT represent calibrated posterior probabilities of growth faltering. They represent ordinal risk rankings. Decision thresholds cannot be assumed to be 0.50 and must be selected strictly on validation data using empirical criteria (e.g. F1-optimal or high-sensitivity operating points).",
+        "evaluation_protocol": {
+            "primary_metric": "Validation PR-AUC (Average Precision)",
+            "secondary_metrics": [
+                "ROC-AUC",
+                "Brier Score",
+                "Recall",
+                "Precision",
+                "F1",
+                "Specificity"
+            ],
+            "hypothesis_test": "Delta PR-AUC = PR-AUC(Hybrid_alpha) - PR-AUC(XGBoost_standalone)",
+            "uncertainty_estimation": "2,000 paired child-clustered bootstrap resamples across 75 validation children clusters",
+            "decision_thresholds_to_evaluate": [
+                "Fixed standard threshold 0.50",
+                "Validation F1-optimal threshold",
+                "Validation High-Sensitivity threshold (Recall >= 0.80)"
+            ]
+        }
+    }
+}

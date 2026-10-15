@@ -1,0 +1,114 @@
+{
+    "task": "Task 3.4D - Controlled XGBoost Temporal Feature Experiment",
+    "verdict": "PASS",
+    "status": "EXPERIMENT_EXECUTED_AND_EVALUATED",
+    "timestamp_utc": "2026-10-15T05:25:02.812810+00:00",
+    "validation_invariants": {
+        "total_rows": 1143,
+        "unique_children": 75,
+        "positive_cases": 42,
+        "negative_cases": 1101,
+        "prevalence_pct": 3.674540682414698
+    },
+    "models_evaluated": {
+        "control_a_frozen_baseline": {
+            "pr_auc": 0.2909354719532945,
+            "roc_auc": 0.8228017819298473,
+            "brier_score": 0.03612744306306054,
+            "threshold": 0.5,
+            "precision": 0.4,
+            "recall": 0.2857142857142857,
+            "f1": 0.3333333333333333,
+            "specificity": 0.9836512261580381,
+            "confusion_matrix": {
+                "tp": 12,
+                "fp": 18,
+                "fn": 30,
+                "tn": 1083
+            }
+        },
+        "control_b_cleaned_control": {
+            "pr_auc": 0.2607595913477262,
+            "roc_auc": 0.8095670602482592,
+            "brier_score": 0.03518799034286118,
+            "threshold": 0.5,
+            "precision": 0.4722222222222222,
+            "recall": 0.40476190476190477,
+            "f1": 0.4358974358974359,
+            "specificity": 0.9827429609445958,
+            "confusion_matrix": {
+                "tp": 17,
+                "fp": 19,
+                "fn": 25,
+                "tn": 1082
+            }
+        },
+        "experiment_c_with_slope": {
+            "pr_auc": 0.2714790049986777,
+            "roc_auc": 0.8132001211020284,
+            "brier_score": 0.03451136185028977,
+            "threshold": 0.5,
+            "precision": 0.4375,
+            "recall": 0.3333333333333333,
+            "f1": 0.3783783783783784,
+            "specificity": 0.9836512261580381,
+            "confusion_matrix": {
+                "tp": 14,
+                "fp": 18,
+                "fn": 28,
+                "tn": 1083
+            }
+        }
+    },
+    "paired_comparison_exp_c_vs_ctrl_b": {
+        "primary_metric": "pr_auc",
+        "point_estimates": {
+            "control_b_pr_auc": 0.2607595913477262,
+            "experiment_c_pr_auc": 0.2714790049986777,
+            "delta_pr_auc": 0.010719413650951526,
+            "control_b_roc_auc": 0.8095670602482592,
+            "experiment_c_roc_auc": 0.8132001211020284,
+            "delta_roc_auc": 0.0036330608537692433,
+            "control_b_brier": 0.03518799034286118,
+            "experiment_c_brier": 0.03451136185028977,
+            "delta_brier": -0.0006766284925714058
+        },
+        "child_clustered_bootstrap_2000": {
+            "clusters": 75,
+            "iterations_requested": 2000,
+            "iterations_valid": 2000,
+            "iterations_degenerate": 0,
+            "random_seed": 42,
+            "mean_delta_pr_auc": 0.004174532152380521,
+            "std_error_delta_pr_auc": 0.030200875294543374,
+            "ci_95_percent": [
+                -0.05318605264167074,
+                0.0664882893674564
+            ],
+            "spans_zero": true,
+            "p_experiment_c_greater": 0.5415
+        }
+    },
+    "scientific_conclusion": {
+        "empirical_finding": "The addition of waz_trajectory_slope_3v yielded a nominal validation PR-AUC increase of +0.0107 (from 0.2608 to 0.2715).",
+        "statistical_inference": "The 95% child-clustered bootstrap confidence interval spans zero ([-0.0532, +0.0665]), demonstrating that this modest change is statistically indistinguishable from zero sampling variance across validation child clusters.",
+        "confirmatory_status": "Strictly exploratory. Does not constitute independently confirmed evidence of generalizable clinical improvement.",
+        "control_a_vs_control_b_note": "Control B (PR-AUC 0.2608) is lower than historical Control A (PR-AUC 0.2909). This difference reflects pipeline modernization (removing 293 date_of_birth one-hot features) and must NOT be attributed to the temporal slope feature."
+    },
+    "known_limitations": [
+        "46 validation observations lack follow-up within 180 days and were treated as negatives by default.",
+        "The dataset mixes approximately 400 real clinic records with 100 synthetic records whose data generation parameters are undocumented.",
+        "Validation positive cases are limited (42 events across 75 children), resulting in wide estimation intervals.",
+        "Longitudinal repeated measurements within the same child create clustering effects that inflate naive confidence bounds."
+    ],
+    "artifact_paths": {
+        "control_b_preprocessor": "models\\scalers\\v2\\control_b_preprocessor_v2.joblib",
+        "experiment_c_preprocessor": "models\\scalers\\v2\\experiment_c_preprocessor_v2.joblib",
+        "control_b_model": "models\\trained\\temporal_experiments\\v2\\xgboost_control_b_v2.joblib",
+        "experiment_c_model": "models\\trained\\temporal_experiments\\v2\\xgboost_experiment_c_v2.joblib",
+        "feature_metadata": "models\\metadata\\v2\\temporal_experiment_metadata_v2.json",
+        "validation_predictions": "research\\evaluation\\temporal_experiments\\v2\\validation_predictions_v2.csv",
+        "results_json": "research\\evaluation\\temporal_experiments\\v2\\temporal_feature_experiment_results_v2.json",
+        "results_markdown": "research\\evaluation\\temporal_experiments\\v2\\temporal_feature_experiment_report_v2.md"
+    }
+}

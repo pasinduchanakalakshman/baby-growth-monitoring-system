@@ -1,0 +1,195 @@
+{
+    "task": "Task 3.5B - XGBoost + Transformer Late-Fusion Experiment",
+    "verdict": "PASS",
+    "status": "EXPERIMENT_EXECUTED_AND_EVALUATED",
+    "timestamp_utc": "2026-10-15T06:27:09.981026+00:00",
+    "validation_invariants": {
+        "total_rows": 1143,
+        "unique_children": 75,
+        "positive_events": 42,
+        "negative_events": 1101,
+        "prevalence_pct": 3.674540682414698
+    },
+    "primary_benchmark_xgboost": {
+        "alpha": 1.0,
+        "pr_auc": 0.2909354719532945,
+        "roc_auc": 0.8228017819298473,
+        "brier_score": 0.03612744306306054,
+        "artifact_path": "models/trained/baselines/v1/xgboost.joblib"
+    },
+    "secondary_benchmark_transformer": {
+        "alpha": 0.0,
+        "pr_auc": 0.18786134307703056,
+        "roc_auc": 0.8075559015613512,
+        "brier_score": 0.14108083759070694,
+        "artifact_path": "models/trained/transformer/v1/final_transformer_clean.keras"
+    },
+    "predefined_candidate_evaluations": [
+        {
+            "alpha": 0.0,
+            "weight_xgboost": 0.0,
+            "weight_transformer": 1.0,
+            "pr_auc": 0.18786134307703056,
+            "delta_pr_auc_vs_xgb": -0.10307412887626394,
+            "roc_auc": 0.8075559015613512,
+            "brier_score": 0.14108083759070694,
+            "score_distribution": {
+                "min": 0.00018798644,
+                "p25": 0.00174853455,
+                "median": 0.04131469,
+                "p75": 0.57041175,
+                "max": 0.98945075,
+                "mean": 0.24226869731748904,
+                "std": 0.2987067477282491
+            },
+            "column_name": "fusion_score_alpha_0_00"
+        },
+        {
+            "alpha": 0.5,
+            "weight_xgboost": 0.5,
+            "weight_transformer": 0.5,
+            "pr_auc": 0.2810867893507188,
+            "delta_pr_auc_vs_xgb": -0.009848682602575709,
+            "roc_auc": 0.8291596384239436,
+            "brier_score": 0.0578746435263508,
+            "score_distribution": {
+                "min": 0.0001048532015,
+                "p25": 0.0015356122325000002,
+                "median": 0.0255151365,
+                "p75": 0.2935185723,
+                "max": 0.974718525,
+                "mean": 0.1390031408793259,
+                "std": 0.18584745318840806
+            },
+            "column_name": "fusion_score_alpha_0_50"
+        },
+        {
+            "alpha": 0.6,
+            "weight_xgboost": 0.6,
+            "weight_transformer": 0.4,
+            "pr_auc": 0.28278292056781007,
+            "delta_pr_auc_vs_xgb": -0.00815255138548443,
+            "roc_auc": 0.8294191427706414,
+            "brier_score": 0.04860848394560748,
+            "score_distribution": {
+                "min": 8.82265538e-05,
+                "p25": 0.00141663858,
+                "median": 0.0224663032,
+                "p75": 0.23723810700000003,
+                "max": 0.97177208,
+                "mean": 0.11835002959169327,
+                "std": 0.16857568032558942
+            },
+            "column_name": "fusion_score_alpha_0_60"
+        },
+        {
+            "alpha": 0.7,
+            "weight_xgboost": 0.7,
+            "weight_transformer": 0.3,
+            "pr_auc": 0.28637138695067804,
+            "delta_pr_auc_vs_xgb": -0.004564085002616458,
+            "roc_auc": 0.8308247913152546,
+            "brier_score": 0.0418006841089068,
+            "score_distribution": {
+                "min": 7.159990610000001e-05,
+                "p25": 0.0012351013895000001,
+                "median": 0.017919780470000004,
+                "p75": 0.17988477007000003,
+                "max": 0.968825635,
+                "mean": 0.09769691830406065,
+                "std": 0.15460110565638616
+            },
+            "column_name": "fusion_score_alpha_0_70"
+        },
+        {
+            "alpha": 0.8,
+            "weight_xgboost": 0.8,
+            "weight_transformer": 0.2,
+            "pr_auc": 0.29193777079949074,
+            "delta_pr_auc_vs_xgb": 0.0010022988461962368,
+            "roc_auc": 0.8359716275247611,
+            "brier_score": 0.03745124401624875,
+            "score_distribution": {
+                "min": 5.497325839999999e-05,
+                "p25": 0.0010686136336,
+                "median": 0.013678250079999997,
+                "p75": 0.12160579279999997,
+                "max": 0.96587919,
+                "mean": 0.07704380701642799,
+                "std": 0.14488099073185134
+            },
+            "column_name": "fusion_score_alpha_0_80"
+        },
+        {
+            "alpha": 0.9,
+            "weight_xgboost": 0.9,
+            "weight_transformer": 0.1,
+            "pr_auc": 0.3097404186570704,
+            "delta_pr_auc_vs_xgb": 0.018804946703775915,
+            "roc_auc": 0.8374421521560487,
+            "brier_score": 0.03556016366763332,
+            "score_distribution": {
+                "min": 3.83466107e-05,
+                "p25": 0.0008276115815,
+                "median": 0.009130398141999996,
+                "p75": 0.06305658519999999,
+                "max": 0.97590536,
+                "mean": 0.05639069572879536,
+                "std": 0.1403023834902047
+            },
+            "column_name": "fusion_score_alpha_0_90"
+        },
+        {
+            "alpha": 1.0,
+            "weight_xgboost": 1.0,
+            "weight_transformer": 0.0,
+            "pr_auc": 0.2909354719532945,
+            "delta_pr_auc_vs_xgb": 0.0,
+            "roc_auc": 0.8228017819298473,
+            "brier_score": 0.03612744306306054,
+            "score_distribution": {
+                "min": 3.9223364e-06,
+                "p25": 0.000343607,
+                "median": 0.001452295,
+                "p75": 0.0062141182,
+                "max": 0.997361,
+                "mean": 0.035737584441162734,
+                "std": 0.14136574508326305
+            },
+            "column_name": "fusion_score_alpha_1_00"
+        }
+    ],
+    "highest_observed_candidate": {
+        "alpha": 0.9,
+        "weight_xgboost": 0.9,
+        "weight_transformer": 0.1,
+        "pr_auc": 0.3097404186570704,
+        "delta_pr_auc_vs_xgb": 0.018804946703775915,
+        "roc_auc": 0.8374421521560487,
+        "brier_score": 0.03556016366763332,
+        "paired_clustered_bootstrap_2000": {
+            "clusters": 75,
+            "iterations_valid": 2000,
+            "iterations_degenerate": 0,
+            "random_seed": 42,
+            "mean_delta_pr_auc": 0.017546063203689115,
+            "std_error_delta_pr_auc": 0.014456572017073226,
+            "ci_95_percent": [
+                -0.003753747686874641,
+                0.050753783324660864
+            ],
+            "spans_zero": true,
+            "p_superior_to_xgboost": 0.9195
+        }
+    },
+    "scientific_conclusions": {
+        "empirical_finding": "The late-fusion blend with alpha=0.90 (90% XGBoost, 10% Transformer) achieved the highest validation PR-AUC of 0.309740, an increase of +0.018805 (+1.88%) over standalone XGBoost. Conversely, blends with alpha <= 0.70 (including equal-weight 50/50 averaging) underperformed standalone XGBoost.",
+        "statistical_inference": "The 2,000-iteration paired child-clustered bootstrap 95% confidence interval is [-0.003754, +0.050754]. Because this interval touches/spans zero on its lower bound (-0.0038), and because alpha=0.90 was selected post-hoc as the maximum among candidate weights on this validation sample, this observed gain must be treated as exploratory. It is not yet an independently confirmed or generalizable clinical superiority.",
+        "score_calibration_statement": "Due to the 6.8x mean score disparity between unweighted XGBoost (mean 0.0357) and class-weighted Transformer (mean 0.2423), fused scores are ordinal ranking scores and NOT calibrated posterior probabilities. Threshold 0.50 is arbitrary and clinically meaningless for these blended scores."
+    },
+    "output_artifacts": {
+        "aligned_predictions_csv": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_validation_predictions_v1.csv",
+        "results_json": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_late_fusion_results_v1.json",
+        "report_markdown": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_late_fusion_report_v1.md"
+    }
+}

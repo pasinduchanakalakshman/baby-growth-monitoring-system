@@ -56,7 +56,7 @@ describe('Stage 16B Frontend Tests', () => {
 
   it('1. Register form renders', () => {
     renderWithProviders(<RegisterPage />);
-    expect(screen.getByRole('heading', { name: /Create Account/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /Create Your Account/i })).toBeTruthy();
     expect(screen.getByLabelText(/Full Name/i)).toBeTruthy();
   });
 
@@ -80,7 +80,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<RegisterPage />);
     
     fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'Test' } });
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText('Email Address'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
     fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'password123' } });
     
@@ -99,7 +99,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<RegisterPage />);
     
     fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'Test' } });
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText('Email Address'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
     fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'password123' } });
     
@@ -110,7 +110,7 @@ describe('Stage 16B Frontend Tests', () => {
 
   it('5. Login form renders', () => {
     renderWithProviders(<LoginPage />);
-    expect(screen.getByRole('heading', { name: /Sign In/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /Welcome Back/i })).toBeTruthy();
     expect(screen.getByLabelText(/Email/i)).toBeTruthy();
   });
 
@@ -121,7 +121,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<LoginPage />);
     
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'password123' } });
     fireEvent.click(screen.getByRole('button', { name: /Sign In/i }));
     
     await waitFor(() => {
@@ -136,7 +136,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<LoginPage />);
     
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'wrong' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'wrong' } });
     fireEvent.click(screen.getByRole('button', { name: /Sign In/i }));
     
     expect(await screen.findByText(/Incorrect email or password/i)).toBeTruthy();

@@ -5,6 +5,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import GrowthOverviewPage from './GrowthOverviewPage';
 import { growthApi } from '@/api/growth';
+import { babyApi } from '@/api/baby';
+
+vi.mock('@/api/baby', () => ({ babyApi: { getBabyProfile: vi.fn() } }));
 
 // Mock recharts so it doesn't fail in JSDOM
 vi.mock('recharts', async () => {
@@ -34,6 +37,7 @@ describe('GrowthOverviewPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ id: 1, owner_id: 1, name: 'Test', sex: 'Female', date_of_birth: '2023-01-01', birth_weight_kg: 3.2, gestational_age_weeks: 39 });
     queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     });
@@ -55,6 +59,28 @@ describe('GrowthOverviewPage', () => {
     
     const { container } = renderComponent();
     expect(container.querySelector('.animate-spin')).toBeTruthy();
+  });
+
+  it('uses the authenticated profile birth weight without measurements or writes', async () => {
+    const now = new Date();
+    const dob = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ id: 9, owner_id: 7, name: 'New baby', sex: 'Male', date_of_birth: dob, birth_weight_kg: 2.8 });
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: { birth_weight_kg: 4.5 } });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
+    const { container } = renderComponent();
+    expect(await screen.findByText('● Recorded birth weight: 2.8 kg')).toBeTruthy();
+    expect(babyApi.getBabyProfile).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('Add First Measurement')).toBeNull();
+    expect(screen.queryByText('Add Measurement')).toBeNull();
+    expect(container.querySelector('input, form')).toBeNull();
+  });
+
+  it('keeps the journey available when the existing dashboard fails', async () => {
+    vi.mocked(growthApi.getGrowthOverview).mockRejectedValue(new Error('Unavailable'));
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
+    renderComponent();
+    expect(await screen.findByText('● Recorded birth weight: 3.2 kg')).toBeTruthy();
+    expect(await screen.findByText(/couldn't load growth data/)).toBeTruthy();
   });
 
   it('renders no-data empty state when no measurements exist', async () => {

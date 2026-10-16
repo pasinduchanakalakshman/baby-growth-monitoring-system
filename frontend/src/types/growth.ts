@@ -114,6 +114,7 @@ export interface RiskExplanation {
   technical_explanation: TechnicalExplanation;
   frontend_safe_explanation: FrontendSafeExplanation[];
   disclaimer: string;
+  model_coverage_disclosure?: string;
 }
 
 export interface ModelInfo {

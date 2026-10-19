@@ -190,13 +190,9 @@ describe('Stage 16A Frontend QA Coverage', () => {
     );
     
     await waitFor(() => {
-      // Desktop sidebar Overview link
-      const desktopSidebarNav = screen.getAllByText('Overview');
-      expect(desktopSidebarNav.length).toBeGreaterThan(0);
-      
-      // Mobile bottom nav Home link
-      const mobileBottomNav = screen.getAllByText('Home');
-      expect(mobileBottomNav.length).toBeGreaterThan(0);
+      expect(screen.getByRole('navigation', { name: 'Desktop navigation' })).toBeTruthy();
+      expect(screen.getByRole('link', { name: 'Dashboard' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'Open application navigation' })).toBeTruthy();
     });
   });
 

@@ -172,7 +172,7 @@ export default function GrowthOverviewPage() {
               className="bg-amber-50 border border-amber-100 hover:bg-amber-100 text-amber-700 px-6 py-6 rounded-2xl font-medium transition-colors shadow-sm flex flex-col justify-center items-center text-center gap-2"
             >
               <span className="text-lg">Early Growth Risk</span>
-              <span className="text-sm text-amber-600/70 font-normal">180-day faltering likelihood</span>
+              <span className="text-sm text-amber-600/70 font-normal">180-day faltering screening score</span>
             </button>
           </div>
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from app.core.database import get_db
 from app.models import Baby, User, GrowthMeasurement
 from app.schemas.growth import (
@@ -27,26 +27,82 @@ def get_baby(db: Session, user: User) -> Baby:
         raise HTTPException(status_code=404, detail="Baby not found. Please register a baby first.")
     return baby
 
+def normalize_delivery_type(val: Optional[str]) -> Optional[str]:
+    """Normalizes delivery type to match frozen preprocessor categories: 'Normal' or 'C-Section'."""
+    if not val:
+        return None
+    val_clean = str(val).strip().lower()
+    if val_clean in ["normal", "vaginal", "spontaneous", "svd"]:
+        return "Normal"
+    elif val_clean in ["c-section", "caesarean", "cesarean", "c_section", "cesarian"]:
+        return "C-Section"
+    return val
+
+def derive_recent_illness(diarrhea: Optional[bool], fever: Optional[bool], cough: Optional[bool]) -> Optional[bool]:
+    """
+    Derives the composite recent_illness flag while preserving unrecorded missing answers.
+    - True if any illness is True.
+    - False if all illnesses are False.
+    - None (unknown) if all are unrecorded, or none are True and some are unrecorded.
+    """
+    flags = [diarrhea, fever, cough]
+    if any(f is True for f in flags):
+        return True
+    if all(f is False for f in flags):
+        return False
+    return None
+
 def format_history_for_ml(baby: Baby, db: Session) -> List[Dict[str, Any]]:
-    # ML services expect history as list of dicts with all base fields
+    # ML services expect history as list of dicts with all base fields matching frozen schemas
     measurements = db.query(GrowthMeasurement).filter(GrowthMeasurement.baby_id == baby.id).order_by(GrowthMeasurement.visit_date).all()
     history = []
+
+    sex_val = baby.sex.value if hasattr(baby.sex, 'value') else baby.sex
+    dob_str = str(baby.date_of_birth) if baby.date_of_birth else None
+    delivery_norm = normalize_delivery_type(baby.delivery_type)
+
     for m in measurements:
+        recent_illness_val = derive_recent_illness(
+            m.diarrhea_last_14_days,
+            m.fever_last_14_days,
+            m.cough_last_14_days
+        )
         history.append({
+            # Measurement base
             "visit_date": str(m.visit_date),
             "weight_kg": m.weight_kg,
             "length_height_cm": m.length_height_cm,
             "age_days": m.age_days,
             "verified_waz": m.verified_waz,
             "verified_haz": m.verified_haz,
-            "currently_breastfeeding": m.currently_breastfeeding,
+
+            # Feeding variables mapped to exact ML schema names
+            "breastfeeding_status": m.currently_breastfeeding,
             "formula_feeding": m.formula_feeding,
+            "complementary_feeding_started": m.solid_foods_started,
+
+            # Illness variables mapped to exact ML schema names
+            "diarrhea_recent": m.diarrhea_last_14_days,
+            "fever_recent": m.fever_last_14_days,
+            "respiratory_illness_recent": m.cough_last_14_days,
+            "recent_illness": recent_illness_val,
+
+            # Baby birth and demographic variables under exact expected schema names
+            "sex": sex_val,
+            "date_of_birth": dob_str,
+            "birth_weight_kg": baby.birth_weight_kg,
+            "birth_length_cm": baby.birth_length_cm,
+            "gestational_age_weeks": baby.gestational_age_weeks,
+            "birth_order": baby.birth_order,
+            "delivery_type": delivery_norm,
+            "apgar_score_5min": baby.apgar_score_5min,
+
+            # Retain legacy field names for backward compatibility
+            "currently_breastfeeding": m.currently_breastfeeding,
             "solid_foods_started": m.solid_foods_started,
             "diarrhea_last_14_days": m.diarrhea_last_14_days,
             "fever_last_14_days": m.fever_last_14_days,
-            "cough_last_14_days": m.cough_last_14_days,
-            "sex": baby.sex.value,
-            "birth_weight_kg": baby.birth_weight_kg
+            "cough_last_14_days": m.cough_last_14_days
         })
     return history
 
@@ -129,13 +185,15 @@ def get_overview(db: Session = Depends(get_db), current_user: User = Depends(get
         if k not in temporal_feats:
             temporal_feats[k] = v
     
-    r_out = risk_service.calculate_risk(temporal_feats)
+    r_out = risk_service.calculate_risk(temporal_feats, history=history)
     res["risk_180d"] = {
         "available": r_out["risk_available"],
         "applicable": r_out.get("model_applicable"),
         "probability": r_out.get("risk_probability"),
+        "risk_score": r_out.get("risk_score"),
         "threshold": r_out.get("risk_threshold"),
         "flag": r_out.get("risk_flag"),
+        "screening_status": r_out.get("screening_status"),
         "horizon_days": r_out.get("prediction_horizon_days"),
         "reason": r_out.get("reason")
     }
@@ -168,7 +226,7 @@ def get_latest_risk(db: Session = Depends(get_db), current_user: User = Depends(
         if k not in features:
             features[k] = v
             
-    return risk_service.calculate_risk(features)
+    return risk_service.calculate_risk(features, history=history)
 
 @router.get("/risk/trajectory")
 def get_risk_trajectory(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -190,7 +248,7 @@ def get_risk_explanation(db: Session = Depends(get_db), current_user: User = Dep
         if k not in features:
             features[k] = v
             
-    r_out = risk_service.calculate_risk(features)
+    r_out = risk_service.calculate_risk(features, history=history)
     if not r_out["risk_available"]:
         raise HTTPException(status_code=400, detail="Risk not available. Cannot generate explanation.")
         
@@ -200,11 +258,16 @@ def get_risk_explanation(db: Session = Depends(get_db), current_user: User = Dep
 def get_model_info():
     risk_meta = artifact_loader.get_risk_metadata()
     f_meta = artifact_loader.get_forecast_metadata()
+    manifest = artifact_loader.get_hybrid_manifest()
+    threshold = artifact_loader.get_research_screening_threshold()
     return {
         "Risk": {
-            "model": risk_meta.get("model_type", "XGBoost"),
+            "model": manifest.get("selected_architecture", "XGBoost + Transformer Late Fusion Hybrid"),
             "horizon_days": risk_meta.get("prediction_horizon_days", 180),
-            "threshold": risk_meta.get("threshold", 0.50)
+            "threshold": threshold,
+            "screening_status_elevated": "Elevated screening risk",
+            "screening_status_below": "Below screening threshold",
+            "fusion": manifest.get("fusion_specification", {}).get("formula", "0.90 * XGBoost + 0.10 * Transformer")
         },
         "Forecast": {
             "model": f_meta.get("model_name", "Linear Regression"),

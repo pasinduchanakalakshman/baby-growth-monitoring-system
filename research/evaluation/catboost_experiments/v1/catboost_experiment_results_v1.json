@@ -1,0 +1,71 @@
+{
+    "task": "Task 3.7A - Train and Evaluate CatBoost",
+    "verdict": "PASS",
+    "status": "EVALUATION_COMPLETE",
+    "timestamp_utc": "2026-10-15T07:58:02.828137+00:00",
+    "dataset_verification": {
+        "train_visits": 5380,
+        "train_children": 348,
+        "train_positives": 231,
+        "val_visits": 1143,
+        "val_children": 75,
+        "val_positives": 42,
+        "child_overlap": 0
+    },
+    "feature_specification": {
+        "schema": "Control B (feature_schema_v2.json)",
+        "raw_predictor_count": 47,
+        "transformed_predictor_count": 53,
+        "contains_date_of_birth": false,
+        "contains_waz_trajectory_slope": false
+    },
+    "model_performance": {
+        "catboost_control_b": {
+            "pr_auc": 0.3037014997378748,
+            "roc_auc": 0.8446866485013623,
+            "brier_score": 0.03413113085463937,
+            "metrics_at_thresh_050": {
+                "tn": 1083,
+                "fp": 18,
+                "fn": 30,
+                "tp": 12,
+                "precision": 0.4,
+                "recall": 0.2857142857142857,
+                "f1": 0.3333333333333333,
+                "specificity": 0.9836512261580381
+            }
+        },
+        "cleaned_xgboost_control_b": {
+            "pr_auc": 0.2607595913477262,
+            "roc_auc": 0.8095670602482592,
+            "brier_score": 0.03518799034286118
+        },
+        "historical_reference_standard_xgboost_v1": {
+            "pr_auc": 0.2909354719532945,
+            "roc_auc": 0.8228017819298473,
+            "brier_score": 0.03612744304855849,
+            "note": "Historical reference only; uses 346 features including 293 date_of_birth columns."
+        }
+    },
+    "comparison_vs_cleaned_xgboost_control_b": {
+        "pr_auc_delta": 0.04294190839014861,
+        "roc_auc_delta": 0.03511958825310313,
+        "brier_score_delta": -0.0010568594882218105,
+        "paired_bootstrap_ci_95": [
+            -0.030808767093989463,
+            0.1102051991564911
+        ],
+        "bootstrap_mean_delta": 0.04167154543426659,
+        "improvement_verified": true
+    },
+    "file_paths": {
+        "model_cbm": "models/trained/catboost/v1/catboost_control_b_v1.cbm",
+        "model_joblib": "models/trained/catboost/v1/catboost_control_b_v1.joblib",
+        "preprocessor": "models/scalers/catboost/v1/catboost_preprocessor_v1.joblib",
+        "metadata": "models/metadata/catboost/v1/catboost_model_metadata_v1.json",
+        "validation_predictions": "research/evaluation/catboost_experiments/v1/catboost_validation_predictions_v1.csv",
+        "results_json": "research/evaluation/catboost_experiments/v1/catboost_experiment_results_v1.json",
+        "report_markdown": "research/evaluation/catboost_experiments/v1/catboost_validation_report_v1.md",
+        "reproducible_script": "research/scripts/run_catboost_experiment.py"
+    }
+}

@@ -1,0 +1,263 @@
+{
+    "task": "Task 3.5C - Hybrid Validation Sensitivity Analysis",
+    "verdict": "PASS",
+    "status": "SENSITIVITY_ANALYSIS_COMPLETE",
+    "timestamp_utc": "2026-10-15T06:42:03.767221+00:00",
+    "uncertain_negatives_audit": {
+        "definition": "Clinical encounter observations where the child had zero subsequent clinic visits recorded in the (0, 180] day window.",
+        "source_reason": "Interval-censored / right-censored observations assigned negative outcome (y=0) under default evaluation heuristic.",
+        "count_identified": 46,
+        "target_labels_verified": {
+            "label_0_count": 46,
+            "label_1_count": 0
+        },
+        "children_affected": 37,
+        "exact_keys": [
+            {
+                "child_id": "CH027",
+                "visit_date": "2024-01-18"
+            },
+            {
+                "child_id": "CH032",
+                "visit_date": "2023-02-27"
+            },
+            {
+                "child_id": "CH038",
+                "visit_date": "2021-10-01"
+            },
+            {
+                "child_id": "CH042",
+                "visit_date": "2023-11-21"
+            },
+            {
+                "child_id": "CH052",
+                "visit_date": "2022-01-14"
+            },
+            {
+                "child_id": "CH052",
+                "visit_date": "2023-01-19"
+            },
+            {
+                "child_id": "CH055",
+                "visit_date": "2021-08-13"
+            },
+            {
+                "child_id": "CH057",
+                "visit_date": "2022-10-06"
+            },
+            {
+                "child_id": "CH071",
+                "visit_date": "2024-03-31"
+            },
+            {
+                "child_id": "CH080",
+                "visit_date": "2023-09-08"
+            },
+            {
+                "child_id": "CH083",
+                "visit_date": "2023-02-11"
+            },
+            {
+                "child_id": "CH135",
+                "visit_date": "2022-04-24"
+            },
+            {
+                "child_id": "CH135",
+                "visit_date": "2022-10-23"
+            },
+            {
+                "child_id": "CH142",
+                "visit_date": "2024-02-24"
+            },
+            {
+                "child_id": "CH145",
+                "visit_date": "2023-06-15"
+            },
+            {
+                "child_id": "CH177",
+                "visit_date": "2021-12-02"
+            },
+            {
+                "child_id": "CH178",
+                "visit_date": "2022-07-11"
+            },
+            {
+                "child_id": "CH180",
+                "visit_date": "2021-09-18"
+            },
+            {
+                "child_id": "CH186",
+                "visit_date": "2023-06-04"
+            },
+            {
+                "child_id": "CH193",
+                "visit_date": "2024-12-08"
+            },
+            {
+                "child_id": "CH197",
+                "visit_date": "2022-04-21"
+            },
+            {
+                "child_id": "CH200",
+                "visit_date": "2021-11-24"
+            },
+            {
+                "child_id": "CH202",
+                "visit_date": "2023-03-29"
+            },
+            {
+                "child_id": "CH214",
+                "visit_date": "2022-12-04"
+            },
+            {
+                "child_id": "CH214",
+                "visit_date": "2024-03-09"
+            },
+            {
+                "child_id": "CH276",
+                "visit_date": "2022-07-28"
+            },
+            {
+                "child_id": "CH276",
+                "visit_date": "2023-04-26"
+            },
+            {
+                "child_id": "CH299",
+                "visit_date": "2024-03-03"
+            },
+            {
+                "child_id": "CH306",
+                "visit_date": "2023-05-16"
+            },
+            {
+                "child_id": "CH308",
+                "visit_date": "2024-07-19"
+            },
+            {
+                "child_id": "CH311",
+                "visit_date": "2023-10-30"
+            },
+            {
+                "child_id": "CH341",
+                "visit_date": "2023-05-05"
+            },
+            {
+                "child_id": "CH341",
+                "visit_date": "2024-05-01"
+            },
+            {
+                "child_id": "CH356",
+                "visit_date": "2021-04-14"
+            },
+            {
+                "child_id": "CH356",
+                "visit_date": "2022-04-18"
+            },
+            {
+                "child_id": "CH369",
+                "visit_date": "2020-12-29"
+            },
+            {
+                "child_id": "CH369",
+                "visit_date": "2023-09-27"
+            },
+            {
+                "child_id": "CH378",
+                "visit_date": "2022-10-16"
+            },
+            {
+                "child_id": "CH381",
+                "visit_date": "2022-05-10"
+            },
+            {
+                "child_id": "CH401",
+                "visit_date": "2021-04-26"
+            },
+            {
+                "child_id": "CH406",
+                "visit_date": "2022-03-25"
+            },
+            {
+                "child_id": "CH430",
+                "visit_date": "2022-05-05"
+            },
+            {
+                "child_id": "CH430",
+                "visit_date": "2024-11-04"
+            },
+            {
+                "child_id": "CH450",
+                "visit_date": "2023-05-02"
+            },
+            {
+                "child_id": "CH452",
+                "visit_date": "2020-09-17"
+            },
+            {
+                "child_id": "CH452",
+                "visit_date": "2021-06-20"
+            }
+        ]
+    },
+    "full_validation_metrics_n1143": {
+        "total_rows": 1143,
+        "unique_children": 75,
+        "positive_events": 42,
+        "negative_events": 1101,
+        "prevalence_pct": 3.674540682414698,
+        "xgboost_pr_auc": 0.2909354719532945,
+        "hybrid_090_pr_auc": 0.3097404186570704,
+        "delta_pr_auc": 0.018804946703775915,
+        "xgboost_roc_auc": 0.8228017819298473,
+        "hybrid_090_roc_auc": 0.8374421521560487,
+        "delta_roc_auc": 0.014640370226201349,
+        "xgboost_brier": 0.03612744306306054,
+        "hybrid_090_brier": 0.03556016366763332,
+        "delta_brier": -0.0005672793954272157
+    },
+    "reduced_validation_metrics_n1097": {
+        "total_rows": 1097,
+        "unique_children": 75,
+        "positive_events": 42,
+        "negative_events": 1055,
+        "prevalence_pct": 3.828623518687329,
+        "xgboost_pr_auc": 0.3017138761445848,
+        "hybrid_090_pr_auc": 0.3212065725751308,
+        "delta_pr_auc": 0.01949269643054602,
+        "xgboost_roc_auc": 0.8235838411193861,
+        "hybrid_090_roc_auc": 0.8376664409839766,
+        "delta_roc_auc": 0.014082599864590484,
+        "xgboost_brier": 0.036471332683919624,
+        "hybrid_090_brier": 0.03579843566189785,
+        "delta_brier": -0.000672897022021772
+    },
+    "sensitivity_comparison": {
+        "delta_pr_auc_full": 0.018804946703775915,
+        "delta_pr_auc_reduced": 0.01949269643054602,
+        "shift_in_delta_pr_auc": 0.0006877497267701038,
+        "percentage_points_shift": 0.06877497267701038,
+        "interpretation": "The hybrid-minus-XGBoost PR-AUC delta is extraordinarily robust to the 46 uncertain-negative records. The advantage shifted from +0.018805 (+1.88%) to +0.019493 (+1.95%), a change of only +0.000688 (+0.07 percentage points). The hybrid's observed ranking benefit does not rely on these records."
+    },
+    "reduced_clustered_bootstrap_2000": {
+        "clusters": 75,
+        "iterations_valid": 2000,
+        "iterations_degenerate": 0,
+        "random_seed": 42,
+        "mean_delta_pr_auc": 0.01824850179749301,
+        "std_error_delta_pr_auc": 0.014447585851232082,
+        "ci_95_percent": [
+            -0.003036185267534497,
+            0.051415966184334416
+        ],
+        "spans_zero": true,
+        "p_superior_to_xgboost": 0.9315
+    },
+    "methodological_guardrails": {
+        "nature_of_sensitivity_analysis": "Excluding the 46 uncertain negatives is an analytical sensitivity check, NOT proof that the remaining 1,097 labels are perfect. Unmeasured interval censoring, loss to follow-up, and real/synthetic data mixture remain inherent characteristics of the dataset.",
+        "exploratory_status_preserved": "Because alpha=0.90 was selected based on full validation performance, evaluating it on the reduced validation split remains exploratory. Confirmatory claims of clinical efficacy require untouched held-out test split evaluation."
+    },
+    "output_artifacts": {
+        "results_json": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_sensitivity_analysis_v1.json",
+        "report_markdown": "research\\evaluation\\hybrid_experiments\\v1\\hybrid_sensitivity_analysis_v1.md"
+    }
+}

@@ -60,10 +60,20 @@ export interface Forecast30Day {
 export interface Risk180Day {
   risk_available: boolean;
   risk_probability?: number | null;
+  risk_score?: number | null;
   risk_threshold?: number | null;
   risk_flag?: number | null;
+  screening_status?: string | null;
+  screening_threshold_note?: string | null;
   prediction_horizon_days?: number | null;
   model_version?: string | null;
+  model_type?: string | null;
+  component_scores?: {
+    xgboost_probability: number;
+    transformer_probability: number;
+    alpha_xgboost?: number;
+    weight_transformer?: number;
+  } | null;
   model_applicable?: boolean | null;
   reason?: string | null;
 }
@@ -104,6 +114,7 @@ export interface RiskExplanation {
   technical_explanation: TechnicalExplanation;
   frontend_safe_explanation: FrontendSafeExplanation[];
   disclaimer: string;
+  model_coverage_disclosure?: string;
 }
 
 export interface ModelInfo {

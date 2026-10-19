@@ -1,0 +1,141 @@
+{
+    "task": "Task 3.6B - Cleaned XGBoost + Transformer Hybrid Comparison",
+    "verdict": "PASS",
+    "status": "COMPARISON_COMPLETE",
+    "timestamp_utc": "2026-10-15T07:35:15.857864+00:00",
+    "fixed_fusion_weight": {
+        "alpha_xgboost": 0.9,
+        "weight_transformer": 0.1,
+        "note": "Evaluated as fixed reference only. No weight tuning performed."
+    },
+    "dataset_verification": {
+        "validation_rows": 1143,
+        "validation_children": 75,
+        "positive_events": 42,
+        "negative_events": 1101,
+        "key_alignment": "Strict (child_id, visit_date) inner join",
+        "missing_predictions": 0,
+        "nonfinite_scores": 0,
+        "duplicate_keys": 0,
+        "target_mismatches": 0
+    },
+    "model_metrics": {
+        "Standard XGBoost v1": {
+            "pr_auc": 0.2909354719532945,
+            "roc_auc": 0.8228017819298473,
+            "brier_score": 0.03612744306306054
+        },
+        "Original 90/10 Hybrid": {
+            "pr_auc": 0.3097404186570704,
+            "roc_auc": 0.8374421521560487,
+            "brier_score": 0.03556016366763332
+        },
+        "Cleaned XGBoost Control B": {
+            "pr_auc": 0.2607595913477262,
+            "roc_auc": 0.8095670602482592,
+            "brier_score": 0.03518799035572553
+        },
+        "Cleaned Control B + Transformer (90/10)": {
+            "pr_auc": 0.2663507401620039,
+            "roc_auc": 0.8312572985597508,
+            "brier_score": 0.0348400840550506
+        },
+        "Cleaned XGBoost Experiment C": {
+            "pr_auc": 0.2714790049986777,
+            "roc_auc": 0.8132001211020284,
+            "brier_score": 0.034511361895139335
+        },
+        "Cleaned Experiment C + Transformer (90/10)": {
+            "pr_auc": 0.26634353271674827,
+            "roc_auc": 0.8395181869296311,
+            "brier_score": 0.03417543635274208
+        }
+    },
+    "tabular_pipeline_differences": {
+        "ctrl_b_vs_standard_v1": {
+            "description": "Effect of pipeline cleaning (removing 293 date_of_birth columns, clean imputers/scalers)",
+            "pr_auc_diff": -0.030175880605568306,
+            "roc_auc_diff": -0.013234721681588124,
+            "brier_diff": -0.0009394527073350104
+        },
+        "exp_c_vs_ctrl_b": {
+            "description": "Effect of adding waz_trajectory_slope_3v to cleaned tabular feature set",
+            "pr_auc_diff": 0.010719413650951526,
+            "roc_auc_diff": 0.0036330608537692433,
+            "brier_diff": -0.0006766284605861927
+        },
+        "exp_c_vs_standard_v1": {
+            "description": "Total effect of modernizing tabular model (clean features + WAZ slope vs legacy v1)",
+            "pr_auc_diff": -0.01945646695461678,
+            "roc_auc_diff": -0.00960166082781888,
+            "brier_diff": -0.001616081167921203
+        }
+    },
+    "transformer_fusion_differences": {
+        "orig_hybrid_vs_standard_v1": {
+            "description": "Adding 10% Transformer to legacy Standard XGBoost v1",
+            "pr_auc_diff": 0.018804946703775915,
+            "roc_auc_diff": 0.014640370226201349,
+            "brier_diff": -0.0005672793954272157
+        },
+        "clean_ctrl_b_hybrid_vs_ctrl_b": {
+            "description": "Adding 10% Transformer to Cleaned XGBoost Control B",
+            "pr_auc_diff": 0.005591148814277691,
+            "roc_auc_diff": 0.02169023831149164,
+            "brier_diff": -0.00034790630067492445
+        },
+        "clean_exp_c_hybrid_vs_exp_c": {
+            "description": "Adding 10% Transformer to Cleaned XGBoost Experiment C",
+            "pr_auc_diff": -0.005135472281929454,
+            "roc_auc_diff": 0.026318065827602655,
+            "brier_diff": -0.0003359255423972529
+        },
+        "clean_exp_c_hybrid_vs_orig_hybrid": {
+            "description": "Comparing Cleaned Experiment C Hybrid directly against Original 90/10 Hybrid",
+            "pr_auc_diff": -0.04339688594032215,
+            "roc_auc_diff": 0.0020760347735824247,
+            "brier_diff": -0.0013847273148912403
+        }
+    },
+    "bootstrap_uncertainty_analysis": {
+        "orig_hybrid_minus_orig_xgb": {
+            "mean_boot_diff": 0.01755957463477877,
+            "ci_95": [
+                -0.004974451464792991,
+                0.050163624412859674
+            ]
+        },
+        "ctrl_b_hybrid_minus_ctrl_b": {
+            "mean_boot_diff": 0.006457372618873986,
+            "ci_95": [
+                -0.022352225270429127,
+                0.03487896260909155
+            ]
+        },
+        "exp_c_hybrid_minus_exp_c": {
+            "mean_boot_diff": -0.00011268339609975338,
+            "ci_95": [
+                -0.029008548110916736,
+                0.02381271163997213
+            ]
+        },
+        "exp_c_hybrid_minus_orig_hybrid": {
+            "mean_boot_diff": -0.03427612977135901,
+            "ci_95": [
+                -0.10185972419901221,
+                0.028222688116768008
+            ]
+        }
+    },
+    "clinical_and_methodological_notes": {
+        "calibration_statement": "Score averages (0.90 * XGBoost + 0.10 * Transformer) are not established as calibrated clinical probabilities. The sequence model was trained with 22:1 balanced class weighting, shifting raw scores above prevalence. Blended values function as decision/screening ranking indices rather than formal Bayesian posterior probabilities.",
+        "no_threshold_selection_commitment": "No operational decision thresholds were selected and no claims of clinical superiority are made. All findings remain exploratory validation evidence.",
+        "disentanglement_summary": "Pipeline cleaning (removing 293 date_of_birth columns) lowers standalone PR-AUC by -0.0302 (from 0.2909 to 0.2608). Adding waz_trajectory_slope_3v restores +0.0107 of that gap (to 0.2715). Adding the Transformer to Experiment C shifts PR-AUC by -0.0051 (to 0.2663) while raising ROC-AUC to 0.8395 and lowering Brier to 0.0342. All 95% bootstrap confidence intervals for the hybrid lift span zero."
+    },
+    "file_paths": {
+        "markdown_report": "research/evaluation/hybrid_experiments/v2/cleaned_hybrid_comparison_report_v2.md",
+        "json_results": "research/evaluation/hybrid_experiments/v2/cleaned_hybrid_comparison_v2.json",
+        "reproducible_script": "research/evaluation/hybrid_experiments/v2/run_cleaned_hybrid_comparison.py",
+        "predictions_csv": "research/evaluation/hybrid_experiments/v2/cleaned_hybrid_validation_predictions_v2.csv"
+    }
+}

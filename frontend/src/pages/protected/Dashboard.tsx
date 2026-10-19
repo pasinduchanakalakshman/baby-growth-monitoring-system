@@ -1,86 +1,52 @@
 import { useAuth } from '@/auth/AuthProvider';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { Info, Baby, LineChart, Activity } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { ArrowLeftRight, CalendarDays, Info, RefreshCw, Scale } from 'lucide-react';
 import { babyApi } from '@/api/baby';
+import { growthApi } from '@/api/growth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { DashboardWelcome } from '@/features/dashboard/components/DashboardWelcome';
+import { BabySummaryCard } from '@/features/dashboard/components/BabySummaryCard';
+import { GrowthStatCard } from '@/features/dashboard/components/GrowthStatCard';
+import { GrowthChartPreview } from '@/features/dashboard/components/GrowthChartPreview';
+import { DashboardQuickActions } from '@/features/dashboard/components/DashboardQuickActions';
+import { ageInDays, isRecordedWeight, shortDate } from '@/features/dashboard/dashboardDisplay';
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { data: baby } = useQuery({
-    queryKey: ['baby.profile'],
-    queryFn: babyApi.getBabyProfile,
-    staleTime: Infinity // Rarely changes
-  });
+  const profile = useQuery({ queryKey: ['baby.profile'], queryFn: babyApi.getBabyProfile, staleTime: Infinity });
+  const baby = profile.data;
+  const days = ageInDays(baby?.date_of_birth);
+  const newborn = days !== null && days <= 30;
+  const overview = useQuery({ queryKey: ['growth.overview'], queryFn: growthApi.getGrowthOverview, enabled: !!baby });
+  const history = useQuery({ queryKey: ['growth.history'], queryFn: growthApi.getGrowthHistory, enabled: !!baby && !newborn });
+  const current = overview.data?.current_growth;
+  const weight = isRecordedWeight(current?.weight_kg) ? current.weight_kg : null;
+  const birthWeight = isRecordedWeight(baby?.birth_weight_kg) ? baby.birth_weight_kg : null;
+  const change = weight !== null && birthWeight !== null ? weight - birthWeight : null;
+  const measurementDate = shortDate(current?.visit_date);
+  const loading = profile.isLoading || overview.isLoading;
+  const forecast = overview.data?.forecast_30d;
+  const dataError = overview.isError || (!newborn && history.isError);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Welcome, {user?.name || 'Mother'}</h1>
-        <p className="text-slate-500">Monitor {baby?.name || "your baby"}'s growth and health.</p>
+    <div className="min-w-0 space-y-5">
+      <DashboardWelcome name={user?.name} babyName={baby?.name} />
+      <div className="grid min-w-0 grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
+        <div className="col-span-2 min-w-0 md:col-span-3 xl:col-span-2"><BabySummaryCard baby={baby} loading={profile.isLoading} error={profile.isError} /></div>
+        <GrowthStatCard title="Latest recorded weight" value={weight !== null ? weight.toFixed(2) : null} unit="kg" icon={Scale} loading={loading} description={overview.isError ? 'Weight could not be loaded' : weight !== null ? 'From a recorded visit' : 'No current measurement available'} />
+        <GrowthStatCard title="Change from birth" value={change !== null ? (change > 0 ? '+' : '') + change.toFixed(2) : null} unit="kg" icon={ArrowLeftRight} loading={loading} description={change !== null ? 'Latest recorded weight minus birth weight' : 'Requires birth and recorded weights'} />
+        <GrowthStatCard title="Latest measurement" value={measurementDate} icon={CalendarDays} loading={loading} description={measurementDate ? 'Recorded visit date' : 'No visit date available'} compactOnMobile className="col-span-2 md:col-span-1" />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        <Card className="border-primary/20 shadow-sm bg-primary/5">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Baby className="h-5 w-5 text-primary" />
-              {baby?.name || 'Baby Profile'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="mb-4">
-              Registered on {baby?.date_of_birth}. View full birth parameters.
-            </CardDescription>
-            <Button variant="default" className="w-full" asChild>
-              <Link to="/baby">View Profile</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <LineChart className="h-5 w-5 text-primary" />
-              Growth Monitoring
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="mb-4">
-              Track growth, view 30-day forecasts, and assess 180-day growth-faltering risk.
-            </CardDescription>
-            <Button variant="outline" className="w-full" disabled>
-              Available in Stage 16C
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Activity className="h-5 w-5 text-primary" />
-              Add Measurement
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="mb-4">
-              Enter new weight and length to update WHO scores and ML predictions.
-            </CardDescription>
-            <Button variant="outline" className="w-full" disabled>
-              Available in Stage 16C
-            </Button>
-          </CardContent>
-        </Card>
+      {(profile.isError || dataError) && <Alert className="rounded-xl border-border/60 bg-secondary/50" role="status"><Info aria-hidden="true" className="size-4" /><AlertDescription><p>{profile.isError ? "Some baby details couldn't be loaded." : "Some growth details couldn't be loaded. Available profile and birth information are shown."}</p><Button variant="link" className="mt-1 min-h-11 gap-2 px-0" onClick={() => { if (profile.isError) void profile.refetch(); if (overview.isError) void overview.refetch(); if (history.isError) void history.refetch(); }}><RefreshCw aria-hidden="true" className="size-4" />Try again</Button></AlertDescription></Alert>}
+      <div className="grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_15rem]">
+        <GrowthChartPreview baby={baby} newborn={newborn} history={history.data ?? []} loading={profile.isLoading || (!newborn && history.isLoading)} error={profile.isError || (!newborn && history.isError)} />
+        <DashboardQuickActions newborn={newborn} olderBaby={days !== null && days > 30} hasProfile={!!baby} hasHistory={!!history.data?.length && !history.isError} forecastAvailable={forecast?.available === true && isRecordedWeight(forecast.estimated_weight_kg)} />
       </div>
-
-      {/* Disclaimer */}
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 text-sm text-amber-900 mt-8">
-        <Info className="h-5 w-5 flex-shrink-0 text-amber-600" />
-        <p>
-          <strong>System Disclaimer:</strong> This system provides growth estimates and risk assessments and is not a medical diagnosis. Always consult with a healthcare professional for medical advice.
-        </p>
-      </div>
+      <Alert role="note" aria-label="System disclaimer" className="rounded-xl border-primary/15 bg-primary/5 py-4 text-foreground [&>svg]:text-primary">
+        <Info aria-hidden="true" className="size-4" />
+        <AlertDescription className="text-xs leading-relaxed sm:text-sm"><p><strong>System Disclaimer:</strong> This system provides growth estimates and risk assessments and is not a medical diagnosis. Always consult with a healthcare professional for medical advice.</p></AlertDescription>
+      </Alert>
     </div>
   );
 }

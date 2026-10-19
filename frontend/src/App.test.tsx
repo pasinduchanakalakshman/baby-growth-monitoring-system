@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth/AuthProvider';
 import { authApi } from '@/api/auth';
 import { babyApi } from '@/api/baby';
+import { growthApi } from '@/api/growth';
 import { ApiClientError } from '@/api/client';
 
 // Mock the APIs
@@ -28,6 +29,10 @@ vi.mock('@/api/baby', () => ({
   }
 }));
 
+vi.mock('@/api/growth', () => ({
+  growthApi: { getGrowthOverview: vi.fn(), getGrowthHistory: vi.fn() }
+}));
+
 const createTestQueryClient = () => new QueryClient({
   defaultOptions: {
     queries: {
@@ -39,6 +44,8 @@ const createTestQueryClient = () => new QueryClient({
 describe('Stage 16B Frontend Tests', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: null });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
   });
 
   const renderWithProviders = (ui: React.ReactElement) => {

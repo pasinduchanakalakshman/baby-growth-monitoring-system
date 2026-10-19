@@ -11,6 +11,7 @@ import { GrowthStatCard } from '@/features/dashboard/components/GrowthStatCard';
 import { GrowthChartPreview } from '@/features/dashboard/components/GrowthChartPreview';
 import { DashboardQuickActions } from '@/features/dashboard/components/DashboardQuickActions';
 import { ageInDays, isRecordedWeight, shortDate } from '@/features/dashboard/dashboardDisplay';
+import { useNewbornWeightJourney } from '@/features/growth/useNewbornWeightJourney';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -18,6 +19,7 @@ export default function Dashboard() {
   const baby = profile.data;
   const days = ageInDays(baby?.date_of_birth);
   const newborn = days !== null && days <= 30;
+  const journey = useNewbornWeightJourney(baby, newborn && !profile.isError);
   const overview = useQuery({ queryKey: ['growth.overview'], queryFn: growthApi.getGrowthOverview, enabled: !!baby });
   const history = useQuery({ queryKey: ['growth.history'], queryFn: growthApi.getGrowthHistory, enabled: !!baby && !newborn });
   const current = overview.data?.current_growth;
@@ -40,7 +42,7 @@ export default function Dashboard() {
       </div>
       {(profile.isError || dataError) && <Alert className="rounded-xl border-border/60 bg-secondary/50" role="status"><Info aria-hidden="true" className="size-4" /><AlertDescription><p>{profile.isError ? "Some baby details couldn't be loaded." : "Some growth details couldn't be loaded. Available profile and birth information are shown."}</p><Button variant="link" className="mt-1 min-h-11 gap-2 px-0" onClick={() => { if (profile.isError) void profile.refetch(); if (overview.isError) void overview.refetch(); if (history.isError) void history.refetch(); }}><RefreshCw aria-hidden="true" className="size-4" />Try again</Button></AlertDescription></Alert>}
       <div className="grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_15rem]">
-        <GrowthChartPreview baby={baby} newborn={newborn} history={history.data ?? []} loading={profile.isLoading || (!newborn && history.isLoading)} error={profile.isError || (!newborn && history.isError)} />
+        <GrowthChartPreview baby={baby} newborn={newborn} journey={journey.data} history={history.data ?? []} loading={profile.isLoading || (newborn ? journey.isLoading : history.isLoading)} error={profile.isError || (newborn ? journey.isError : history.isError)} onRetry={() => void journey.refetch()} />
         <DashboardQuickActions newborn={newborn} olderBaby={days !== null && days > 30} hasProfile={!!baby} hasHistory={!!history.data?.length && !history.isError} forecastAvailable={forecast?.available === true && isRecordedWeight(forecast.estimated_weight_kg)} />
       </div>
       <Alert role="note" aria-label="System disclaimer" className="rounded-xl border-primary/15 bg-primary/5 py-4 text-foreground [&>svg]:text-primary">

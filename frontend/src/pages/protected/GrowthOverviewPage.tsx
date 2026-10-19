@@ -5,6 +5,7 @@ import { growthApi } from '@/api/growth';
 import { formatCalendarDate, getWhoStatusFromZScore } from '@/utils/growthDisplay';
 import GrowthCharts from '@/features/growth/components/GrowthCharts';
 import NewbornWeightJourneyChart from '@/features/growth/components/NewbornWeightJourneyChart';
+import { useNewbornWeightJourney } from '@/features/growth/useNewbornWeightJourney';
 import { babyApi } from '@/api/baby';
 import { Activity, Plus, Scale, Ruler, FileText, LineChart } from 'lucide-react';
 import { PageHeader } from '@/components/ui/shared/PageHeader';
@@ -15,14 +16,18 @@ import { ResearchDisclaimer } from '@/components/ui/shared/ResearchDisclaimer';
 
 export default function GrowthOverviewPage() {
   const navigate = useNavigate();
-  const { data: baby, isLoading: profileLoading, error: profileError } = useQuery({
+  const { data: baby, isLoading: profileLoading, error: profileError, refetch: profileQueryRetry } = useQuery({
     queryKey: ['baby.profile'],
     queryFn: babyApi.getBabyProfile,
     retry: false,
   });
-  const journey = profileLoading ? <LoadingState /> : profileError
-    ? <p className="text-sm text-slate-600">We couldn't load the birth details for the newborn weight journey. Please try again.</p>
-    : <NewbornWeightJourneyChart birthWeightKg={baby?.birth_weight_kg} gestationalAgeWeeks={baby?.gestational_age_weeks} />;
+  const journeyQuery = useNewbornWeightJourney(baby, !profileError);
+  const journey = <NewbornWeightJourneyChart
+    journey={journeyQuery.data}
+    isLoading={profileLoading || journeyQuery.isLoading}
+    error={!!profileError || journeyQuery.isError}
+    onRetry={() => { if (profileError) void profileQueryRetry(); else void journeyQuery.refetch(); }}
+  />;
   const birthDate = baby?.date_of_birth ? new Date(`${baby.date_of_birth}T00:00:00`) : null;
   const today = new Date();
   const ageDays = birthDate ? Math.floor((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(birthDate.getFullYear(), birthDate.getMonth(), birthDate.getDate())) / 86400000) : null;

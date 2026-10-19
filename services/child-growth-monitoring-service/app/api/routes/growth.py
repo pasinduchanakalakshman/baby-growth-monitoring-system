@@ -9,6 +9,8 @@ from app.schemas.growth import (
     GrowthOverviewResponse, CurrentGrowthOutput, Forecast30dOutput, Risk180dOutput
 )
 from app.api.deps import get_current_user
+from app.schemas.newborn_weight_journey import NewbornWeightJourneyResponse
+from app.services.newborn_weight_journey_service import calculate_newborn_weight_journey
 
 # Import our ML services
 from app.services.who_service import who_service
@@ -26,6 +28,12 @@ def get_baby(db: Session, user: User) -> Baby:
     if not baby:
         raise HTTPException(status_code=404, detail="Baby not found. Please register a baby first.")
     return baby
+
+
+@router.get("/newborn-weight-journey", response_model=NewbornWeightJourneyResponse)
+def get_newborn_weight_journey(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    baby = get_baby(db, current_user)
+    return calculate_newborn_weight_journey(baby.birth_weight_kg, baby.sex, baby.gestational_age_weeks)
 
 def normalize_delivery_type(val: Optional[str]) -> Optional[str]:
     """Normalizes delivery type to match frozen preprocessor categories: 'Normal' or 'C-Section'."""

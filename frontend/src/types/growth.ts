@@ -1,3 +1,26 @@
+export interface NewbornJourneyPoint {
+  day: number;
+  weight_kg: number;
+  value_type: 'recorded_birth_weight' | 'illustrative';
+  phase: 'Birth' | 'Initial weight loss' | 'Recovery' | 'Continued growth';
+}
+
+export interface NewbornWeightJourney {
+  available: boolean;
+  reason: string | null;
+  chart_type: 'educational_illustration';
+  birth_weight_kg: number | null;
+  duration_days: 30;
+  points: NewbornJourneyPoint[];
+  method: string;
+  message: string;
+  limitations: string[];
+  assumptions: { loss_fraction: number; nadir_day: number; recovery_day: number; interpolation: string } | null;
+  reference_version: string | null;
+  reference_birth_weight_group_g: number[] | null;
+  reference_rates: { interval_start_day: number; interval_end_day: number; median_velocity_g_per_day: number; value_type: 'published_population_reference' }[];
+}
+
 export interface GrowthMeasurementRequest {
   visit_date: string;
   weight_kg: number;

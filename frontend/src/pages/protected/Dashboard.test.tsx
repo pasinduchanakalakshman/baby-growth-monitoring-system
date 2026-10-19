@@ -10,10 +10,12 @@ import type { BabyProfile } from '@/types/baby';
 import type { GrowthOverview, GrowthHistoryPoint } from '@/types/growth';
 import { ageInDays, babyAgeLabel, calendarDate, recordedWeightPoints } from '@/features/dashboard/dashboardDisplay';
 import Dashboard from './Dashboard';
+import response from '@/test/fixtures/newbornWeightJourney.json';
+import type { NewbornWeightJourney } from '@/types/growth';
 
 vi.mock('@/auth/AuthProvider', () => ({ useAuth: vi.fn() }));
 vi.mock('@/api/baby', () => ({ babyApi: { getBabyProfile: vi.fn() } }));
-vi.mock('@/api/growth', () => ({ growthApi: { getGrowthOverview: vi.fn(), getGrowthHistory: vi.fn() } }));
+vi.mock('@/api/growth', () => ({ growthApi: { getGrowthOverview: vi.fn(), getGrowthHistory: vi.fn(), getNewbornWeightJourney: vi.fn() } }));
 // Render the real chart at a mobile container width; browser QA checks fluid sizing.
 vi.mock('recharts', async () => ({
   ...await vi.importActual('recharts'),
@@ -46,6 +48,7 @@ describe('Dashboard content', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date(2026, 9, 19, 10));
     vi.clearAllMocks();
+    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue(response as NewbornWeightJourney);
     vi.mocked(useAuth).mockReturnValue(auth);
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue(baby);
     vi.mocked(growthApi.getGrowthOverview).mockResolvedValue(overview);
@@ -164,7 +167,8 @@ describe('Dashboard content', () => {
     expect(screen.getByText('Illustrative example')).toBeInTheDocument();
     expect(container.querySelector('.recharts-line-curve')).toHaveAttribute('stroke-dasharray', '7 5');
     expect(container.querySelector('.recharts-reference-dot-dot')).toBeInTheDocument();
-    expect(screen.getByText(/not a record of your baby's weight or an individual prediction/)).toBeInTheDocument();
+    expect(screen.getByText(response.message)).toBeInTheDocument();
+    expect(growthApi.getNewbornWeightJourney).toHaveBeenCalledOnce();
     expect(screen.getByText(/No extra weight entries are needed during the first 30 days/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Add Measurement/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /View Charts|Forecast|History/ })).not.toBeInTheDocument();
@@ -182,17 +186,19 @@ describe('Dashboard content', () => {
     expect(await screen.findByRole('heading', { name: 'Destination /growth' })).toBeInTheDocument();
   });
 
-  it.each([32, null])('preserves the newborn term-status limitation for gestational age %s', async weeks => {
+  it.each([32, null])('shows no unsupported curve for gestational age %s', async weeks => {
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07', gestational_age_weeks: weeks });
+    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, available: false, points: [], message: 'This example does not suit the recorded birth details.' } as NewbornWeightJourney);
     renderDashboard();
-    expect(await screen.findByText(/Your baby was born early, or term status is not established/)).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /Illustrative weight journey/ })).toBeInTheDocument();
+    expect(await screen.findByText(/does not suit the recorded birth details/)).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: /Illustrative weight journey/ })).toBeNull();
   });
 
   it('handles incomplete birth details without drawing an example or calculating a change', async () => {
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07', birth_weight_kg: null } as unknown as BabyProfile);
+    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, available: false, points: [], message: 'A valid recorded birth weight is unavailable.' } as NewbornWeightJourney);
     const { container } = renderDashboard();
-    await screen.findByText(/A valid birth weight is needed/);
+    await screen.findByText(/A valid recorded birth weight is unavailable/);
     expect(container.querySelector('svg.recharts-surface')).toBeNull();
     expect(await screen.findByText('Requires birth and recorded weights')).toBeInTheDocument();
     expect(screen.queryByText('+4.00')).not.toBeInTheDocument();

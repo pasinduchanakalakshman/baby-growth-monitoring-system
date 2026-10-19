@@ -48,6 +48,18 @@ def test_gateway_proxy_growth(mock_send):
     assert str(called_request.url).endswith("/api/v1/growth/overview")
     assert called_request.method == "GET"
 
+
+@patch("httpx.AsyncClient.send")
+def test_gateway_proxy_newborn_journey(mock_send):
+    body = {"available": True, "chart_type": "educational_illustration", "points": []}
+    mock_send.return_value = Response(200, json=body)
+    response = client.get("/api/v1/growth/newborn-weight-journey", headers={"Cookie": "access_token=test"})
+    assert response.status_code == 200
+    assert response.json() == body
+    forwarded = mock_send.call_args[0][0]
+    assert str(forwarded.url).endswith("/api/v1/growth/newborn-weight-journey")
+    assert forwarded.headers["cookie"] == "access_token=test"
+
 @patch("httpx.AsyncClient.send")
 def test_gateway_error_preservation(mock_send):
     mock_send.return_value = Response(401, json={"detail": "Unauthorized"})

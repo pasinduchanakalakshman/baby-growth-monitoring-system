@@ -7,10 +7,14 @@ import {
   Risk180Day,
   RiskTrajectoryPoint,
   RiskExplanation,
-  ModelInfo
+  ModelInfo,
+  NewbornWeightJourney
 } from '@/types/growth';
 
 export const growthApi = {
+  getNewbornWeightJourney: () => {
+    return apiClient.get<NewbornWeightJourney>('/growth/newborn-weight-journey');
+  },
   addGrowthMeasurement: (payload: GrowthMeasurementRequest) => {
     return apiClient.post<GrowthHistoryPoint>('/growth/measurements', payload);
   },

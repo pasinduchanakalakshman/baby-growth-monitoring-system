@@ -1,0 +1,377 @@
+{
+  "technical_explanation": {
+    "base_value": -3.7009027004241943,
+    "contributions": [
+      {
+        "feature": "birth_weight_kg",
+        "transformed_value": 0.34846402368782087,
+        "raw_value": 3.3,
+        "shap_contribution": 0.24786368012428284
+      },
+      {
+        "feature": "birth_length_cm",
+        "transformed_value": -0.040652712126804116,
+        "raw_value": 50.0,
+        "shap_contribution": -0.39692264795303345
+      },
+      {
+        "feature": "gestational_age_weeks",
+        "transformed_value": 0.37506903164249367,
+        "raw_value": 39,
+        "shap_contribution": -0.06890749931335449
+      },
+      {
+        "feature": "birth_order",
+        "transformed_value": -0.9328651093337333,
+        "raw_value": 1,
+        "shap_contribution": 0.3112255334854126
+      },
+      {
+        "feature": "apgar_score_5min",
+        "transformed_value": 0.3685207568537129,
+        "raw_value": null,
+        "shap_contribution": -0.07040040194988251
+      },
+      {
+        "feature": "age_days",
+        "transformed_value": -1.2394759175036112,
+        "raw_value": 0,
+        "shap_contribution": -0.31161442399024963
+      },
+      {
+        "feature": "weight_kg",
+        "transformed_value": -1.7004345407625154,
+        "raw_value": 3.3,
+        "shap_contribution": 0.5194379687309265
+      },
+      {
+        "feature": "length_height_cm",
+        "transformed_value": -1.688314879397863,
+        "raw_value": 50.0,
+        "shap_contribution": 0.7507399320602417
+      },
+      {
+        "feature": "breastfeeding_frequency_per_day",
+        "transformed_value": -0.8593198544951752,
+        "raw_value": null,
+        "shap_contribution": 0.04332292824983597
+      },
+      {
+        "feature": "formula_feeds_per_day",
+        "transformed_value": -0.7923436236277367,
+        "raw_value": null,
+        "shap_contribution": 0.06234544515609741
+      },
+      {
+        "feature": "complementary_feeding_start_age_months",
+        "transformed_value": -0.007491408847754841,
+        "raw_value": null,
+        "shap_contribution": -0.04038437455892563
+      },
+      {
+        "feature": "meals_per_day",
+        "transformed_value": 0.34261193285473956,
+        "raw_value": null,
+        "shap_contribution": -0.05540575832128525
+      },
+      {
+        "feature": "food_groups_consumed",
+        "transformed_value": 0.03293915782774625,
+        "raw_value": null,
+        "shap_contribution": -0.2552262246608734
+      },
+      {
+        "feature": "illness_duration_days",
+        "transformed_value": -0.012728867308880192,
+        "raw_value": null,
+        "shap_contribution": -0.014325402677059174
+      },
+      {
+        "feature": "verified_waz",
+        "transformed_value": -0.007245278766127983,
+        "raw_value": -0.09538924224269535,
+        "shap_contribution": -0.6559375524520874
+      },
+      {
+        "feature": "verified_haz",
+        "transformed_value": 0.1528592985254167,
+        "raw_value": 0.06116933616675275,
+        "shap_contribution": -0.14569906890392303
+      },
+      {
+        "feature": "observation_count",
+        "transformed_value": -1.5769032618539796,
+        "raw_value": 1,
+        "shap_contribution": 0.005761235021054745
+      },
+      {
+        "feature": "days_since_previous_visit",
+        "transformed_value": 0.25223691118505104,
+        "raw_value": null,
+        "shap_contribution": -0.2280612736940384
+      },
+      {
+        "feature": "weight_change_kg",
+        "transformed_value": -0.09497407292369735,
+        "raw_value": null,
+        "shap_contribution": -0.05809861421585083
+      },
+      {
+        "feature": "waz_change",
+        "transformed_value": 0.041405604969543125,
+        "raw_value": null,
+        "shap_contribution": -0.054044418036937714
+      },
+      {
+        "feature": "weight_velocity_kg_per_day",
+        "transformed_value": -0.4210514950985713,
+        "raw_value": null,
+        "shap_contribution": -0.23301474750041962
+      },
+      {
+        "feature": "waz_velocity_per_day",
+        "transformed_value": 0.08303780002743516,
+        "raw_value": null,
+        "shap_contribution": -0.02623903378844261
+      },
+      {
+        "feature": "height_change_cm",
+        "transformed_value": -0.08522737149581303,
+        "raw_value": null,
+        "shap_contribution": -0.019227532669901848
+      },
+      {
+        "feature": "haz_change",
+        "transformed_value": 0.016699394150592944,
+        "raw_value": null,
+        "shap_contribution": 0.03292812779545784
+      },
+      {
+        "feature": "height_velocity_cm_per_day",
+        "transformed_value": -0.3940687832893563,
+        "raw_value": null,
+        "shap_contribution": -0.03731990605592728
+      },
+      {
+        "feature": "haz_velocity_per_day",
+        "transformed_value": 0.07269351586523173,
+        "raw_value": null,
+        "shap_contribution": 0.07869172841310501
+      },
+      {
+        "feature": "waz_rolling_mean_3",
+        "transformed_value": -0.05001135029270315,
+        "raw_value": -0.09538924224269535,
+        "shap_contribution": -0.2582429349422455
+      },
+      {
+        "feature": "weight_rolling_mean_3",
+        "transformed_value": -1.529115085570582,
+        "raw_value": 3.3,
+        "shap_contribution": 0.18832214176654816
+      },
+      {
+        "feature": "formula_feeding",
+        "transformed_value": -0.8553209137306761,
+        "raw_value": null,
+        "shap_contribution": 0.0020014261826872826
+      },
+      {
+        "feature": "supplement_use",
+        "transformed_value": -0.8472025938307876,
+        "raw_value": null,
+        "shap_contribution": -0.0662464126944542
+      },
+      {
+        "feature": "recent_illness",
+        "transformed_value": -0.4506008709507895,
+        "raw_value": null,
+        "shap_contribution": -0.024069001898169518
+      },
+      {
+        "feature": "diarrhea_recent",
+        "transformed_value": -0.24600093432454112,
+        "raw_value": null,
+        "shap_contribution": 0.005667172372341156
+      },
+      {
+        "feature": "fever_recent",
+        "transformed_value": -0.3257077314338569,
+        "raw_value": null,
+        "shap_contribution": 0.0366491973400116
+      },
+      {
+        "feature": "respiratory_illness_recent",
+        "transformed_value": -0.2645901650656783,
+        "raw_value": null,
+        "shap_contribution": -0.04992552474141121
+      },
+      {
+        "feature": "sex_Female",
+        "transformed_value": 0.0,
+        "raw_value": "Male",
+        "shap_contribution": 0.15717841684818268
+      },
+      {
+        "feature": "date_of_birth_2020-04-02",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.00597548158839345
+      },
+      {
+        "feature": "date_of_birth_2020-04-04",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.004358856938779354
+      },
+      {
+        "feature": "date_of_birth_2020-05-01",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.0034899660386145115
+      },
+      {
+        "feature": "date_of_birth_2020-06-28",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": 0.005131185986101627
+      },
+      {
+        "feature": "date_of_birth_2020-09-25",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.022478137165308
+      },
+      {
+        "feature": "date_of_birth_2021-01-24",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.002118453849107027
+      },
+      {
+        "feature": "date_of_birth_2021-03-22",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.005028056912124157
+      },
+      {
+        "feature": "date_of_birth_2021-06-02",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.006931671407073736
+      },
+      {
+        "feature": "date_of_birth_2021-09-16",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.01151423528790474
+      },
+      {
+        "feature": "date_of_birth_2022-02-22",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.005716219544410706
+      },
+      {
+        "feature": "date_of_birth_2022-02-26",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.009281723760068417
+      },
+      {
+        "feature": "date_of_birth_2022-05-28",
+        "transformed_value": 0.0,
+        "raw_value": "2023-01-01",
+        "shap_contribution": -0.001261607394553721
+      },
+      {
+        "feature": "delivery_type_C-Section",
+        "transformed_value": 0.0,
+        "raw_value": "Normal",
+        "shap_contribution": -0.07027925550937653
+      },
+      {
+        "feature": "supplement_type_Iron",
+        "transformed_value": 0.0,
+        "raw_value": null,
+        "shap_contribution": 0.0014702350599691272
+      },
+      {
+        "feature": "supplement_type_Multivitamin",
+        "transformed_value": 0.0,
+        "raw_value": null,
+        "shap_contribution": 0.002410916145890951
+      },
+      {
+        "feature": "supplement_type_Vitamin D",
+        "transformed_value": 0.0,
+        "raw_value": null,
+        "shap_contribution": -0.028481002897024155
+      },
+      {
+        "feature": "supplement_type_Zinc",
+        "transformed_value": 0.0,
+        "raw_value": null,
+        "shap_contribution": -0.014360038563609123
+      }
+    ]
+  },
+  "frontend_safe_explanation": [
+    {
+      "feature": "length_height_cm",
+      "display_label": "Current length / height",
+      "direction": "increased model-predicted risk",
+      "importance_rank": 1
+    },
+    {
+      "feature": "weight_kg",
+      "display_label": "Current weight",
+      "direction": "increased model-predicted risk",
+      "importance_rank": 2
+    },
+    {
+      "feature": "birth_order",
+      "display_label": "Birth order",
+      "direction": "increased model-predicted risk",
+      "importance_rank": 3
+    },
+    {
+      "feature": "verified_waz",
+      "display_label": "Weight-for-age growth score",
+      "direction": "decreased model-predicted risk",
+      "importance_rank": 1
+    },
+    {
+      "feature": "birth_length_cm",
+      "display_label": "Length at birth",
+      "direction": "decreased model-predicted risk",
+      "importance_rank": 2
+    },
+    {
+      "feature": "age_days",
+      "display_label": "Child age",
+      "direction": "decreased model-predicted risk",
+      "importance_rank": 3
+    }
+  ],
+  "disclaimer": "These features influenced the model-predicted risk. They do not establish clinical causality.",
+  "model_coverage_disclosure": "This explanation applies to the XGBoost tabular model (90% weight in the hybrid architecture). The longitudinal Transformer model (10% weight) does not produce individual feature SHAP attributions.",
+  "model_combination": {
+    "xgboost_weight": 0.9,
+    "transformer_weight": 0.1,
+    "xgboost_score": 0.01087513379752636,
+    "transformer_score": 0.5626181364059448,
+    "xgboost_weighted_contribution": 0.009787620417773724,
+    "transformer_weighted_contribution": 0.05626181364059449,
+    "hybrid_score": 0.06604943405836822
+  },
+  "explanation_scope": {
+    "shap_branch": "xgboost_only",
+    "shap_value_space": "log_odds",
+    "transformer_feature_attribution_available": false
+  },
+  "assessment": {
+    "visit_date": "2023-01-01",
+    "recorded_visit_count": 1
+  }
+}

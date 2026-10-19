@@ -1,134 +1,143 @@
 import { describe, it, expect } from 'vitest';
 import {
-  getParentFriendlyFeatureName,
-  formatRecordedValue,
-  getParentFriendlyDescription,
-  isLongitudinalFeature,
-  HYBRID_MODEL_COVERAGE_DISCLOSURE
+  getParentFriendlyFeatureName, formatRecordedValue, isLongitudinalFeature,
+  getMotherFriendlyFactors, getRecordedVisitCount, getMatchedScreeningStatus,
+  getFactorInfluence, NEUTRAL_FACTOR_INFLUENCE,
 } from './explanationDisplay';
+import fixtures from '@/test/fixtures/motherExplanationAssessments.json';
+import type { RiskExplanation, Risk180Day } from '@/types/growth';
 
-describe('explanationDisplay utility', () => {
-  describe('getParentFriendlyFeatureName (STEP 2)', () => {
-    it('maps key growth monitoring features to parent-friendly labels', () => {
-      expect(getParentFriendlyFeatureName('weight_kg')).toBe('Current weight');
-      expect(getParentFriendlyFeatureName('length_height_cm')).toBe('Current length / height');
-      expect(getParentFriendlyFeatureName('birth_length_cm')).toBe('Length at birth');
-      expect(getParentFriendlyFeatureName('birth_weight_kg')).toBe('Birth weight');
-      expect(getParentFriendlyFeatureName('days_since_previous_visit')).toBe('Time since previous growth check');
-      expect(getParentFriendlyFeatureName('weight_velocity_kg_per_day')).toBe('Average daily weight change');
-      expect(getParentFriendlyFeatureName('haz_velocity_per_day')).toBe('Change in length-for-age growth score');
-      expect(getParentFriendlyFeatureName('verified_waz')).toBe('Weight-for-age growth score');
-      expect(getParentFriendlyFeatureName('verified_haz')).toBe('Length-for-age growth score');
-    });
+const explanation = () => structuredClone(fixtures.oneVisit.explanation) as RiskExplanation;
+const risk = () => structuredClone(fixtures.oneVisit.risk) as Risk180Day;
 
-    it('formats categorical prefixed features cleanly', () => {
-      expect(getParentFriendlyFeatureName('sex_Female')).toBe('Biological sex: Female');
-      expect(getParentFriendlyFeatureName('delivery_type_Vaginal')).toBe('Type of delivery: Vaginal');
-    });
-
-    it('falls back gracefully for unknown features', () => {
-      expect(getParentFriendlyFeatureName('custom_feature_name')).toBe('Custom Feature Name');
-      expect(getParentFriendlyFeatureName('custom_feature', 'Custom Label')).toBe('Custom Label');
-    });
+describe('Recorded measurement presentation', () => {
+  it.each([
+    ['weight_kg', 'Current weight'], ['length_height_cm', 'Current length or height'],
+    ['age_days', 'Age'], ['verified_waz', 'Weight-for-age growth information'],
+    ['birth_weight_kg', 'Birth weight'],
+  ])('translates %s into ordinary language', (feature, label) => {
+    expect(getParentFriendlyFeatureName(feature)).toBe(label);
   });
 
-  describe('formatRecordedValue (STEP 3)', () => {
-    it('formats weight in kilograms rounded to 2 decimals', () => {
-      expect(formatRecordedValue('weight_kg', 7.456)).toBe('7.46 kg');
-      expect(formatRecordedValue('weight_kg', 8)).toBe('8.00 kg');
-      expect(formatRecordedValue('birth_weight_kg', 3.1)).toBe('3.10 kg');
-      expect(formatRecordedValue('weight_change_kg', 0.25)).toBe('+0.25 kg');
-      expect(formatRecordedValue('weight_change_kg', -0.1)).toBe('-0.10 kg');
-    });
-
-    it('formats length and height in centimeters rounded to 1 decimal', () => {
-      expect(formatRecordedValue('length_height_cm', 68.34)).toBe('68.3 cm');
-      expect(formatRecordedValue('length_height_cm', 70)).toBe('70.0 cm');
-      expect(formatRecordedValue('birth_length_cm', 49.52)).toBe('49.5 cm');
-      expect(formatRecordedValue('height_change_cm', 1.8)).toBe('+1.8 cm');
-    });
-
-    it('formats time between visits and age in whole days', () => {
-      expect(formatRecordedValue('days_since_previous_visit', 30.2)).toBe('30 days');
-      expect(formatRecordedValue('days_since_previous_visit', 1)).toBe('1 day');
-      expect(formatRecordedValue('age_days', 182.4)).toBe('182 days');
-    });
-
-    it('formats daily weight change in grams/day rounded sensibly', () => {
-      // 0.015 kg/day = 15 g/day
-      expect(formatRecordedValue('weight_velocity_kg_per_day', 0.015)).toBe('+15 g/day');
-      expect(formatRecordedValue('weight_velocity_kg_per_day', -0.008)).toBe('-8 g/day');
-      expect(formatRecordedValue('weight_velocity', 0.1)).toBe('+100 g/day');
-    });
-
-    it('formats HAZ/WAZ changes as growth-score change, not centimeters or kilograms', () => {
-      const formattedHaz = formatRecordedValue('haz_change', -0.25);
-      expect(formattedHaz).toBe('-0.25 growth score change');
-      expect(formattedHaz).not.toContain('cm');
-      expect(formattedHaz).not.toContain('kg');
-
-      const formattedHazVel = formatRecordedValue('haz_velocity_per_day', 0.02);
-      expect(formattedHazVel).toBe('+0.02 growth score change');
-      expect(formattedHazVel).not.toContain('cm');
-
-      const formattedWaz = formatRecordedValue('verified_waz', -1.45);
-      expect(formattedWaz).toBe('-1.45 (growth score)');
-      expect(formattedWaz).not.toContain('kg');
-    });
-
-    it('returns "Not recorded" for null, undefined, empty, or NaN without fabricating data', () => {
-      expect(formatRecordedValue('weight_kg', null)).toBe('Not recorded');
-      expect(formatRecordedValue('weight_kg', undefined)).toBe('Not recorded');
-      expect(formatRecordedValue('length_height_cm', '')).toBe('Not recorded');
-      expect(formatRecordedValue('verified_waz', NaN)).toBe('Not recorded');
-    });
-
-    it('formats boolean indicators properly', () => {
-      expect(formatRecordedValue('fever_recent', true)).toBe('Yes');
-      expect(formatRecordedValue('diarrhea_recent', false)).toBe('No');
-    });
+  it.each([
+    ['weight_kg', 7.456, '7.46 kg'], ['birth_weight_kg', 3.1, '3.10 kg'],
+    ['weight_change_kg', 0.25, '+0.25 kg'], ['weight_change_kg', -0.1, '-0.10 kg'],
+    ['length_height_cm', 68.34, '68.3 cm'], ['height_change_cm', 1.8, '+1.8 cm'],
+    ['age_days', 182, '182 days'], ['days_since_previous_visit', 1, '1 day'],
+    ['weight_velocity_kg_per_day', 0.015, '+15 g/day'], ['weight_velocity_kg_per_day', -0.008, '-8 g/day'],
+    ['fever_recent', true, 'Yes'], ['diarrhea_recent', false, 'No'],
+    ['haz_change', -0.25, '-0.25 growth score change'],
+  ])('preserves measurement units: %s %s', (feature, value, expected) => {
+    expect(formatRecordedValue(feature as string, value)).toBe(expected);
   });
 
-  describe('getParentFriendlyDescription (STEP 4)', () => {
-    it('generates non-causal descriptions distinguishing increased vs decreased risk', () => {
-      const weightDescInc = getParentFriendlyDescription('weight_kg', 'increased model-predicted risk');
-      expect(weightDescInc).toContain("Your child's recorded weight was one of the measurements the AI considered important.");
-      expect(weightDescInc).toContain('shifted the predicted risk score higher');
-      expect(weightDescInc).not.toMatch(/caused|diagnosis|because your child/i);
-
-      const velocityDescDec = getParentFriendlyDescription('weight_velocity_kg_per_day', 'decreased model-predicted risk');
-      expect(velocityDescDec).toContain("The AI considered how your child's weight changed between clinic visits.");
-      expect(velocityDescDec).toContain('shifted the predicted risk score lower');
-      expect(velocityDescDec).not.toMatch(/caused|diagnosis|because your child/i);
-
-      const ageDesc = getParentFriendlyDescription('age_days', 'increased model-predicted risk');
-      expect(ageDesc).toContain("Your child's age influenced the model's assessment.");
-      expect(ageDesc).toContain('shifted the predicted risk score higher');
-    });
-
-    it('never produces medical diagnostic claims or causal statements', () => {
-      const hazDesc = getParentFriendlyDescription('haz_velocity_per_day', 'increased model-predicted risk');
-      expect(hazDesc).not.toContain('malnourished');
-      expect(hazDesc).not.toContain('stunted');
-      expect(hazDesc).not.toContain('disease');
-      expect(hazDesc).toContain('length-for-age growth score');
-    });
+  it.each([null, undefined, '', NaN, Infinity, -Infinity])('never formats missing or nonfinite values as measurements: %s', value => {
+    expect(formatRecordedValue('weight_kg', value)).toBe('Not recorded');
   });
 
-  describe('Longitudinal categorization and model disclosure (STEP 5 & 6)', () => {
-    it('correctly identifies longitudinal vs point-in-time features', () => {
-      expect(isLongitudinalFeature('weight_velocity_kg_per_day')).toBe(true);
-      expect(isLongitudinalFeature('days_since_previous_visit')).toBe(true);
-      expect(isLongitudinalFeature('haz_change')).toBe(true);
-      expect(isLongitudinalFeature('weight_kg')).toBe(false);
-      expect(isLongitudinalFeature('age_days')).toBe(false);
-    });
+  it('retains rank, direction, and API order while choosing at most four recorded factors', () => {
+    const data = explanation();
+    const before = structuredClone(data);
+    const { measurements } = getMotherFriendlyFactors(data);
+    expect(measurements.length).toBeLessThanOrEqual(4);
+    for (const factor of measurements) {
+      const original = data.frontend_safe_explanation.find(f => f.feature === factor.feature)!;
+      expect(factor.importance_rank).toBe(original.importance_rank);
+      expect(factor.direction).toBe(original.direction);
+    }
+    expect(measurements.map(f => data.frontend_safe_explanation.findIndex(original => original.feature === f.feature)))
+      .toEqual(measurements.map(f => data.frontend_safe_explanation.findIndex(original => original.feature === f.feature)).sort((a, b) => a-b));
+    expect(data).toEqual(before);
+  });
 
-    it('clearly discloses 90% XGBoost + 10% Clean Transformer coverage', () => {
-      expect(HYBRID_MODEL_COVERAGE_DISCLOSURE.summary).toContain('90% XGBoost');
-      expect(HYBRID_MODEL_COVERAGE_DISCLOSURE.summary).toContain('10% Clean Transformer');
-      expect(HYBRID_MODEL_COVERAGE_DISCLOSURE.details).toContain('explain only');
-      expect(HYBRID_MODEL_COVERAGE_DISCLOSURE.details).toContain('not calculated');
-    });
+  it.each([null, undefined, NaN, Infinity, '4.2', 'not recorded', true])('omits invalid physical raw values without using transformed imputations: %s', raw => {
+    const data = explanation();
+    data.frontend_safe_explanation = [{ feature: 'weight_kg', display_label: 'Weight', direction: 'increased', importance_rank: 1 }];
+    data.technical_explanation.contributions = [{ feature: 'weight_kg', raw_value: raw as number, transformed_value: 1.5, shap_contribution: 0.9 }];
+    expect(getMotherFriendlyFactors(data).measurements).toEqual([]);
+  });
+
+  it('does not expose unknown feature labels or numeric growth scores', () => {
+    const data = explanation();
+    data.frontend_safe_explanation = [
+      { feature: 'verified_waz', display_label: 'WAZ SHAP', direction: 'increased', importance_rank: 1 },
+      { feature: 'internal_transformer_score', display_label: 'Transformer', direction: 'increased', importance_rank: 1 },
+    ];
+    const factors = getMotherFriendlyFactors(data).measurements;
+    expect(factors).toHaveLength(1);
+    expect(factors[0].label).toBe('Weight-for-age growth information');
+    expect(factors[0].recordedValue).toBe('Recorded for this growth check');
+  });
+
+  it('recognizes longitudinal inputs without using them to invent historical measurements', () => {
+    expect(isLongitudinalFeature('weight_velocity_kg_per_day')).toBe(true);
+    expect(isLongitudinalFeature('days_since_previous_visit')).toBe(true);
+    expect(isLongitudinalFeature('weight_kg')).toBe(false);
+    expect(getMotherFriendlyFactors(explanation()).changes).toEqual([]);
+  });
+
+  it.each([-1, 1.5, NaN, undefined, '2'])('does not infer a visit count from invalid metadata: %s', count => {
+    const data = explanation();
+    data.assessment!.recorded_visit_count = count as number;
+    expect(getRecordedVisitCount(data)).toBeNull();
+  });
+});
+
+describe('Existing screening decision matching', () => {
+  it('accepts real backend elevated and below-threshold pairs without reclassifying scores', () => {
+    expect(getMatchedScreeningStatus(explanation(), risk())).toBe('elevated');
+    expect(getMatchedScreeningStatus(fixtures.twoVisits.explanation as RiskExplanation, fixtures.twoVisits.risk)).toBe('below');
+  });
+
+  it('rejects a different assessment or unavailable response', () => {
+    expect(getMatchedScreeningStatus(explanation(), fixtures.twoVisits.risk)).toBeNull();
+    expect(getMatchedScreeningStatus(explanation(), null)).toBeNull();
+  });
+
+  it('rejects mismatched branch scores even when the combined score is identical', () => {
+    const value = risk();
+    const combo = value.model_combination!;
+    combo.xgboost_score += 0.001;
+    combo.transformer_score -= 0.009;
+    combo.xgboost_weighted_contribution = 0.9 * combo.xgboost_score;
+    combo.transformer_weighted_contribution = 0.1 * combo.transformer_score;
+    expect(getMatchedScreeningStatus(explanation(), value)).toBeNull();
+  });
+
+  it('does not guess from a numeric score if backend status or flag is missing', () => {
+    const value = risk();
+    delete value.screening_status;
+    expect(getMatchedScreeningStatus(explanation(), value)).toBeNull();
+    value.screening_status = 'Elevated screening risk';
+    delete value.risk_flag;
+    expect(getMatchedScreeningStatus(explanation(), value)).toBeNull();
+  });
+
+  it.each([undefined, 30, 365])('does not attach the 180-day summary to a missing or different horizon: %s', horizon => {
+    const value = risk();
+    value.prediction_horizon_days = horizon;
+    expect(getMatchedScreeningStatus(explanation(), value)).toBeNull();
+  });
+});
+
+describe('Cautious factor influence', () => {
+  const factor = { feature: 'weight_kg', display_label: 'Current weight', direction: 'increased model-predicted risk', importance_rank: 1 };
+  it('uses documented directions and signed attributions, independently of the recorded value', () => {
+    const data = explanation();
+    expect(getFactorInfluence(data, factor, 0.1)).toContain('increased the screening score in the explained part');
+    expect(getFactorInfluence(data, { ...factor, direction: 'decreased model-predicted risk' }, -0.1)).toContain('decreased the screening score in the explained part');
+    data.technical_explanation.contributions.find(c => c.feature === 'weight_kg')!.raw_value = 999;
+    expect(getFactorInfluence(data, { ...factor, direction: 'decreased model-predicted risk' }, -0.1)).toContain('decreased');
+  });
+  it.each([undefined, NaN, Infinity, 0, -0.1])('falls back safely for an absent, invalid, zero, or contradicting attribution: %s', contribution => {
+    expect(getFactorInfluence(explanation(), factor, contribution)).toBe(NEUTRAL_FACTOR_INFLUENCE);
+  });
+  it.each(['unknown', 'increase', 'neutral', 'decreased model-predicted risk'])('does not guess from an ambiguous or contradictory direction: %s', direction => {
+    expect(getFactorInfluence(explanation(), { ...factor, direction }, 0.1)).toBe(NEUTRAL_FACTOR_INFLUENCE);
+  });
+  it('requires documented attribution scope and never invents its own explanation', () => {
+    const data = explanation();
+    delete data.explanation_scope;
+    expect(getFactorInfluence(data, factor, 0.1)).toBe(NEUTRAL_FACTOR_INFLUENCE);
   });
 });

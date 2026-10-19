@@ -67,3 +67,18 @@ def test_gateway_error_preservation(mock_send):
     response = client.get("/api/v1/auth/me")
     assert response.status_code == 401
     assert response.json()["detail"] == "Unauthorized"
+
+
+@patch("httpx.AsyncClient.send")
+def test_gateway_proxy_hybrid_explanation(mock_send):
+    import json
+    from pathlib import Path
+    fixture = Path(__file__).resolve().parents[2] / 'frontend/src/test/fixtures/hybridExplanation.json'
+    body = json.loads(fixture.read_text())
+    mock_send.return_value = Response(200, json=body)
+    response = client.get('/api/v1/growth/risk/explanation', headers={'Cookie': 'access_token=synthetic'})
+    assert response.status_code == 200
+    assert response.json() == body
+    request = mock_send.call_args.args[0]
+    assert str(request.url).endswith('/api/v1/growth/risk/explanation')
+    assert request.headers['cookie'] == 'access_token=synthetic'

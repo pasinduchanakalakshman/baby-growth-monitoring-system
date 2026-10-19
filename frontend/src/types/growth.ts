@@ -80,6 +80,16 @@ export interface Forecast30Day {
   reason?: string | null;
 }
 
+export interface ModelCombination {
+  xgboost_weight: number;
+  transformer_weight: number;
+  xgboost_score: number;
+  transformer_score: number;
+  xgboost_weighted_contribution: number;
+  transformer_weighted_contribution: number;
+  hybrid_score: number;
+}
+
 export interface Risk180Day {
   risk_available: boolean;
   risk_probability?: number | null;
@@ -98,6 +108,7 @@ export interface Risk180Day {
     weight_transformer?: number;
   } | null;
   model_applicable?: boolean | null;
+  model_combination?: ModelCombination | null;
   reason?: string | null;
 }
 
@@ -128,7 +139,7 @@ export interface TechnicalExplanation {
   contributions: {
     feature: string;
     transformed_value: number | null;
-    raw_value: number | null;
+    raw_value: number | string | boolean | null;
     shap_contribution: number;
   }[];
 }
@@ -138,6 +149,13 @@ export interface RiskExplanation {
   frontend_safe_explanation: FrontendSafeExplanation[];
   disclaimer: string;
   model_coverage_disclosure?: string;
+  model_combination?: ModelCombination | null;
+  explanation_scope?: {
+    shap_branch: 'xgboost_only';
+    shap_value_space: 'log_odds';
+    transformer_feature_attribution_available: false;
+  };
+  assessment?: { visit_date: string; recorded_visit_count: number };
 }
 
 export interface ModelInfo {

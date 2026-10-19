@@ -39,8 +39,8 @@ export const growthApi = {
     return apiClient.get<RiskTrajectoryPoint[]>('/growth/risk/trajectory');
   },
 
-  getRiskExplanation: () => {
-    return apiClient.get<RiskExplanation>('/growth/risk/explanation');
+  getRiskExplanation: (signal?: AbortSignal) => {
+    return apiClient.get<RiskExplanation>('/growth/risk/explanation', { signal });
   },
 
   getModelInfo: () => {

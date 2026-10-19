@@ -260,7 +260,20 @@ def get_risk_explanation(db: Session = Depends(get_db), current_user: User = Dep
     if not r_out["risk_available"]:
         raise HTTPException(status_code=400, detail="Risk not available. Cannot generate explanation.")
         
-    return xai_service.explain_prediction(features)
+    # Reuse the single inference above and the same feature/history snapshot as SHAP.
+    return {
+        **xai_service.explain_prediction(features),
+        "model_combination": r_out.get("model_combination"),
+        "explanation_scope": {
+            "shap_branch": "xgboost_only",
+            "shap_value_space": "log_odds",
+            "transformer_feature_attribution_available": False
+        },
+        "assessment": {
+            "visit_date": history[-1]["visit_date"],
+            "recorded_visit_count": len(history)
+        }
+    }
 
 @router.get("/model-info")
 def get_model_info():

@@ -40,7 +40,7 @@ describe('Stage 16A Frontend QA Coverage', () => {
         <LandingPage />
       </MemoryRouter>
     );
-    expect(screen.getByText(/Understand your child's growth/i)).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /Every Little Moment Matters/i })).toBeTruthy();
   });
 
   it('2. Landing page Create Account CTA navigates to /register', () => {

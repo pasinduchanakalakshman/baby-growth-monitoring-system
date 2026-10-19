@@ -163,7 +163,7 @@ describe('Dashboard content', () => {
     const { container } = renderDashboard();
     await screen.findByRole('img', { name: /Illustrative weight journey beginning.*3.2 kg/ });
     expect(screen.getByText('12 days old')).toBeInTheDocument();
-    expect(screen.getByText('Recorded birth weight')).toBeInTheDocument();
+    expect(screen.getByText('Recorded birth weight: 3.2 kg')).toBeInTheDocument();
     expect(screen.getByText('Illustrative example')).toBeInTheDocument();
     expect(container.querySelector('.recharts-line-curve')).toHaveAttribute('stroke-dasharray', '7 5');
     expect(container.querySelector('.recharts-reference-dot-dot')).toBeInTheDocument();
@@ -184,6 +184,17 @@ describe('Dashboard content', () => {
     expect(await screen.findByRole('button', { name: 'Try again' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('link', { name: 'View Weight Journey' }));
     expect(await screen.findByRole('heading', { name: 'Destination /growth' })).toBeInTheDocument();
+  });
+
+  it('identifies saved visit summaries separately from the first-month illustrative curve', async () => {
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07' });
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: { visit_date: '2026-10-19', weight_kg: 3.3 } });
+    renderDashboard();
+    expect(await screen.findByText('3.30', { selector: 'p' })).toBeInTheDocument();
+    expect(await screen.findByRole('img', { name: /Illustrative weight journey beginning.*3.2 kg/ })).toBeInTheDocument();
+    expect(screen.getByText(/Recorded visit weights, when available, come from saved visit data/)).toBeVisible();
+    expect(screen.getByText('From a recorded visit')).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Add Measurement' })).not.toBeInTheDocument();
   });
 
   it.each([32, null])('shows no unsupported curve for gestational age %s', async weeks => {

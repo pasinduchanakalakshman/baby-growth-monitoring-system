@@ -66,7 +66,7 @@ describe('newborn weight journey chart', () => {
 
   it('shows loading without a stale curve', () => {
     const { container } = render(<NewbornWeightJourneyChart journey={journey} isLoading />);
-    expect(container.querySelector('.animate-spin')).toBeTruthy();
+    expect(screen.getByRole('status', { name: 'Loading newborn weight journey' })).toBeInTheDocument();
     expect(container.querySelector('svg')).toBeNull();
   });
 
@@ -79,8 +79,29 @@ describe('newborn weight journey chart', () => {
     expect(container.querySelector('svg')).toBeNull();
   });
 
-  it.each([0, 3, 10, 30])('distinguishes recorded and illustrative tooltip values at day %s', day => {
+  it.each([0, 3, 10, 12, 30])('distinguishes recorded and illustrative tooltip values at day %s', day => {
     render(<JourneyTooltip active payload={[{ payload: journey.points[day] }]} />);
     expect(screen.getByText(`${day === 0 ? 'Recorded birth weight' : 'Illustrative example'}: ${journey.points[day].weight_kg.toFixed(2)} kg`)).toBeTruthy();
+  });
+
+  it.each([0, 3, 12, 30])('explores exact returned values for day %s without entering a measurement', day => {
+    const { container } = render(<NewbornWeightJourneyChart journey={journey} />);
+    fireEvent.change(screen.getByLabelText('Explore a day'), { target: { value: String(day) } });
+    const point = journey.points[day];
+    expect(screen.getByRole('status')).toHaveTextContent(`${day === 0 ? 'Recorded birth weight' : 'Illustrative example'}: ${point.weight_kg.toFixed(2)} kg`);
+    expect(container.querySelector('input, form')).toBeNull();
+    expect(capture).toHaveBeenLastCalledWith(journey.points);
+  });
+
+  it('keeps essential limitations visible while allowing secondary explanations to expand', () => {
+    const { container } = render(<NewbornWeightJourneyChart journey={journey} />);
+    expect(screen.getByText(journey.message)).toBeVisible();
+    journey.limitations.forEach(text => expect(screen.getByText(text)).toBeVisible());
+    const detail = container.querySelector('details')!;
+    expect(detail).not.toHaveAttribute('open');
+    fireEvent.click(screen.getByText('Understanding this journey and when to seek advice'));
+    expect(detail).toHaveAttribute('open');
+    expect(screen.getByText('Has difficulty feeding.')).toBeVisible();
+    expect(screen.getByText(/Recorded visit weights, when available/)).toBeVisible();
   });
 });

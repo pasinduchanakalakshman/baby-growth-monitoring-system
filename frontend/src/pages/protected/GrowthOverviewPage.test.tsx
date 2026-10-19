@@ -73,7 +73,7 @@ describe('GrowthOverviewPage', () => {
     vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, birth_weight_kg: 2.8, points: [{ ...response.points[0], weight_kg: 2.8 }, ...response.points.slice(1)] } as NewbornWeightJourney);
     vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
     const { container } = renderComponent();
-    expect(await screen.findByText('● Recorded birth weight: 2.8 kg')).toBeTruthy();
+    expect(await screen.findByText('Recorded birth weight: 2.8 kg')).toBeTruthy();
     expect(babyApi.getBabyProfile).toHaveBeenCalledTimes(1);
     expect(growthApi.getNewbornWeightJourney).toHaveBeenCalledTimes(1);
     expect(screen.queryByText('Add First Measurement')).toBeNull();
@@ -85,7 +85,7 @@ describe('GrowthOverviewPage', () => {
     vi.mocked(growthApi.getGrowthOverview).mockRejectedValue(new Error('Unavailable'));
     vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
     renderComponent();
-    expect(await screen.findByText('● Recorded birth weight: 3.2 kg')).toBeTruthy();
+    expect(await screen.findByText('Recorded birth weight: 3.2 kg')).toBeTruthy();
     expect(await screen.findByText(/couldn't load growth data/)).toBeTruthy();
   });
 
@@ -169,7 +169,7 @@ describe('GrowthOverviewPage', () => {
     renderComponent();
     
     await waitFor(() => {
-      expect(screen.getByText('Not recorded')).toBeTruthy();
+      expect(screen.getAllByText('Not recorded').length).toBeGreaterThan(0);
       expect(screen.getByText('Not available')).toBeTruthy();
       expect(screen.getByText('Length/height was not recorded for this visit.')).toBeTruthy();
     });

@@ -7,10 +7,14 @@ import {
   Risk180Day,
   RiskTrajectoryPoint,
   RiskExplanation,
-  ModelInfo
+  ModelInfo,
+  NewbornWeightJourney
 } from '@/types/growth';
 
 export const growthApi = {
+  getNewbornWeightJourney: () => {
+    return apiClient.get<NewbornWeightJourney>('/growth/newborn-weight-journey');
+  },
   addGrowthMeasurement: (payload: GrowthMeasurementRequest) => {
     return apiClient.post<GrowthHistoryPoint>('/growth/measurements', payload);
   },
@@ -35,8 +39,8 @@ export const growthApi = {
     return apiClient.get<RiskTrajectoryPoint[]>('/growth/risk/trajectory');
   },
 
-  getRiskExplanation: () => {
-    return apiClient.get<RiskExplanation>('/growth/risk/explanation');
+  getRiskExplanation: (signal?: AbortSignal) => {
+    return apiClient.get<RiskExplanation>('/growth/risk/explanation', { signal });
   },
 
   getModelInfo: () => {

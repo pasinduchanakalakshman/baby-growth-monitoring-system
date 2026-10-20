@@ -1,73 +1,36 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { growthApi } from '@/api/growth';
-import GrowthCharts from '@/features/growth/components/GrowthCharts';
-import { LineChart as LineChartIcon, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { PageHeader } from '@/components/ui/shared/PageHeader';
-import { LoadingState } from '@/components/ui/shared/LoadingState';
-import { EmptyState } from '@/components/ui/shared/EmptyState';
-import { ErrorStateUI } from '@/components/ui/shared/ErrorStateUI';
+import { growthApi } from '@/api/growth';
+import { babyApi } from '@/api/baby';
+import GrowthCharts from '@/features/growth/components/GrowthCharts';
+import NewbornWeightJourneyChart from '@/features/growth/components/NewbornWeightJourneyChart';
+import { useNewbornWeightJourney } from '@/features/growth/useNewbornWeightJourney';
+import { ageInDays } from '@/features/dashboard/dashboardDisplay';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ResearchDisclaimer } from '@/components/ui/shared/ResearchDisclaimer';
 
 export default function GrowthChartsPage() {
-  const { data: history, isLoading, error } = useQuery({
-    queryKey: ['growth.history'],
-    queryFn: growthApi.getGrowthHistory
-  });
+  const profile = useQuery({ queryKey: ['baby.profile'], queryFn: babyApi.getBabyProfile, retry: false });
+  const days = ageInDays(profile.data?.date_of_birth);
+  const newborn = days !== null && days <= 30;
+  const journey = useNewbornWeightJourney(profile.data, newborn && !profile.isError);
+  const history = useQuery({ queryKey: ['growth.history'], queryFn: growthApi.getGrowthHistory });
 
-  if (isLoading) {
-    return <LoadingState />;
-  }
-
-  if (error) {
-    return <ErrorStateUI message="We couldn't load growth charts right now. Please try again." />;
-  }
-
-  if (!history || history.length === 0) {
-    return (
-      <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24 space-y-6">
-        <PageHeader
-          title="Detailed Growth Charts"
-        />
-        <EmptyState
-          icon={LineChartIcon}
-          title="No measurements yet"
-          description="Growth charts require measurement history. Add your first measurement to start tracking."
-          action={
-            <Link
-              to="/growth/add"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-xl font-medium transition-colors shadow-sm inline-flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Add Measurement
-            </Link>
-          }
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-5xl mx-auto p-4 md:p-6 pb-24 space-y-6">
-      <PageHeader
-        title="Detailed Growth Charts"
-        description="Longitudinal visualization of actual measurement history."
-        actions={
-          <Link
-            to="/growth"
-            className="border bg-background hover:bg-slate-50 px-4 py-2 rounded-xl font-medium transition-colors shadow-sm text-sm"
-          >
-            Back to Overview
-          </Link>
-        }
-      />
-
-      <div className="mt-8">
-        <GrowthCharts history={history} />
-      </div>
-      
-      <ResearchDisclaimer />
+  return <div className="mx-auto min-w-0 max-w-5xl space-y-5">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <div><h1 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">Detailed Growth Charts</h1><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{newborn ? 'An illustrative first-month journey, separate from saved visit measurements.' : 'Longitudinal visualization of actual measurement history.'}</p></div>
+      <Button asChild variant="outline" className="min-h-11"><Link to="/growth">Back to Overview</Link></Button>
     </div>
-  );
+    {profile.isLoading && <div role="status" aria-label="Loading birth details"><Skeleton className="h-28 w-full" /></div>}
+    {profile.isError && <Alert role="status" className="rounded-xl bg-secondary/50"><AlertDescription><p>Birth details could not be loaded. Available recorded visits are shown separately below.</p><Button variant="link" className="mt-1 min-h-11 px-0" onClick={() => void profile.refetch()}>Retry birth details</Button></AlertDescription></Alert>}
+    {newborn && <NewbornWeightJourneyChart journey={journey.data} isLoading={journey.isLoading} error={journey.isError} onRetry={() => void journey.refetch()} />}
+    {history.isLoading ? <div role="status" aria-label="Loading recorded growth charts" className="space-y-3"><Skeleton className="h-10 w-48" /><Skeleton className="h-72 w-full" /></div>
+      : history.isError ? <Alert className="rounded-xl bg-secondary/50"><AlertDescription><p>We couldn't load growth charts right now. Please try again.</p><Button variant="outline" className="mt-3 min-h-11" onClick={() => void history.refetch()}>Retry recorded visits</Button></AlertDescription></Alert>
+      : !history.data?.length ? <Card className="rounded-2xl border-border/50"><CardContent className="space-y-3 p-6"><h2 className="text-lg font-semibold">No measurements yet</h2><p className="text-sm leading-relaxed text-muted-foreground">{newborn ? 'There are no saved visit measurements to show. The first-month illustration uses birth details and needs no extra weight entries.' : 'Recorded visit measurements will appear here when available.'}</p>{days !== null && days > 30 && <Button asChild className="min-h-11"><Link to="/growth/add">Add Measurement</Link></Button>}</CardContent></Card>
+      : <>{newborn && <div role="note" aria-label="Recorded visit source" className="rounded-xl bg-secondary/60 p-4 text-sm leading-relaxed"><h2 className="font-semibold">Saved visit measurements</h2><p className="mt-2 text-muted-foreground">These are saved visit records, separate from the illustrative journey above. They do not identify who took or entered the measurements. No values from the illustrative curve are added to this history.</p></div>}<GrowthCharts history={history.data} /></>}
+    <div role="note" aria-label="Medical disclaimer" className="rounded-xl border border-primary/15 bg-primary/5 p-4 [&>div]:border-0 [&>div]:p-0 [&>div]:text-muted-foreground"><ResearchDisclaimer /></div>
+  </div>;
 }

@@ -160,6 +160,16 @@ class RiskService:
                 "alpha_xgboost": alpha_xgb,
                 "weight_transformer": weight_trans
             },
+            # Score-space arithmetic from this inference, separate from Tree SHAP margins.
+            "model_combination": {
+                "xgboost_weight": alpha_xgb,
+                "transformer_weight": weight_trans,
+                "xgboost_score": prob_xgb,
+                "transformer_score": prob_transformer,
+                "xgboost_weighted_contribution": alpha_xgb * prob_xgb,
+                "transformer_weighted_contribution": weight_trans * prob_transformer,
+                "hybrid_score": hybrid_score
+            },
             "model_applicable": True
         }
 

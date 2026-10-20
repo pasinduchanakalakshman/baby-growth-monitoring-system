@@ -9,6 +9,8 @@ from app.schemas.growth import (
     GrowthOverviewResponse, CurrentGrowthOutput, Forecast30dOutput, Risk180dOutput
 )
 from app.api.deps import get_current_user
+from app.schemas.newborn_weight_journey import NewbornWeightJourneyResponse
+from app.services.newborn_weight_journey_service import calculate_newborn_weight_journey
 
 # Import our ML services
 from app.services.who_service import who_service
@@ -26,6 +28,12 @@ def get_baby(db: Session, user: User) -> Baby:
     if not baby:
         raise HTTPException(status_code=404, detail="Baby not found. Please register a baby first.")
     return baby
+
+
+@router.get("/newborn-weight-journey", response_model=NewbornWeightJourneyResponse)
+def get_newborn_weight_journey(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    baby = get_baby(db, current_user)
+    return calculate_newborn_weight_journey(baby.birth_weight_kg, baby.sex, baby.gestational_age_weeks)
 
 def normalize_delivery_type(val: Optional[str]) -> Optional[str]:
     """Normalizes delivery type to match frozen preprocessor categories: 'Normal' or 'C-Section'."""
@@ -252,7 +260,20 @@ def get_risk_explanation(db: Session = Depends(get_db), current_user: User = Dep
     if not r_out["risk_available"]:
         raise HTTPException(status_code=400, detail="Risk not available. Cannot generate explanation.")
         
-    return xai_service.explain_prediction(features)
+    # Reuse the single inference above and the same feature/history snapshot as SHAP.
+    return {
+        **xai_service.explain_prediction(features),
+        "model_combination": r_out.get("model_combination"),
+        "explanation_scope": {
+            "shap_branch": "xgboost_only",
+            "shap_value_space": "log_odds",
+            "transformer_feature_attribution_available": False
+        },
+        "assessment": {
+            "visit_date": history[-1]["visit_date"],
+            "recorded_visit_count": len(history)
+        }
+    }
 
 @router.get("/model-info")
 def get_model_info():

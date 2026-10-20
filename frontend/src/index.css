@@ -1,45 +1,176 @@
 @import "tailwindcss";
 
+/* Keep shadcn's HSL channel variables; expose them to Tailwind 4 here. */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-brand: hsl(var(--brand));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-hover: hsl(var(--primary-hover));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-hover: hsl(var(--destructive-hover));
+  --color-destructive-soft: hsl(var(--destructive-soft));
+
+  --font-heading: var(--font-sans);
+  --text-heading: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --text-heading--line-height: 1.25;
+  --text-display: clamp(1.75rem, 1.25rem + 2vw, 2.75rem);
+  --text-display--line-height: 1.15;
+
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+  --radius-2xl: calc(var(--radius) + 0.5rem);
+  --shadow-card: var(--card-shadow);
+  --shadow-control: var(--control-shadow);
+  --shadow-auth: var(--auth-shadow);
+  --spacing-control: var(--control-height);
+  --spacing-control-sm: var(--control-height-sm);
+  --spacing-control-lg: var(--control-height-lg);
+  --spacing-card: var(--card-padding);
+  --spacing-page: var(--page-gutter);
+  --spacing-form: var(--form-gap);
+  --container-content: 80rem;
+  --container-auth: 28rem;
+}
+
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 222.2 84% 4.9%;
-
+    --background: 252 45.4545% 97.8431%; /* #F8F7FC */
+    --foreground: 229.8113 48.6239% 21.3725%; /* #1C2551 */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
- 
+    --card-foreground: var(--foreground);
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --popover-foreground: var(--foreground);
+    --brand: 250.8571 53.8462% 61.7647%; /* #7C69D2: decoration */
+    --primary: 252.1154 46.4286% 56.0784%; /* #705BC3: accessible actions */
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 252.6923 41.6% 49.0196%; /* #5F49B1 */
+    --secondary: 206.087 100% 95.4902%; /* #E8F5FF */
+    --secondary-foreground: var(--foreground);
+    --accent: 335 100% 95.2941%; /* #FFE7F1 */
+    --accent-foreground: var(--foreground);
+    --muted: 248.5714 36.8421% 96.2745%; /* #F3F2F9 */
+    --muted-foreground: 226 13.2743% 44.3137%; /* #626980 */
+    --border: 240 23.6364% 89.2157%; /* #DDDDEA: decorative borders */
+    --input: 231.4286 12.963% 57.6471%; /* #8589A1: visible field boundaries */
+    --ring: var(--primary);
+    --destructive: 349.6552 67.4419% 42.1569%; /* #B4233C */
+    --destructive-foreground: 0 0% 100%;
+    --destructive-hover: 349.3548 69.6629% 34.902%; /* #971B31 */
+    --destructive-soft: 352 100% 97.0588%; /* #FFF0F2 */
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
- 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    --card-shadow: 0 4px 24px hsl(var(--foreground) / 0.05),
+      0 1px 3px hsl(var(--foreground) / 0.04);
+    --control-shadow: 0 1px 2px hsl(var(--foreground) / 0.04);
+    --auth-shadow: 0 16px 48px hsl(var(--brand) / 0.1),
+      0 2px 8px hsl(var(--foreground) / 0.04);
+    /* Preserve compact existing forms; auth-form opts into 44px controls. */
+    --control-height: 2.25rem;
+    --control-height-sm: 2rem;
+    --control-height-lg: 2.75rem;
+    --card-padding: 1.5rem;
+    --page-gutter: 1rem;
+    --form-padding: 1.25rem;
+    --form-gap: 1rem;
+    --layout-gap: 1.5rem;
+    --auth-gradient: linear-gradient(135deg, hsl(var(--secondary)),
+      hsl(var(--background)) 52%, hsl(var(--accent)));
   }
-}
- 
-@layer base {
+
+  @media (width >= 48rem) {
+    :root {
+      --page-gutter: 1.5rem;
+      --form-padding: 1.5rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    :root {
+      --page-gutter: 2rem;
+      --form-padding: 2rem;
+    }
+  }
+
   * {
     border-color: hsl(var(--border));
   }
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
+}
+
+/* Opt-in foundations: no existing page layout is restructured. */
+@utility content-container {
+  width: 100%;
+  min-width: 0;
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+@utility card-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--layout-gap);
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (width >= 80rem) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@utility page-heading {
+  @apply font-heading text-heading font-semibold tracking-tight text-foreground;
+}
+
+@utility auth-heading {
+  @apply font-heading text-display font-semibold tracking-tight text-foreground;
+}
+
+@utility auth-form {
+  --control-height: var(--control-height-lg);
+  --control-height-sm: var(--control-height-lg);
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: var(--container-auth);
+  gap: var(--form-gap);
+}
+
+@utility auth-surface {
+  --card-padding: var(--form-padding);
+  @apply rounded-2xl border border-border bg-card text-card-foreground shadow-auth;
+}
+
+@utility auth-decoration {
+  background-image: var(--auth-gradient);
+  color: hsl(var(--foreground));
+}
+
+/* Native checkbox foundation; pair with a labelled 44px minimum hit area. */
+@utility form-checkbox {
+  @apply size-5 shrink-0 accent-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
 }

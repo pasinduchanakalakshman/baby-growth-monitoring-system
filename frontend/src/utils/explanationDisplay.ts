@@ -1,3 +1,5 @@
+import type { ModelCombination, RiskExplanation, Risk180Day, FrontendSafeExplanation } from '@/types/growth';
+
 /**
  * Utility functions for formatting SHAP risk explanations into parent-friendly language.
  * Adheres strictly to non-causal descriptions, accurate units/rounding, and clear model disclosures.
@@ -5,15 +7,15 @@
 
 export const PARENT_FRIENDLY_FEATURE_NAMES: Record<string, string> = {
   weight_kg: 'Current weight',
-  length_height_cm: 'Current length / height',
+  length_height_cm: 'Current length or height',
   birth_weight_kg: 'Birth weight',
   birth_length_cm: 'Length at birth',
   gestational_age_weeks: 'Gestational age',
   birth_order: 'Birth order',
   apgar_score_5min: '5-minute APGAR score',
-  age_days: 'Child age',
-  verified_waz: 'Weight-for-age growth score',
-  verified_haz: 'Length-for-age growth score',
+  age_days: 'Age',
+  verified_waz: 'Weight-for-age growth information',
+  verified_haz: 'Length-for-age growth information',
   observation_count: 'Number of clinic visits',
   days_since_previous_visit: 'Time since previous growth check',
   weight_change_kg: 'Weight change between visits',
@@ -119,7 +121,7 @@ export function isLongitudinalFeature(feature: string): boolean {
  * - Missing values: "Not recorded".
  */
 export function formatRecordedValue(feature: string, rawValue: unknown): string {
-  if (rawValue === null || rawValue === undefined || rawValue === '' || Number.isNaN(rawValue)) {
+  if (rawValue === null || rawValue === undefined || rawValue === '' || (typeof rawValue === 'number' && !Number.isFinite(rawValue))) {
     return 'Not recorded';
   }
 
@@ -226,107 +228,107 @@ export function formatRecordedValue(feature: string, rawValue: unknown): string 
   return String(rawValue);
 }
 
-/**
- * Deterministically generates parent-friendly explanation text based on:
- * - Feature identifier
- * - Actual SHAP attribution direction (increased vs decreased model output)
- * - Actual recorded value
- *
- * Strict safety rules:
- * - No causal claims ("because child is too short")
- * - No medical diagnoses
- * - Explains clearly whether factor shifted the screening score higher or lower
- */
-export function getParentFriendlyDescription(feature: string, direction: string): string {
-  const isIncreasing = direction.toLowerCase().includes('increase');
-  const effectText = isIncreasing
-    ? 'In the AI model’s calculation, this factor shifted the predicted risk score higher.'
-    : 'In the AI model’s calculation, this factor shifted the predicted risk score lower.';
-
-  let observationText = '';
-
-  switch (feature) {
-    case 'weight_kg':
-      observationText = "Your child's recorded weight was one of the measurements the AI considered important.";
-      break;
-    case 'length_height_cm':
-      observationText = "Your child's recorded length or height was evaluated by the AI model during this visit.";
-      break;
-    case 'birth_weight_kg':
-      observationText = "Your child's recorded birth weight was included in the model's assessment.";
-      break;
-    case 'birth_length_cm':
-      observationText = "Your child's length recorded at birth was taken into account by the model.";
-      break;
-    case 'age_days':
-      observationText = "Your child's age influenced the model's assessment.";
-      break;
-    case 'days_since_previous_visit':
-      observationText = "The time elapsed since your child's previous clinic visit was evaluated.";
-      break;
-    case 'weight_velocity':
-    case 'weight_velocity_kg_per_day':
-    case 'weight_velocity_kg_per_30d':
-    case 'weight_change_kg':
-      observationText = "The AI considered how your child's weight changed between clinic visits.";
-      break;
-    case 'haz_change':
-    case 'haz_velocity_per_day':
-    case 'haz_velocity_per_30d':
-      observationText = "The AI examined how your child's length-for-age growth score changed over time.";
-      break;
-    case 'verified_waz':
-    case 'waz_change':
-    case 'waz_velocity_per_day':
-    case 'waz_velocity_per_30d':
-    case 'waz_rolling_mean_3':
-      observationText = "Your child's weight-for-age growth score was evaluated by the AI model.";
-      break;
-    case 'verified_haz':
-    case 'last_observed_haz':
-      observationText = "Your child's length-for-age growth score was evaluated by the AI model.";
-      break;
-    case 'height_change_cm':
-    case 'height_velocity_cm_per_day':
-    case 'height_velocity_cm_per_30d':
-    case 'last_observed_height_cm':
-      observationText = "The AI evaluated how your child's height or length progressed between check-ups.";
-      break;
-    case 'recent_illness':
-    case 'diarrhea_recent':
-    case 'fever_recent':
-    case 'fever_last_14_days':
-    case 'respiratory_illness_recent':
-    case 'illness_duration_days':
-      observationText = 'Information about recent childhood illnesses was considered in the model’s assessment.';
-      break;
-    case 'breastfeeding_status':
-    case 'breastfeeding_frequency_per_day':
-    case 'formula_feeding':
-    case 'formula_feeds_per_day':
-    case 'complementary_feeding_started':
-    case 'complementary_feeding_start_age_months':
-    case 'meals_per_day':
-    case 'food_groups_consumed':
-      observationText = 'Recorded feeding practices were considered in the model’s assessment.';
-      break;
-    case 'observation_count':
-      observationText = 'The number of clinic visits recorded for your child was considered by the model.';
-      break;
-    default: {
-      const friendlyName = getParentFriendlyFeatureName(feature);
-      observationText = `The recorded ${friendlyName.toLowerCase()} was evaluated by the AI model.`;
-      break;
-    }
-  }
-
-  return `${observationText} ${effectText}`;
+// Older servers may omit the breakdown. Never fill missing scores with zero or guesses.
+export function isValidModelCombination(value: ModelCombination | null | undefined): value is ModelCombination {
+  if (!value) return false;
+  const numbers = [value.xgboost_weight, value.transformer_weight, value.xgboost_score,
+    value.transformer_score, value.xgboost_weighted_contribution,
+    value.transformer_weighted_contribution, value.hybrid_score];
+  return numbers.every(n => typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= 1)
+    && value.xgboost_weight === 0.9 && value.transformer_weight === 0.1
+    && Math.abs(value.xgboost_weighted_contribution - value.xgboost_weight * value.xgboost_score) < 1e-12
+    && Math.abs(value.transformer_weighted_contribution - value.transformer_weight * value.transformer_score) < 1e-12
+    && Math.abs(value.xgboost_weighted_contribution + value.transformer_weighted_contribution - value.hybrid_score) < 1e-12;
 }
 
-export const HYBRID_MODEL_COVERAGE_DISCLOSURE = {
-  title: 'Understanding What This Explanation Covers',
-  summary:
-    'The 180-day growth assessment score is produced by a hybrid AI system: 90% XGBoost (tabular measurements) and 10% Clean Transformer (longitudinal timeline).',
-  details:
-    'These feature explanations explain only the 90% XGBoost branch of the hybrid screening score. The 10% Transformer sequence branch evaluates complex trajectory patterns across past visits, and individual feature breakdowns are not calculated for it. These factors explain model behavior, not medical causes.'
-};
+export const EXPLANATION_LIMITATION =
+  "These highlighted details explain part of the screening assessment. They do not tell us for certain what will happen to your baby's growth.";
+
+export const NEUTRAL_FACTOR_INFLUENCE = 'This recorded measurement was considered in the explanation.';
+
+/** Interpret only the documented direction when its signed attribution and scope agree. */
+export function getFactorInfluence(explanation: RiskExplanation, factor: FrontendSafeExplanation, contribution: number | undefined): string {
+  const scope = explanation.explanation_scope;
+  if (scope?.shap_branch !== 'xgboost_only' || scope.shap_value_space !== 'log_odds'
+    || scope.transformer_feature_attribution_available !== false
+    || typeof contribution !== 'number' || !Number.isFinite(contribution)) return NEUTRAL_FACTOR_INFLUENCE;
+  if (factor.direction === 'increased model-predicted risk' && contribution > 0) {
+    return 'This information increased the screening score in the explained part of the assessment.';
+  }
+  if (factor.direction === 'decreased model-predicted risk' && contribution < 0) {
+    return 'This information decreased the screening score in the explained part of the assessment.';
+  }
+  return NEUTRAL_FACTOR_INFLUENCE;
+}
+
+export function getRecordedVisitCount(explanation: RiskExplanation): number | null {
+  const count = explanation.assessment?.recorded_visit_count;
+  return typeof count === 'number' && Number.isInteger(count) && count >= 0 ? count : null;
+}
+
+/** Use the existing backend decision only when all outputs match. Never classify a score here. */
+export function getMatchedScreeningStatus(explanation: RiskExplanation, risk: Risk180Day | null | undefined): 'elevated' | 'below' | null {
+  const original = explanation.model_combination;
+  const latest = risk?.model_combination;
+  if (!risk?.risk_available || risk.model_applicable === false || risk.prediction_horizon_days !== 180
+    || !isValidModelCombination(original) || !isValidModelCombination(latest)) return null;
+  const keys: (keyof ModelCombination)[] = ['xgboost_weight', 'transformer_weight', 'xgboost_score',
+    'transformer_score', 'xgboost_weighted_contribution', 'transformer_weighted_contribution', 'hybrid_score'];
+  if (!keys.every(key => original[key] === latest[key])
+    || (risk.risk_score ?? risk.risk_probability) !== original.hybrid_score) return null;
+  if (risk.screening_status === 'Elevated screening risk' && risk.risk_flag === 1) return 'elevated';
+  if (risk.screening_status === 'Below screening threshold' && risk.risk_flag === 0) return 'below';
+  return null;
+}
+
+// A short, explicit list prevents internal or unknown feature identifiers from leaking into the page.
+const MEASUREMENT_FEATURES = new Set([
+  'weight_kg', 'length_height_cm', 'birth_weight_kg', 'birth_length_cm', 'age_days',
+  'verified_waz', 'verified_haz', 'gestational_age_weeks',
+  'breastfeeding_status', 'breastfeeding_frequency_per_day', 'formula_feeding', 'formula_feeds_per_day',
+  'complementary_feeding_started', 'meals_per_day', 'food_groups_consumed',
+  'recent_illness', 'diarrhea_recent', 'fever_recent', 'respiratory_illness_recent', 'illness_duration_days',
+]);
+const BOOLEAN_FEATURES = new Set([
+  'breastfeeding_status', 'formula_feeding', 'complementary_feeding_started',
+  'recent_illness', 'diarrhea_recent', 'fever_recent', 'respiratory_illness_recent',
+]);
+const MEASURED_CHANGES = new Set(['weight_change_kg', 'height_change_cm']);
+
+interface RecordedFactor extends FrontendSafeExplanation {
+  label: string;
+  recordedValue: string;
+  influence: string;
+}
+
+/** Preserve API order, rank, and direction, but display only known factors with real raw values. */
+export function getMotherFriendlyFactors(explanation: RiskExplanation): { measurements: RecordedFactor[]; changes: RecordedFactor[] } {
+  const measurements: RecordedFactor[] = [];
+  const changes: RecordedFactor[] = [];
+  const seen = new Set<string>();
+  const hasHistory = (getRecordedVisitCount(explanation) ?? 0) >= 2;
+  for (const factor of explanation.frontend_safe_explanation ?? []) {
+    const isChange = MEASURED_CHANGES.has(factor.feature);
+    if ((!MEASUREMENT_FEATURES.has(factor.feature) && !isChange) || (isChange && !hasHistory) || seen.has(factor.feature)) continue;
+    const contribution = explanation.technical_explanation?.contributions?.find(c => c.feature === factor.feature);
+    const raw = contribution?.raw_value;
+    let value: number | boolean;
+    if (BOOLEAN_FEATURES.has(factor.feature)) {
+      if (typeof raw === 'boolean') value = raw;
+      else if (raw === 0 || raw === 1) value = raw === 1;
+      else continue;
+    } else {
+      if (typeof raw !== 'number' || !Number.isFinite(raw)) continue;
+      value = raw;
+    }
+    seen.add(factor.feature);
+    const recordedValue = factor.feature === 'verified_waz' || factor.feature === 'verified_haz'
+      ? 'Recorded for this growth check'
+      : formatRecordedValue(factor.feature, value);
+    const item = { ...factor, label: getParentFriendlyFeatureName(factor.feature), recordedValue,
+      influence: getFactorInfluence(explanation, factor, contribution?.shap_contribution) };
+    if (isChange) changes.push(item);
+    else measurements.push(item);
+  }
+  return { measurements: measurements.slice(0, 4), changes: changes.slice(0, 2) };
+}

@@ -1,0 +1,232 @@
+{
+  "available": true,
+  "reason": null,
+  "chart_type": "educational_illustration",
+  "birth_weight_kg": 3.2,
+  "duration_days": 30,
+  "points": [
+    {
+      "day": 0,
+      "weight_kg": 3.2,
+      "value_type": "recorded_birth_weight",
+      "phase": "Birth"
+    },
+    {
+      "day": 1,
+      "weight_kg": 3.1466666666666665,
+      "value_type": "illustrative",
+      "phase": "Initial weight loss"
+    },
+    {
+      "day": 2,
+      "weight_kg": 3.0933333333333337,
+      "value_type": "illustrative",
+      "phase": "Initial weight loss"
+    },
+    {
+      "day": 3,
+      "weight_kg": 3.04,
+      "value_type": "illustrative",
+      "phase": "Initial weight loss"
+    },
+    {
+      "day": 4,
+      "weight_kg": 3.0628571428571427,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 5,
+      "weight_kg": 3.085714285714286,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 6,
+      "weight_kg": 3.1085714285714285,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 7,
+      "weight_kg": 3.1314285714285717,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 8,
+      "weight_kg": 3.1542857142857144,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 9,
+      "weight_kg": 3.1771428571428575,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 10,
+      "weight_kg": 3.2,
+      "value_type": "illustrative",
+      "phase": "Recovery"
+    },
+    {
+      "day": 11,
+      "weight_kg": 3.233,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 12,
+      "weight_kg": 3.266,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 13,
+      "weight_kg": 3.2990000000000004,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 14,
+      "weight_kg": 3.3320000000000003,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 15,
+      "weight_kg": 3.378,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 16,
+      "weight_kg": 3.4240000000000004,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 17,
+      "weight_kg": 3.47,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 18,
+      "weight_kg": 3.5160000000000005,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 19,
+      "weight_kg": 3.5620000000000003,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 20,
+      "weight_kg": 3.6080000000000005,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 21,
+      "weight_kg": 3.6540000000000004,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 22,
+      "weight_kg": 3.7,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 23,
+      "weight_kg": 3.7460000000000004,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 24,
+      "weight_kg": 3.7920000000000003,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 25,
+      "weight_kg": 3.838,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 26,
+      "weight_kg": 3.8840000000000003,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 27,
+      "weight_kg": 3.93,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 28,
+      "weight_kg": 3.9760000000000004,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 29,
+      "weight_kg": 4.016,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    },
+    {
+      "day": 30,
+      "weight_kg": 4.056,
+      "value_type": "illustrative",
+      "phase": "Continued growth"
+    }
+  ],
+  "method": "documented_newborn_reference_illustration_v1",
+  "message": "This chart shows an example of how a newborn's weight may change. Only the birth weight is a recorded measurement. The other values are illustrations, not exact predictions.",
+  "limitations": [
+    "This general example is for babies born at term. It may not suit babies who are unwell or need special care. Follow your healthcare provider's individual advice.",
+    "The early dip and recovery timing are assumed. Later daily values illustrate population rates; they do not assess your baby's health or show normal growth limits."
+  ],
+  "assumptions": {
+    "loss_fraction": 0.05,
+    "nadir_day": 3,
+    "recovery_day": 10,
+    "interpolation": "piecewise_linear"
+  },
+  "reference_version": "who-early-velocity-transcription-2026-10-19",
+  "reference_birth_weight_group_g": [
+    3000,
+    3500
+  ],
+  "reference_rates": [
+    {
+      "interval_start_day": 7,
+      "interval_end_day": 14,
+      "median_velocity_g_per_day": 33.0,
+      "value_type": "published_population_reference"
+    },
+    {
+      "interval_start_day": 14,
+      "interval_end_day": 28,
+      "median_velocity_g_per_day": 46.0,
+      "value_type": "published_population_reference"
+    },
+    {
+      "interval_start_day": 28,
+      "interval_end_day": 42,
+      "median_velocity_g_per_day": 40.0,
+      "value_type": "published_population_reference"
+    }
+  ]
+}

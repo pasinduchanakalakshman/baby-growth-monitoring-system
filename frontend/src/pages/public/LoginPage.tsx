@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Baby, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AuthLayout } from '@/components/auth/AuthLayout';
+import { PasswordInput } from '@/components/auth/PasswordInput';
+import { UserRound, Loader2, CheckCircle2, CircleAlert } from 'lucide-react';
 import { authApi } from '@/api/auth';
 import { ApiClientError } from '@/api/client';
 import { useAuth } from '@/auth/AuthProvider';
@@ -14,7 +17,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { refreshUser } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -38,7 +40,7 @@ export default function LoginPage() {
       const from = location.state?.from?.pathname || '/app';
       navigate(from, { replace: true });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       if (err instanceof ApiClientError && err.status === 401) {
         setError('Incorrect email or password');
       } else if (err instanceof ApiClientError && err.data?.detail) {
@@ -61,102 +63,92 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[#F8F9FB]">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/" className="flex justify-center items-center gap-2">
-          <Baby className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">Baby Growth</span>
-        </Link>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign In
-        </h2>
-      </div>
-      
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="shadow-lg">
-          <CardHeader className="space-y-1 pb-4">
-            <CardDescription className="text-center">
-              Welcome back. Sign in to continue monitoring your baby's growth.
-            </CardDescription>
-          </CardHeader>
-          
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              {successMsg && (
-                <div className="bg-green-50 text-green-700 text-sm p-3 rounded-md border border-green-200 flex items-center justify-center gap-2 font-medium">
-                  <CheckCircle2 className="h-4 w-4" />
-                  {successMsg}
-                </div>
-              )}
+    <AuthLayout>
+      <Card className="auth-surface rounded-2xl border-card bg-card/95">
+        <CardHeader className="space-y-0 pb-7">
+          <div className="mb-8 hidden grid-cols-2 rounded-lg bg-muted/70 p-1 text-center text-sm sm:grid">
+            <span aria-current="page" className="relative rounded-md bg-card px-3 py-2.5 font-medium text-primary shadow-control after:absolute after:inset-x-1/3 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-primary">Sign In</span>
+            <Link to="/register" className="flex min-h-11 items-center justify-center rounded-md text-muted-foreground hover:text-primary focus-visible:outline-2 focus-visible:outline-ring">Create Account</Link>
+          </div>
+          <CardTitle>
+            <h2 id="login-heading" className="text-3xl leading-tight font-bold tracking-tight sm:text-2xl">Welcome Back!</h2>
+          </CardTitle>
+          <CardDescription id="login-description" className="mt-2 leading-relaxed">
+            <span className="lg:hidden">Sign in to continue.</span>
+            <span className="hidden lg:inline">Sign in to continue tracking your baby's growth.</span>
+          </CardDescription>
+        </CardHeader>
 
-              {error && (
-                <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20 text-center font-medium">
-                  {error}
-                </div>
-              )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="mother@example.com" 
+        <form onSubmit={handleSubmit} aria-labelledby="login-heading" aria-describedby={error ? 'login-error' : 'login-description'} aria-busy={loginMutation.isPending}>
+          <CardContent className="auth-form max-w-none gap-5 pb-0">
+            {successMsg && (
+              <Alert role="status" className="border-primary/20 bg-secondary/60">
+                <CheckCircle2 aria-hidden="true" className="size-4 text-primary" />
+                <AlertDescription>{successMsg}</AlertDescription>
+              </Alert>
+            )}
+            {error && (
+              <Alert variant="destructive" id="login-error">
+                <CircleAlert aria-hidden="true" className="size-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email address</Label>
+              <div className="relative">
+                <UserRound aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-primary" />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  placeholder="youremail@example.com"
+                  className="h-12 rounded-lg bg-background/60 pl-11"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   disabled={loginMutation.isPending}
+                  aria-invalid={error === 'Email is required' || undefined}
+                  aria-describedby={error === 'Email is required' ? 'login-error' : undefined}
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <div className="relative">
-                  <Input 
-                    id="password" 
-                    type={showPassword ? 'text' : 'password'} 
-                    placeholder="••••••••" 
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    disabled={loginMutation.isPending}
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-              <div className="pt-2">
-                <Button className="w-full" type="submit" disabled={loginMutation.isPending}>
-                  {loginMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing in...
-                    </>
-                  ) : (
-                    'Sign In'
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col border-t p-6">
-              <p className="text-sm text-center text-slate-600">
-                Don't have an account?{' '}
-                <Link to="/register" className="text-primary font-medium hover:underline">
-                  Create Account
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
-        </Card>
-      </div>
-    </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <PasswordInput
+                id="password"
+                name="password"
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                disabled={loginMutation.isPending}
+                aria-invalid={error === 'Password is required' || undefined}
+                aria-describedby={error === 'Password is required' ? 'login-error' : undefined}
+                required
+              />
+            </div>
+            <Button className="mt-2 h-12 w-full rounded-lg" type="submit" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? (
+                <>
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
+                  Signing in...
+                </>
+              ) : 'Sign In'}
+            </Button>
+            <span role="status" className="sr-only">{loginMutation.isPending ? 'Signing in. Please wait.' : ''}</span>
+          </CardContent>
+          <CardFooter className="justify-center pt-5">
+            <p className="text-center text-sm leading-relaxed text-muted-foreground">
+              Don't have an account?{' '}
+              <Link to="/register" className="inline-flex min-h-11 items-center rounded-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Create Account</Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+    </AuthLayout>
   );
 }

@@ -1,0 +1,25 @@
+{
+  "version": "who-early-velocity-transcription-2026-10-19",
+  "accessed": "2026-10-19",
+  "source_page": "https://www.who.int/tools/child-growth-standards/standards/weight-velocity",
+  "sources": {
+    "Female": {
+      "velocity": "https://cdn.who.int/media/docs/default-source/child-growth/child-growth-standards/indicators/weight-velocity/weight_vel_birth_to_60_days_girls.pdf?sfvrsn=9de77002_11",
+      "increments": "https://cdn.who.int/media/docs/default-source/child-growth/child-growth-standards/indicators/weight-velocity/weight_inc_birth_to_60_days_girls.pdf?sfvrsn=8ecfc50f_15"
+    },
+    "Male": {
+      "velocity": "https://cdn.who.int/media/docs/default-source/child-growth/child-growth-standards/indicators/weight-velocity/weight_vel_birth_to_60_days_boys.pdf?sfvrsn=e2f82d14_17",
+      "increments": "https://cdn.who.int/media/docs/default-source/child-growth/child-growth-standards/indicators/weight-velocity/weight_inc_birth_to_60_days_boys.pdf?sfvrsn=2d756c59_11"
+    }
+  },
+  "intervals_days": [[0, 7], [7, 14], [14, 28], [28, 42]],
+  "groups_g": [[2500, 3000], [3000, 3500], [3500, 4000]],
+  "median_velocity_g_per_day": {
+    "Female": [[21, 29, 43, 36], [14, 29, 39, 35], [14, 29, 42, 32]],
+    "Male": [[21, 36, 50, 42], [21, 33, 46, 40], [21, 31, 50, 41]]
+  },
+  "median_increment_g_review_only": {
+    "Female": [[150, 200, 600, 500], [100, 200, 550, 465], [100, 200, 550, 457]],
+    "Male": [[150, 250, 700, 550], [150, 250, 650, 550], [150, 250, 700, 550]]
+  }
+}

@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth/AuthProvider';
 import { authApi } from '@/api/auth';
 import { babyApi } from '@/api/baby';
+import { growthApi } from '@/api/growth';
 import { ApiClientError } from '@/api/client';
 
 // Mock the APIs
@@ -28,6 +29,10 @@ vi.mock('@/api/baby', () => ({
   }
 }));
 
+vi.mock('@/api/growth', () => ({
+  growthApi: { getGrowthOverview: vi.fn(), getGrowthHistory: vi.fn() }
+}));
+
 const createTestQueryClient = () => new QueryClient({
   defaultOptions: {
     queries: {
@@ -39,6 +44,8 @@ const createTestQueryClient = () => new QueryClient({
 describe('Stage 16B Frontend Tests', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: null });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
   });
 
   const renderWithProviders = (ui: React.ReactElement) => {
@@ -56,7 +63,7 @@ describe('Stage 16B Frontend Tests', () => {
 
   it('1. Register form renders', () => {
     renderWithProviders(<RegisterPage />);
-    expect(screen.getByRole('heading', { name: /Create Account/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /Create Your Account/i })).toBeTruthy();
     expect(screen.getByLabelText(/Full Name/i)).toBeTruthy();
   });
 
@@ -80,7 +87,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<RegisterPage />);
     
     fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'Test' } });
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText('Email Address'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
     fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'password123' } });
     
@@ -99,7 +106,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<RegisterPage />);
     
     fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'Test' } });
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText('Email Address'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
     fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'password123' } });
     
@@ -110,7 +117,7 @@ describe('Stage 16B Frontend Tests', () => {
 
   it('5. Login form renders', () => {
     renderWithProviders(<LoginPage />);
-    expect(screen.getByRole('heading', { name: /Sign In/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /Welcome Back/i })).toBeTruthy();
     expect(screen.getByLabelText(/Email/i)).toBeTruthy();
   });
 
@@ -121,7 +128,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<LoginPage />);
     
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'password123' } });
     fireEvent.click(screen.getByRole('button', { name: /Sign In/i }));
     
     await waitFor(() => {
@@ -136,7 +143,7 @@ describe('Stage 16B Frontend Tests', () => {
     renderWithProviders(<LoginPage />);
     
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'wrong' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'wrong' } });
     fireEvent.click(screen.getByRole('button', { name: /Sign In/i }));
     
     expect(await screen.findByText(/Incorrect email or password/i)).toBeTruthy();

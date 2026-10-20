@@ -1,0 +1,357 @@
+{
+    "task": "Task 3.1A - Validate Threshold Stability and Correct Scientific Claims",
+    "cohort": {
+        "dataset": "data/splits/v1/validation.csv",
+        "observations": 1143,
+        "unique_children": 75,
+        "positive_events_total_observations": 42,
+        "unique_children_with_positive_events": 24,
+        "negative_events_total_observations": 1101,
+        "prevalence": 0.03674540682414698,
+        "interval_censored_unobserved_outcomes": 46
+    },
+    "model_inspected": {
+        "name": "Standard XGBoost Baseline",
+        "artifact": "models/trained/baselines/v1/xgboost.joblib",
+        "preprocessor": "models/scalers/baseline_preprocessor_v1.joblib",
+        "transformed_feature_count": 346,
+        "current_deployed_threshold": 0.5,
+        "deployed_threshold_policy": "Frozen baseline from Stage 7. Deployed threshold unchanged."
+    },
+    "threshold_sweep_summary": {
+        "range": [
+            0.01,
+            0.99
+        ],
+        "step": 0.01,
+        "total_points_evaluated": 99,
+        "sweep_file": "research/evaluation/xgboost_threshold_sweep_v1.csv",
+        "exact_maximum_f1_thresholds": {
+            "count": 1,
+            "unique_threshold": 0.13,
+            "exact_max_f1": 0.3883495145631067,
+            "plateau_status": "No plateau; threshold 0.13 is the unique single maximum F1 value on the 0.01-0.99 grid."
+        }
+    },
+    "candidate_operating_points": {
+        "current_baseline_050": {
+            "threshold": 0.5,
+            "precision": 0.4,
+            "recall": 0.2857142857142857,
+            "f1_score": 0.3333333333333333,
+            "specificity": 0.983651226158038,
+            "tp": 12.0,
+            "fp": 18.0,
+            "tn": 1083.0,
+            "fn": 30.0,
+            "alerts_total": 30.0,
+            "alert_rate": 0.0262467191601049,
+            "unique_children_tp": 12,
+            "unique_children_fp": 10
+        },
+        "unique_max_validation_f1_013": {
+            "threshold": 0.13,
+            "precision": 0.3278688524590163,
+            "recall": 0.4761904761904761,
+            "f1_score": 0.3883495145631067,
+            "specificity": 0.9627611262488648,
+            "tp": 20.0,
+            "fp": 41.0,
+            "tn": 1060.0,
+            "fn": 22.0,
+            "alerts_total": 61.0,
+            "alert_rate": 0.0533683289588801,
+            "unique_children_tp": 17,
+            "unique_children_fp": 23,
+            "is_unique_grid_f1_maximum": true
+        },
+        "moderate_sensitivity_010": {
+            "threshold": 0.1,
+            "precision": 0.2957746478873239,
+            "recall": 0.5,
+            "f1_score": 0.3716814159292035,
+            "specificity": 0.9545867393278836,
+            "tp": 21.0,
+            "fp": 50.0,
+            "tn": 1051.0,
+            "fn": 21.0,
+            "alerts_total": 71.0,
+            "alert_rate": 0.0621172353455818
+        },
+        "high_sensitivity_grid_limit_001": {
+            "threshold": 0.01,
+            "precision": 0.1181818181818181,
+            "recall": 0.6190476190476191,
+            "f1_score": 0.1984732824427481,
+            "specificity": 0.8237965485921889,
+            "tp": 26.0,
+            "fp": 194.0,
+            "tn": 907.0,
+            "fn": 16.0,
+            "alerts_total": 220.0,
+            "alert_rate": 0.1924759405074365
+        },
+        "exploratory_outside_grid_80pct_recall": {
+            "threshold": 0.002553,
+            "outside_standard_grid": true,
+            "exploratory_status": "Exploratory post-hoc calculation outside standard [0.01, 0.99] grid",
+            "precision": 0.0752212389380531,
+            "recall": 0.8095238095238095,
+            "f1_score": 0.13765182186234817,
+            "specificity": 0.620345140781108,
+            "tp": 34,
+            "fp": 418,
+            "tn": 683,
+            "fn": 8,
+            "unique_children_tp": 21,
+            "unique_children_fp": 74,
+            "alerts_total": 452,
+            "alert_rate": 0.39545056867891515
+        }
+    },
+    "unique_children_vs_observations_contrast": {
+        "baseline_050": {
+            "tp_observations": 12,
+            "unique_children_detected": 12,
+            "fp_observations": 18,
+            "unique_children_falsely_alerted": 10
+        },
+        "candidate_013": {
+            "tp_observations": 20,
+            "unique_children_detected": 17,
+            "fp_observations": 41,
+            "unique_children_falsely_alerted": 23
+        },
+        "net_change_013_minus_050": {
+            "additional_tp_observations": 8,
+            "additional_unique_children_detected": 5,
+            "additional_fp_observations": 23,
+            "additional_unique_children_falsely_alerted": 13
+        }
+    },
+    "recall_80pct_feasibility": {
+        "achievable_in_standard_grid_001_to_099": false,
+        "max_recall_at_001": 0.6190476190476191,
+        "positive_cases_with_prob_below_001": 16,
+        "percentage_positives_below_001": 38.095238095238095,
+        "required_threshold_for_80pct_recall": 0.002553,
+        "exploratory_outside_grid_status": "Exploratory calculation outside the predefined 0.01-0.99 grid",
+        "clinical_consequence_at_80pct_recall": {
+            "tp": 34,
+            "fp": 418,
+            "fn": 8,
+            "tn": 683,
+            "precision": 0.0752212389380531,
+            "specificity": 0.6203451407811081,
+            "f1_score": 0.13765182186234817,
+            "alerts_total": 452,
+            "alert_rate": 0.39545056867891515,
+            "finding": "Achieving 80% recall requires an exploratory cutoff outside the grid (T=0.00255), generating 418 false alarm observations (>12 false alarms per true positive). Unfeasible for routine primary care without heavy clinical burden."
+        }
+    },
+    "child_clustered_resampling_analysis": {
+        "resampling_method": "Child-clustered bootstrap (1,000 iterations over 75 unique children)",
+        "threshold_selection_uncertainty_estimated_argmax": {
+            "description": "Uncertainty in estimating the optimal threshold (argmax F1) across bootstrap samples",
+            "median": 0.15,
+            "mean": 0.22953,
+            "iqr_25_75": [
+                0.1275,
+                0.29
+            ],
+            "ci_95": [
+                0.09,
+                0.7
+            ],
+            "finding": "High selection variance (95% CI: [0.09, 0.70]). The location of the optimal threshold is NOT statistically stable."
+        },
+        "paired_operating_point_difference_013_minus_050": {
+            "description": "Contrast between fixed T=0.13 and fixed T=0.50 on identical resampled children",
+            "delta_recall": {
+                "mean": 0.18776700080170647,
+                "std": 0.05959714204476076,
+                "median": 0.1875,
+                "ci_95_lower": 0.07312717770034845,
+                "ci_95_upper": 0.30769230769230765,
+                "iqr": [
+                    0.14583333333333337,
+                    0.22747208931419463
+                ]
+            },
+            "delta_precision": {
+                "mean": -0.0791534850117219,
+                "std": 0.05525750812128543,
+                "median": -0.07695360195360197,
+                "ci_95_lower": -0.19920122887864822,
+                "ci_95_upper": 0.02120798310091966,
+                "iqr": [
+                    -0.11086205715948681,
+                    -0.04542694147957306
+                ]
+            },
+            "delta_f1_score": {
+                "mean": 0.053157568944852115,
+                "std": 0.056328544835270854,
+                "median": 0.05125430125430133,
+                "ci_95_lower": -0.05217478610092542,
+                "ci_95_upper": 0.17376125692776542,
+                "iqr": [
+                    0.014040480795800003,
+                    0.0913678504386469
+                ]
+            },
+            "delta_specificity": {
+                "mean": -0.021145314015102393,
+                "std": 0.004829680301115368,
+                "median": -0.020909090909090933,
+                "ci_95_lower": -0.031400914977375294,
+                "ci_95_upper": -0.012355218194537696,
+                "iqr": [
+                    -0.024285198009816406,
+                    -0.017754314240934155
+                ]
+            },
+            "delta_tp_observations": {
+                "mean": 7.945,
+                "std": 3.0597344656031837,
+                "median": 8.0,
+                "ci_95_lower": 3.0,
+                "ci_95_upper": 14.0,
+                "iqr": [
+                    6.0,
+                    10.0
+                ]
+            },
+            "delta_fp_observations": {
+                "mean": 23.171,
+                "std": 5.031278068244688,
+                "median": 23.0,
+                "ci_95_lower": 14.0,
+                "ci_95_upper": 33.02499999999998,
+                "iqr": [
+                    20.0,
+                    27.0
+                ]
+            },
+            "proportion_resamples_recall_improved": 0.998,
+            "proportion_resamples_f1_improved": 0.829,
+            "statistical_significance_assessment": {
+                "recall_gain_significant_at_005": true,
+                "recall_ci_excludes_zero": true,
+                "f1_gain_significant_at_005": false,
+                "f1_ci_excludes_zero": false,
+                "finding": "While the increase in recall is strictly positive across the 95% CI ([+0.0731, +0.3077]), the 95% CI for the difference in F1-score includes zero ([-0.0522, +0.1738]). Thus, F1 improvement cannot be asserted as statistically significant at the 5% level under child clustering."
+            }
+        },
+        "marginal_metrics_at_050": {
+            "recall": {
+                "mean": 0.2898612549107544,
+                "std": 0.0667400666005568,
+                "median": 0.28888888888888886,
+                "ci_95_lower": 0.16666666666666666,
+                "ci_95_upper": 0.4250132978723404,
+                "iqr": [
+                    0.24489795918367346,
+                    0.3333333333333333
+                ]
+            },
+            "precision": {
+                "mean": 0.40882807790169134,
+                "std": 0.08856781503255853,
+                "median": 0.4,
+                "ci_95_lower": 0.24986111111111112,
+                "ci_95_upper": 0.6,
+                "iqr": [
+                    0.34782608695652173,
+                    0.46153846153846156
+                ]
+            },
+            "f1_score": {
+                "mean": 0.3332649195684761,
+                "std": 0.05984226882218325,
+                "median": 0.33673788431474727,
+                "ci_95_lower": 0.21619542619542614,
+                "ci_95_upper": 0.44452736318407954,
+                "iqr": [
+                    0.2962962962962963,
+                    0.37142857142857144
+                ]
+            },
+            "specificity": {
+                "mean": 0.9835810447797658,
+                "std": 0.005511418132183586,
+                "median": 0.98390150071516,
+                "ci_95_lower": 0.9716398691718277,
+                "ci_95_upper": 0.993180460097304,
+                "iqr": [
+                    0.9799086757990868,
+                    0.9875111507582516
+                ]
+            }
+        },
+        "marginal_metrics_at_013": {
+            "recall": {
+                "mean": 0.47762825571246087,
+                "std": 0.07435387585613011,
+                "median": 0.4745762711864407,
+                "ci_95_lower": 0.3333333333333333,
+                "ci_95_upper": 0.6285978835978836,
+                "iqr": [
+                    0.42857142857142855,
+                    0.525
+                ]
+            },
+            "precision": {
+                "mean": 0.3296745928899695,
+                "std": 0.0638898055767713,
+                "median": 0.32650501672240806,
+                "ci_95_lower": 0.20892614847838728,
+                "ci_95_upper": 0.4627860696517412,
+                "iqr": [
+                    0.2857142857142857,
+                    0.3709677419354839
+                ]
+            },
+            "f1_score": {
+                "mean": 0.38642248851332817,
+                "std": 0.05808222371190789,
+                "median": 0.3877551020408163,
+                "ci_95_lower": 0.27522362385321103,
+                "ci_95_upper": 0.49524246395806026,
+                "iqr": [
+                    0.3478260869565218,
+                    0.42488328339488535
+                ]
+            },
+            "specificity": {
+                "mean": 0.9624357307646634,
+                "std": 0.009020944785172477,
+                "median": 0.9630297565374211,
+                "ci_95_lower": 0.9436705499089214,
+                "ci_95_upper": 0.9779886318308736,
+                "iqr": [
+                    0.9563636363636364,
+                    0.9687222673837647
+                ]
+            }
+        }
+    },
+    "threshold_policy_recommendation": {
+        "recommended_candidate_threshold": 0.13,
+        "status": "Experimental validation-selected candidate only; not deployed",
+        "rationale": "Threshold 0.13 achieves the unique maximum validation F1 (0.3883), detecting 8 additional positive observations (5 additional unique children) with an incremental recall gain of +18.75% median in paired bootstrap.",
+        "scientific_caveats": [
+            "Threshold selection exhibits high variance across bootstrap resamples (95% CI [0.09, 0.70]), so the optimal threshold location is not statistically stable.",
+            "Paired F1 improvement 95% CI includes zero ([-0.052, +0.174]), so statistical superiority in F1 cannot be claimed.",
+            "Clinical manageability of 41 false-alarm observations across 1,143 visits cannot be claimed without local health system operational auditing."
+        ],
+        "deployment_status": "Deployed threshold in models/metadata/final_risk_model_v1.json remains strictly 0.50."
+    },
+    "limitations": {
+        "data_provenance": "Unresolved mixture of real clinic records (approx 400 children) and synthetic records (approx 100 children).",
+        "interval_censoring": "46 validation observations had zero follow-up visits within (0, 180] days and were assigned negative labels under the evaluation heuristic.",
+        "feature_schema": "Transformed feature space includes 293 one-hot columns from date_of_birth out of 346 total features.",
+        "calibration_dependency": "Raw XGBoost probabilities are uncalibrated; post-hoc calibration (Platt scaling or isotonic regression) is required before interpreting scores as true probabilities.",
+        "child_level_clustering": "Repeated visits from the same child induce longitudinal correlation; child-clustered bootstrap confirms threshold variance."
+    }
+}

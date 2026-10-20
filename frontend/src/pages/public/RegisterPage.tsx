@@ -5,15 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Baby, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AuthLayout } from '@/components/auth/AuthLayout';
+import { PasswordInput } from '@/components/auth/PasswordInput';
+import { CircleAlert, Loader2, Mail, UserRound } from 'lucide-react';
 import { authApi } from '@/api/auth';
 import { ApiClientError } from '@/api/client';
-import { useAuth } from '@/auth/AuthProvider';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const { refreshUser } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,12 +25,10 @@ export default function RegisterPage() {
   const registerMutation = useMutation({
     mutationFn: authApi.registerMother,
     onSuccess: async () => {
-      // Upon successful registration, typically the backend doesn't log the user in natively via cookie,
-      // wait, the auth router /register returns the User, but does NOT set the cookie!
-      // Looking at the auth routes, /login sets the cookie. So we must navigate to /login on success.
+      // Preserve the existing email-prefill and success-message handoff to Login.
       navigate('/login', { state: { registered: true, email: formData.email } });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       if (err instanceof ApiClientError && err.data?.detail) {
         setError(typeof err.data.detail === 'string' ? err.data.detail : 'Validation error occurred');
       } else {
@@ -58,118 +56,128 @@ export default function RegisterPage() {
     });
   };
 
-  return (
-    <div className="min-h-dvh flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[#F8F9FB]">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/" className="flex justify-center items-center gap-2">
-          <Baby className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">Baby Growth</span>
-        </Link>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create Account
-        </h2>
-      </div>
+  const nameInvalid = error === 'Name is required';
+  const emailInvalid = error === 'Email is required';
+  const passwordInvalid = error === 'Password is required' || error === 'Password must be at least 6 characters';
+  const confirmationInvalid = error === 'Passwords do not match';
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="shadow-lg">
-          <CardHeader className="space-y-1 pb-4">
-            <CardDescription className="text-center">
-              Register as a mother to start monitoring your baby's growth.
-            </CardDescription>
-          </CardHeader>
-          
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              {error && (
-                <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20 text-center font-medium">
-                  {error}
-                </div>
-              )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input 
-                  id="name" 
-                  type="text" 
-                  placeholder="Jane Doe" 
+  return (
+    <AuthLayout mode="register">
+      <Card className="auth-surface rounded-2xl border-card bg-card/95">
+        <CardHeader className="space-y-0 pb-7">
+          <div className="mb-8 hidden grid-cols-2 rounded-lg bg-muted/70 p-1 text-center text-sm sm:grid">
+            <Link to="/login" className="flex min-h-11 items-center justify-center rounded-md text-muted-foreground hover:text-primary focus-visible:outline-2 focus-visible:outline-ring">Sign In</Link>
+            <span aria-current="page" className="relative rounded-md bg-card px-3 py-2.5 font-medium text-primary shadow-control after:absolute after:inset-x-1/3 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-primary">Create Account</span>
+          </div>
+          <CardTitle>
+            <h2 id="register-heading" className="text-2xl leading-tight font-bold tracking-tight">Create Your Account</h2>
+          </CardTitle>
+          <CardDescription id="register-description" className="mt-2 leading-relaxed">
+            Join to start tracking your baby's growth.
+          </CardDescription>
+        </CardHeader>
+
+        <form onSubmit={handleSubmit} aria-labelledby="register-heading" aria-describedby={error ? 'register-error' : 'register-description'} aria-busy={registerMutation.isPending}>
+          <CardContent className="auth-form max-w-none gap-5 pb-0">
+            {error && (
+              <Alert variant="destructive" id="register-error">
+                <CircleAlert aria-hidden="true" className="size-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <div className="relative">
+                <UserRound aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-primary" />
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Your full name"
+                  className="h-12 rounded-lg bg-background/60 pl-11"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   disabled={registerMutation.isPending}
+                  aria-invalid={nameInvalid || undefined}
+                  aria-describedby={nameInvalid ? 'register-error' : undefined}
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="mother@example.com" 
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <div className="relative">
+                <Mail aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-primary" />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  placeholder="youremail@example.com"
+                  className="h-12 rounded-lg bg-background/60 pl-11"
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
                   disabled={registerMutation.isPending}
+                  aria-invalid={emailInvalid || undefined}
+                  aria-describedby={emailInvalid ? 'register-error' : undefined}
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input 
-                    id="password" 
-                    type={showPassword ? 'text' : 'password'} 
-                    placeholder="••••••••" 
-                    value={formData.password}
-                    onChange={e => setFormData({ ...formData, password: e.target.value })}
-                    disabled={registerMutation.isPending}
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input 
-                  id="confirmPassword" 
-                  type={showPassword ? 'text' : 'password'} 
-                  placeholder="••••••••" 
-                  value={formData.confirmPassword}
-                  onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  disabled={registerMutation.isPending}
-                  required
-                />
-              </div>
-              <div className="pt-2">
-                <Button className="w-full" type="submit" disabled={registerMutation.isPending}>
-                  {registerMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account...
-                    </>
-                  ) : (
-                    'Create Account'
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col border-t p-6">
-              <p className="text-sm text-center text-slate-600">
-                Already have an account?{' '}
-                <Link to="/login" className="text-primary font-medium hover:underline">
-                  Sign In
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
-        </Card>
-      </div>
-    </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <PasswordInput
+                id="password"
+                name="password"
+                autoComplete="new-password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={e => setFormData({ ...formData, password: e.target.value })}
+                disabled={registerMutation.isPending}
+                aria-invalid={passwordInvalid || undefined}
+                aria-describedby={passwordInvalid ? 'register-error password-hint' : 'password-hint'}
+                required
+              />
+              <p id="password-hint" className="text-xs leading-relaxed text-muted-foreground">Use at least 6 characters.</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <PasswordInput
+                id="confirmPassword"
+                name="confirmPassword"
+                autoComplete="new-password"
+                visibilityLabel="confirmation password"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+                disabled={registerMutation.isPending}
+                aria-invalid={confirmationInvalid || undefined}
+                aria-describedby={confirmationInvalid ? 'register-error' : undefined}
+                required
+              />
+            </div>
+            <Button className="mt-2 h-12 w-full rounded-lg" type="submit" disabled={registerMutation.isPending}>
+              {registerMutation.isPending ? (
+                <>
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
+                  Creating account...
+                </>
+              ) : 'Create Account'}
+            </Button>
+            <span role="status" className="sr-only">{registerMutation.isPending ? 'Creating your account. Please wait.' : ''}</span>
+          </CardContent>
+          <CardFooter className="justify-center pt-5">
+            <p className="text-center text-sm leading-relaxed text-muted-foreground">
+              Already have an account?{' '}
+              <Link to="/login" className="inline-flex min-h-11 items-center rounded-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Sign In</Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+    </AuthLayout>
   );
 }

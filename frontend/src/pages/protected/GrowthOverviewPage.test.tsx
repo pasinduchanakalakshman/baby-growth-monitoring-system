@@ -5,6 +5,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import GrowthOverviewPage from './GrowthOverviewPage';
 import { growthApi } from '@/api/growth';
+import { babyApi } from '@/api/baby';
+import response from '@/test/fixtures/newbornWeightJourney.json';
+import type { NewbornWeightJourney } from '@/types/growth';
+
+vi.mock('@/api/baby', () => ({ babyApi: { getBabyProfile: vi.fn() } }));
 
 // Mock recharts so it doesn't fail in JSDOM
 vi.mock('recharts', async () => {
@@ -26,6 +31,7 @@ vi.mock('@/api/growth', () => ({
   growthApi: {
     getGrowthOverview: vi.fn(),
     getGrowthHistory: vi.fn(),
+    getNewbornWeightJourney: vi.fn(),
   }
 }));
 
@@ -34,6 +40,8 @@ describe('GrowthOverviewPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue(response as NewbornWeightJourney);
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ id: 1, owner_id: 1, name: 'Test', sex: 'Female', date_of_birth: '2023-01-01', birth_weight_kg: 3.2, gestational_age_weeks: 39 });
     queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     });
@@ -55,6 +63,52 @@ describe('GrowthOverviewPage', () => {
     
     const { container } = renderComponent();
     expect(container.querySelector('.animate-spin')).toBeTruthy();
+  });
+
+  it('fetches the authenticated backend journey without measurements or writes', async () => {
+    const now = new Date();
+    const dob = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ id: 9, owner_id: 7, name: 'New baby', sex: 'Male', date_of_birth: dob, birth_weight_kg: 2.8 });
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: { birth_weight_kg: 4.5 } });
+    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, birth_weight_kg: 2.8, points: [{ ...response.points[0], weight_kg: 2.8 }, ...response.points.slice(1)] } as NewbornWeightJourney);
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
+    const { container } = renderComponent();
+    expect(await screen.findByText('Recorded birth weight: 2.8 kg')).toBeTruthy();
+    expect(babyApi.getBabyProfile).toHaveBeenCalledTimes(1);
+    expect(growthApi.getNewbornWeightJourney).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('Add First Measurement')).toBeNull();
+    expect(screen.queryByText('Add Measurement')).toBeNull();
+    expect(container.querySelector('input, form')).toBeNull();
+  });
+
+  it('keeps the journey available when the existing dashboard fails', async () => {
+    vi.mocked(growthApi.getGrowthOverview).mockRejectedValue(new Error('Unavailable'));
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
+    renderComponent();
+    expect(await screen.findByText('Recorded birth weight: 3.2 kg')).toBeTruthy();
+    expect(await screen.findByText(/couldn't load growth data/)).toBeTruthy();
+  });
+
+
+  it('refetches the journey when saved profile inputs change', async () => {
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {} });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
+    renderComponent();
+    expect(await screen.findByText(/Recorded birth weight: 3\.2 kg/)).toBeTruthy();
+    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, available: false, points: [], message: 'This example does not suit the recorded gestational age.' } as NewbornWeightJourney);
+    queryClient.setQueryData(['baby.profile'], { id: 1, owner_id: 1, name: 'Test', sex: 'Female', birth_weight_kg: 3.2, gestational_age_weeks: 35 });
+    expect(await screen.findByText(/does not suit the recorded gestational age/)).toBeTruthy();
+    expect(growthApi.getNewbornWeightJourney).toHaveBeenCalledTimes(2);
+    expect(screen.queryByText(/Recorded birth weight: 3\.2 kg/)).toBeNull();
+  });
+
+  it('shows journey API errors independently of the dashboard', async () => {
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {} });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
+    vi.mocked(growthApi.getNewbornWeightJourney).mockRejectedValue(new Error('Unavailable'));
+    renderComponent();
+    expect(await screen.findByRole('alert')).toHaveTextContent("couldn't load the newborn weight journey");
+    expect(screen.getByText('No growth measurements recorded yet.')).toBeTruthy();
   });
 
   it('renders no-data empty state when no measurements exist', async () => {
@@ -115,7 +169,7 @@ describe('GrowthOverviewPage', () => {
     renderComponent();
     
     await waitFor(() => {
-      expect(screen.getByText('Not recorded')).toBeTruthy();
+      expect(screen.getAllByText('Not recorded').length).toBeGreaterThan(0);
       expect(screen.getByText('Not available')).toBeTruthy();
       expect(screen.getByText('Length/height was not recorded for this visit.')).toBeTruthy();
     });

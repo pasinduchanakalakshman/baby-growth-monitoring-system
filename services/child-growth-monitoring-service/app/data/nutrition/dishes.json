@@ -1,0 +1,753 @@
+[
+  {
+    "dish_id": "DISH_MASHED_RICE_BREASTMILK",
+    "name": "Soft Mashed Rice with Expressed Breast Milk",
+    "sinhala_name": "මව්කිරෙන් පොඟවා පොඩි කළ බත්",
+    "meal_category": "TASTE_SESSION",
+    "ingredients": ["ING_RICE_WHITE", "ING_BREAST_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAY_1"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "2 to 3 teaspoons (can give more if the baby eats)",
+    "energy_enrichment": "Moistened and enriched with expressed breast milk",
+    "preparation_steps": [
+      "Wash raw white rice and cook until very soft and tender.",
+      "Mash thoroughly with a clean spoon to a smooth, lump-free semi-solid puree.",
+      "Express a small amount of breast milk using clean hands into a sterilized cup.",
+      "Add expressed breast milk to the warm mashed rice to adjust consistency and provide a familiar taste.",
+      "Feed patiently when the infant is alert, calm, and slightly hungry."
+    ],
+    "safety_precautions": [
+      "Do not add any salt or sugar.",
+      "Feed with a clean small spoon in a quiet place without screen distractions.",
+      "Do not force-feed if the baby turns their head or shows signs of fullness."
+    ],
+    "restriction_groups_contained": [],
+    "developmental_rationale": "Breast milk gives a familiar flavor to ease the baby's transition from liquid milk to the first taste of solid food.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Soft mashed rice mixed with expressed breast milk is the explicit FHB inception food on Day 1 (2–3 teaspoons, once a day)."
+    }
+  },
+  {
+    "dish_id": "DISH_MASHED_RICE_DAYS2_3",
+    "name": "Soft Mashed Rice (Early Progression)",
+    "sinhala_name": "පොඩි කළ බත් (දින 2–3)",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_BREAST_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_2_3"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "Gradually increase the amount at each meal from 2–3 tsp baseline",
+    "energy_enrichment": "Moistened with expressed breast milk",
+    "preparation_steps": [
+      "Cook white or red rice soft until grains burst easily.",
+      "Mash thoroughly with a clean spoon.",
+      "Moisten slightly with expressed breast milk or warm boiled water to create a soft semi-solid mash.",
+      "Offer 1 to 2 times a day after or between daytime breastfeeds."
+    ],
+    "safety_precautions": [
+      "No added salt or sugar.",
+      "Ensure food is at body temperature before offering."
+    ],
+    "restriction_groups_contained": [],
+    "developmental_rationale": "Helps the baby practice swallowing thicker textures while building feeding routines.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 2 to 3 of complementary feeding: soft mashed rice, 1 to 2 meals a day, gradually increasing amount."
+    }
+  },
+  {
+    "dish_id": "DISH_RICE_DHAL_PUREE",
+    "name": "Mashed Rice with Dhal Puree & Mashed Fruit",
+    "sinhala_name": "පරිප්පු සමඟ පොඩි කළ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_DHAL", "ING_BANANA"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_4_6"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "3 to 4 teaspoons or more at a time + 1 teaspoon or more fruit",
+    "energy_enrichment": "Cooked soft with gentle mashing",
+    "preparation_steps": [
+      "Wash red lentils (dhal) thoroughly and boil until creamy and tender.",
+      "Mash dhal into a smooth puree.",
+      "Boil white or red rice until soft and mash with spoon.",
+      "Combine 3–4 tsp of soft rice and dhal puree.",
+      "Peel a ripe banana or papaya and mash 1 tsp smoothly to offer immediately after the rice meal."
+    ],
+    "safety_precautions": [
+      "Strict single-food trial rule: Introduce one new food at a time for 2–3 continuous days.",
+      "No added salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_LEGUMES"],
+    "developmental_rationale": "Dhal introduces plant protein and iron, while fresh fruit introduces vitamin C which enhances iron absorption.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 4 to 6: mashed rice with dhal puree (3–4 tsp or more, twice a day) + 1 tsp mashed fruit."
+    }
+  },
+  {
+    "dish_id": "DISH_FHB_SPRAT_RICE",
+    "name": "Mashed Rice with Dhal & Whole Sprat Powder",
+    "sinhala_name": "හාල්මැස්සන් කුඩු සමඟ පරිප්පු බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_DHAL", "ING_SPRATS", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_7_9", "STAGE_6M_GENERAL"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "Introductory portion building from 3–4 tsp towards 5–6 tsp + ~1 tsp sprat powder",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Prepare sprat powder according to FHB protocol: Wash dried sprats thoroughly without removing the head. Roast in a pan or dry. Grind whole into fine powder and store in clean dry bottle.",
+      "Cook rice and dhal together with thick coconut milk until soft.",
+      "Add about 1 teaspoon of sprat powder while cooking.",
+      "Mash together smoothly to a semi-solid paste, gradually increasing particle size day by day."
+    ],
+    "safety_precautions": [
+      "Ensure sprats are ground finely without sharp bone fragments.",
+      "No added salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Animal-origin foods like sprats supply rich bioavailable iron and calcium needed for rapid brain growth in the first 2 years.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 6,
+      "pdf_page": 8,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "FHB Sprat Preparation Protocol on booklet page 6 introduces whole sprat powder on days 7 to 9."
+    }
+  },
+  {
+    "dish_id": "DISH_RICE_FISH_COCONUT",
+    "name": "Mashed Rice with Steamed Sea Fish & Thick Coconut Milk",
+    "sinhala_name": "මාළු සහ මිටිකිරි සමඟ පොඩි කළ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_FISH_SEA", "ING_DHAL", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_7_9", "STAGE_6M_GENERAL"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "Building from 3–4 tsp towards 5–6 tsp twice daily + fruit",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Steam or boil fresh sea fish thoroughly.",
+      "Flake and inspect flesh with clean fingers to remove every single bone.",
+      "Cook soft rice and dhal with thick coconut milk.",
+      "Combine deboned fish flake with warm rice and dhal; mash into a soft semi-solid paste."
+    ],
+    "safety_precautions": [
+      "Inspect fish with extreme vigilance to eliminate all bones.",
+      "No added salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Sea fish provides high-quality protein and essential fatty acids for neuromuscular and cognitive development.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 6,
+      "pdf_page": 8,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Sea fish introduced on days 7 to 9 cooked with thick coconut milk."
+    }
+  },
+  {
+    "dish_id": "DISH_RICE_CHICKEN_MASH",
+    "name": "Mashed Rice with Tender Chicken & Vegetable Oil",
+    "sinhala_name": "කුකුල් මස් සමඟ පොඩි කළ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_RED", "ING_CHICKEN", "ING_DHAL", "ING_VEG_OIL"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_7_9", "STAGE_6M_GENERAL"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "Building from 3–4 tsp towards 5–6 tsp twice daily",
+    "energy_enrichment": "Tempered with a little bit of pure vegetable oil",
+    "preparation_steps": [
+      "Boil chicken breast until tender.",
+      "Mince and shred finely.",
+      "Cook red rice and dhal until soft.",
+      "Temper with 1/2 tsp vegetable oil.",
+      "Mash together smoothly to a semi-solid paste."
+    ],
+    "safety_precautions": [
+      "Mince chicken very fine to prevent choking.",
+      "No salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_LEGUMES"],
+    "developmental_rationale": "Chicken provides easily digestible animal protein and zinc for cellular growth and immunity.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 6,
+      "pdf_page": 8,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Chicken introduced on days 7 to 9 as animal-origin food."
+    }
+  },
+  {
+    "dish_id": "DISH_4PART_MASH_PUMPKIN",
+    "name": "4-Part Mash: Rice, Dhal, Sprats & Yellow Pumpkin",
+    "sinhala_name": "පරිප්පු, හාල්මැස්සන්, වට්ටක්කා සමඟ බත් (4-කොටස් මිශ්‍රණය)",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_DHAL", "ING_SPRATS", "ING_PUMPKIN", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_10_15", "STAGE_6M_GENERAL"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "5 to 6 teaspoons at a time, twice a day + 1 to 2 teaspoons fruit",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Peel pumpkin and cut into small cubes.",
+      "Combine rice, dhal, pumpkin, and 1 tsp FHB sprat powder in a cooking pot.",
+      "Add thick coconut milk and boil until all components are soft and tender.",
+      "Mash together smoothly with a clean spoon.",
+      "Serve warm, followed by 1–2 tsp of mashed fruit."
+    ],
+    "safety_precautions": [
+      "Ensure sprats are finely ground.",
+      "No salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Combines all 4 foundational food groups (staple + pulse + animal food + yellow vegetable) providing protein, iron, and provitamin A.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 7,
+      "pdf_page": 9,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 10 to 15 4-part mash: 5–6 tsp twice a day + 1–2 tsp fruit."
+    }
+  },
+  {
+    "dish_id": "DISH_4PART_MASH_CARROT_LIVER",
+    "name": "4-Part Mash: Rice, Green Gram, Liver & Carrot",
+    "sinhala_name": "මුං ඇට, අක්මාව, කැරට් සමඟ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_RED", "ING_GREEN_GRAM", "ING_LIVER", "ING_CARROT", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_10_15", "STAGE_6M_GENERAL"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "5 to 6 teaspoons at a time, twice a day + 1 to 2 teaspoons fruit",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Boil green gram and red rice soft.",
+      "Cook liver thoroughly until tender, mince finely.",
+      "Boil peeled carrot soft and mash.",
+      "Combine with thick coconut milk and mash together into a soft semi-solid paste."
+    ],
+    "safety_precautions": [
+      "Ensure liver is cooked thoroughly and minced finely.",
+      "No salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Liver and carrot provide exceptionally concentrated bioavailable iron and vitamin A for red blood cell synthesis and immune protection.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 7,
+      "pdf_page": 9,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 10 to 15: liver and carrot included as animal food and yellow vegetable in 4-part mash."
+    }
+  },
+  {
+    "dish_id": "DISH_4PART_MASH_SWEETPOTATO_FISH",
+    "name": "4-Part Mash: Rice, Cowpea, Fish & Sweet Potato",
+    "sinhala_name": "කවුපි, මාළු, බතල සමඟ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_COWPEA", "ING_FISH_SEA", "ING_SWEET_POTATO", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_10_15", "STAGE_6M_GENERAL"],
+    "texture": "SEMI_SOLID_MASH",
+    "household_portion": "5 to 6 teaspoons at a time, twice a day + 1 to 2 teaspoons fruit",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Boil cowpea until tender.",
+      "Steam sea fish and debone with extreme care.",
+      "Boil peeled yellow sweet potato and rice until soft.",
+      "Combine all components with thick coconut milk and mash thoroughly."
+    ],
+    "safety_precautions": [
+      "Check fish repeatedly for bones.",
+      "No salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Cowpea and sea fish provide complementary proteins and omega-3 fatty acids for cognitive and physical development.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 7,
+      "pdf_page": 9,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Cowpea and yellow sweet potato featured in 4-part mash on days 10 to 15."
+    }
+  },
+  {
+    "dish_id": "DISH_HALFMASHED_GOTUKOLA_EGGYOLK",
+    "name": "Half-Mashed Rice with Dhal, Egg Yolk & Gotukola",
+    "sinhala_name": "බිත්තර කහ මදය, ගොටුකොළ සහ පරිප්පු සමඟ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_DHAL", "ING_EGG_YOLK", "ING_GOTUKOLA", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_16_30", "STAGE_6M_GENERAL"],
+    "texture": "HALF_MASHED",
+    "household_portion": "About 1/4 of a tea cup at a time, 2 to 3 times a day + 1 to 2 teaspoons fruit",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Boil egg hard, separate yolk, and mash half of the boiled yolk.",
+      "Wash gotukola leaves thoroughly, chop very fine, and stir into cooked warm dhal and rice.",
+      "Cook with thick coconut milk until soft.",
+      "Half-mash the rice so texture progresses from smooth puree to small tender granules."
+    ],
+    "safety_precautions": [
+      "Egg yolk only (egg white is not introduced until about 1 week later).",
+      "Offer sips of boiled cooled water after meal."
+    ],
+    "restriction_groups_contained": ["RESTRICT_EGG", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Gotukola introduces green leafy vegetables for folate and minerals, while egg yolk provides choline, lutein, and healthy fats.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 8,
+      "pdf_page": 10,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 16 to 30: half-mashed rice (~1/4 tea cup), green leaves, and boiled egg yolk introduction."
+    }
+  },
+  {
+    "dish_id": "DISH_HALFMASHED_MURUNGA_SPRAT",
+    "name": "Half-Mashed Rice with Sprat Powder, Murunga Leaves & Pumpkin",
+    "sinhala_name": "හාල්මැස්සන්, මුරුංගා කොළ, වට්ටක්කා සමඟ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_RED", "ING_DHAL", "ING_SPRATS", "ING_MURUNGA_LEAF", "ING_PUMPKIN", "ING_COCONUT_MILK"],
+    "min_calendar_months": 6,
+    "eligible_stages": ["STAGE_6M_DAYS_16_30", "STAGE_6M_GENERAL"],
+    "texture": "HALF_MASHED",
+    "household_portion": "About 1/4 of a tea cup at a time, 2 to 3 times a day",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Strip tender murunga leaflets, wash thoroughly.",
+      "Cook red rice, dhal, pumpkin, and murunga leaves with thick coconut milk.",
+      "Add 1 tsp FHB sprat powder.",
+      "Half-mash with spoon, leaving small soft granules to stimulate chewing motions."
+    ],
+    "safety_precautions": [
+      "Ensure murunga stems are discarded completely.",
+      "Fine sprat powder without sharp bones."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Murunga leaves and whole sprats create an iron- and calcium-dense meal that prevents childhood nutritional anemia.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 8,
+      "pdf_page": 10,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Murunga leaves and sprats in half-mashed rice during days 16 to 30."
+    }
+  },
+  {
+    "dish_id": "DISH_COARSE_MASH_7M_FISH",
+    "name": "Coarsely Mashed Rice with Sea Fish, Dhal & Sarana",
+    "sinhala_name": "මාළු, පරිප්පු, සාරණ සමඟ කැකුළු බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_FISH_SEA", "ING_DHAL", "ING_SARANA", "ING_COCONUT_MILK"],
+    "min_calendar_months": 7,
+    "eligible_stages": ["STAGE_7_TO_8M"],
+    "texture": "COARSELY_MASHED",
+    "household_portion": "1/2 tea cup at a time, 2 to 3 times a day + 2 to 3 teaspoons fruit",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Cook white rice and dhal soft with thick coconut milk.",
+      "Steam sea fish and debone meticulously.",
+      "Cook sarana leaves until tender, chop fine.",
+      "Coarsely mash all components together with a clean fork or spoon."
+    ],
+    "safety_precautions": [
+      "Debone fish carefully.",
+      "No salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "At 7 completed months, texture advances to coarsely mashed to develop tongue control and chewing coordination.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 9,
+      "pdf_page": 11,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months completed: 1/2 tea cup, 2 to 3 times a day, coarsely mashed texture."
+    }
+  },
+  {
+    "dish_id": "DISH_COARSE_MASH_7M_SOYA_EGG",
+    "name": "Coarsely Mashed Rice with Germinated Soya & Whole Egg",
+    "sinhala_name": "සෝයා සහ බිත්තර සමඟ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_RED", "ING_SOYA", "ING_EGG_WHOLE", "ING_THAMPALA", "ING_COCONUT_MILK"],
+    "min_calendar_months": 7,
+    "eligible_stages": ["STAGE_7_TO_8M"],
+    "texture": "COARSELY_MASHED",
+    "household_portion": "1/2 tea cup, 2 to 3 times a day + about 4 teaspoons fruit + 1–2 snacks",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Boil germinated soya soft and mash coarsely.",
+      "Hard-boil egg, mash both yolk and white coarsely (eligible only after yolk previously tolerated).",
+      "Cook red rice and thampala leaves with thick coconut milk.",
+      "Combine all items into a coarse mash."
+    ],
+    "safety_precautions": [
+      "Prerequisite check: Egg yolk must have been introduced and tolerated prior to offering whole egg.",
+      "No salt or sugar."
+    ],
+    "restriction_groups_contained": ["RESTRICT_EGG", "RESTRICT_SOYA", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Introduces whole egg at 7 months and 1 week once yolk is established, providing complete protein for muscle building.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 10,
+      "pdf_page": 12,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months and 1 week: coarsely mashed rice with germinated soya and whole egg."
+    }
+  },
+  {
+    "dish_id": "DISH_COARSE_CHOP_8M_JAK",
+    "name": "Coarsely Chopped Boiled Jak with Dhal & Sprats",
+    "sinhala_name": "තැම්බූ කොස්, පරිප්පු සහ හාල්මැස්සන්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_JAK_FRUIT", "ING_DHAL", "ING_SPRATS", "ING_COCONUT_MILK"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M"],
+    "texture": "COARSELY_CHOPPED",
+    "household_portion": "A bit more than 1/2 tea cup, 2 to 3 times a day + ~1/4 tea cup fruit + 1–2 snacks",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Boil young jak (kos) soft in thick coconut milk.",
+      "Coarsely chop into soft chewable pieces.",
+      "Prepare soft dhal curry with 1 tsp sprat powder.",
+      "Combine coarsely chopped jak with dhal and sprats."
+    ],
+    "safety_precautions": [
+      "Ensure jak is cooked completely soft so baby can chew easily with gums.",
+      "No salt or sugar before 1 year."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Introduces traditional Sri Lankan root/tuber staple foods to diversify palate and develop rotary chewing.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "8 completed months: traditional staples like boiled jak (kos), coarsely chopped, portion a bit more than 1/2 tea cup."
+    }
+  },
+  {
+    "dish_id": "DISH_COARSE_CHOP_8M_BREADFRUIT",
+    "name": "Coarsely Chopped Breadfruit with Fish Curry & Dhal",
+    "sinhala_name": "තැම්බූ දෙල් සහ මාළු හොදි",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_BREADFRUIT", "ING_FISH_SEA", "ING_DHAL", "ING_COCONUT_MILK"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M"],
+    "texture": "COARSELY_CHOPPED",
+    "household_portion": "A bit more than 1/2 tea cup, 2 to 3 times a day",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Peel breadfruit rind, cut into cubes, boil soft in coconut milk.",
+      "Coarsely chop boiled breadfruit.",
+      "Steam sea fish, debone with care, and mix with mild dhal curry.",
+      "Serve coarsely chopped breadfruit coated with fish and dhal."
+    ],
+    "safety_precautions": [
+      "Debone fish carefully.",
+      "Ensure breadfruit is soft enough to squish between thumb and forefinger."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Breadfruit provides high energy and dietary variety from traditional Sri Lankan food sources.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled breadfruit (del) introduced at 8 completed calendar months."
+    }
+  },
+  {
+    "dish_id": "DISH_STRING_HOPPERS_DHAL_FISH",
+    "name": "String Hoppers with Dhal Curry & Steamed Fish",
+    "sinhala_name": "ඉඳිආප්ප, පරිප්පු සහ මාළු",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_STRING_HOPPERS", "ING_DHAL", "ING_FISH_SEA", "ING_COCONUT_MILK"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "COARSELY_CHOPPED",
+    "household_portion": "A bit more than 1/2 tea cup (8m) scaling to 3/4 cup (9–11m) and >1 cup (12m+)",
+    "energy_enrichment": "Coconut milk in dhal curry",
+    "preparation_steps": [
+      "Steam fresh string hoppers.",
+      "Cut or chop string hoppers into small bite-sized strands.",
+      "Pour thick coconut milk dhal curry over string hoppers to soften.",
+      "Debone steamed fish thoroughly and flake into the dish."
+    ],
+    "safety_precautions": [
+      "Inspect fish for bones.",
+      "No salt added if child is under 1 year."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Popular Sri Lankan family meal format that encourages self-feeding and table food integration.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "String hoppers featured as staple at 8 months and throughout weekly matrix."
+    }
+  },
+  {
+    "dish_id": "DISH_SEPARATE_PLATE_9M_CHICKEN",
+    "name": "Rice with Chicken, Dhal & Nivithi (Served Separately)",
+    "sinhala_name": "වෙන් වෙන්ව බෙදූ බත්, කුකුල් මස්, පරිප්පු සහ නිවිති",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_CHICKEN", "ING_DHAL", "ING_SPINACH", "ING_COCONUT_MILK"],
+    "min_calendar_months": 9,
+    "eligible_stages": ["STAGE_9_TO_11M"],
+    "texture": "COARSELY_CHOPPED",
+    "household_portion": "3/4 tea cup of food at a time (a bit more at 9m), 3 to 4 times a day + 1 to 2 snacks",
+    "energy_enrichment": "Coconut milk in dhal and spinach curries",
+    "preparation_steps": [
+      "Cook white rice soft.",
+      "Prepare separate mild curries: tender shredded chicken, creamy dhal, and chopped spinach (nivithi).",
+      "FHB Separate Serving Style: Serve rice and each curry separately on the child's plate.",
+      "Mix portions together with clean fingers or spoon while feeding to let the child explore distinct colors and tastes."
+    ],
+    "safety_precautions": [
+      "No added salt before 1 year.",
+      "Ensure chicken is shredded fine.",
+      "Adult caregiver supervision throughout meal."
+    ],
+    "restriction_groups_contained": ["RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Serving curries separately stimulates visual curiosity and palate discrimination, preventing feeding aversion.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 14,
+      "pdf_page": 16,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "9 to 11 months: rice and curries served separately on plate and mixed while feeding; portion 3/4 tea cup."
+    }
+  },
+  {
+    "dish_id": "DISH_SEPARATE_PLATE_9M_SPRAT_MURUNGA",
+    "name": "Rice with Whole Sprat Curry, Dhal & Drumstick Pods Pulp",
+    "sinhala_name": "බත්, හාල්මැස්සන් හොදි, පරිප්පු සහ මුරුංගා කරල්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_RED", "ING_SPRATS", "ING_DHAL", "ING_DRUMSTICK", "ING_COCONUT_MILK"],
+    "min_calendar_months": 9,
+    "eligible_stages": ["STAGE_9_TO_11M"],
+    "texture": "COARSELY_CHOPPED",
+    "household_portion": "3/4 tea cup at each meal, 3 to 4 times a day + 1 to 2 snacks",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Cook red rice soft.",
+      "Prepare sprat curry using fine whole sprat powder or soft whole sprats with soft heads.",
+      "Cook drumstick pods (murunga karal) tender; scrape out the soft pulp and tender seeds, discarding the fibrous woody skin.",
+      "Serve rice, dhal, sprat curry, and drumstick pulp separately on plate and mix while feeding."
+    ],
+    "safety_precautions": [
+      "Discard fibrous outer skin of drumstick pods.",
+      "No added salt before 1 year."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "High calcium and iron meal from whole sprats and drumstick pulp supporting skeletal mineralization.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 14,
+      "pdf_page": 16,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "FHB 9–11 months plate: separate serving style, 3–4 meals daily, 3/4 tea cup."
+    }
+  },
+  {
+    "dish_id": "DISH_FAMILY_MEAL_RICE_FISH_WATAKOLU",
+    "name": "Family Table: Rice, Sea Fish Curry, Watakolu & Mukunuwenna",
+    "sinhala_name": "බත්, මාළු හොදි, වැටකොළු සහ මුකුණුවැන්න මැල්ලුම",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_FISH_SEA", "ING_RIDGE_GOURD", "ING_MUKUNUWENNA", "ING_COCONUT_SCRAP", "ING_COCONUT_MILK"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "A bit more than 1 tea cup (1–2y) scaling to close to 2 tea cups (2–5y)",
+    "energy_enrichment": "Cooked with coconut milk and fresh scraped coconut",
+    "preparation_steps": [
+      "Prepare wholesome family meal: boiled rice, mild fish curry in coconut milk, ridge gourd (watakolu) curry, and mukunuwenna mallum.",
+      "Debone fish portion carefully before serving child.",
+      "Ensure child receives: 2 vegetables + 1 green leafy vegetable daily as per FHB guidelines."
+    ],
+    "safety_precautions": [
+      "Debone fish carefully.",
+      "Keep chili level mild for young children."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Fulfills the FHB 1–5 years daily rule: two vegetables + one green leafy vegetable + animal protein.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 15,
+      "pdf_page": 17,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "1 to 5 years: nutritious family food, 3 main meals + 1–2 snacks, two vegetables + one green leaf daily."
+    }
+  },
+  {
+    "dish_id": "DISH_FAMILY_MEAL_RICE_KUNISSO_DHAL",
+    "name": "Family Table: Rice with Roasted Kunisso, Dhal & Gotukola",
+    "sinhala_name": "බත්, කූනිස්සන් බැදුම, පරිප්පු සහ ගොටුකොළ",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_RED", "ING_KUNISSO", "ING_DHAL", "ING_GOTUKOLA", "ING_COCONUT_SCRAP", "ING_COCONUT_MILK"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "A bit more than 1 tea cup (1–2y), kunisso 2 tablespoons per day",
+    "energy_enrichment": "Coconut milk dhal and scraped coconut mallum",
+    "preparation_steps": [
+      "Wash kunisso thoroughly to remove grit, roast or sauté lightly.",
+      "Measure 2 tablespoons of cooked kunisso for the child.",
+      "Serve with red rice, creamy dhal curry, and gotukola mallum with scraped coconut."
+    ],
+    "safety_precautions": [
+      "Wash kunisso very well.",
+      "Shellfish restriction check applies."
+    ],
+    "restriction_groups_contained": ["RESTRICT_SHELLFISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Kunisso provides concentrated minerals, protein, and calcium in an affordable traditional Sri Lankan form.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Kunisso (2 tablespoons per day) specified in the FHB daily food requirements table for 1–5 years."
+    }
+  },
+  {
+    "dish_id": "DISH_FAMILY_MEAL_MILK_RICE_FISH",
+    "name": "Milk Rice with Sea Fish & Dhal Curry",
+    "sinhala_name": "කිරිබත්, මාළු සහ පරිප්පු",
+    "meal_category": "BREAKFAST",
+    "ingredients": ["ING_RICE_WHITE", "ING_COCONUT_MILK", "ING_FISH_SEA", "ING_DHAL"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "A bit more than 1 tea cup (1–2y) scaling to 1.5–2 tea cups",
+    "energy_enrichment": "Cooked with rich thick coconut milk",
+    "preparation_steps": [
+      "Cook white rice soft, add thick coconut milk with a pinch of salt (after 1 year), and simmer until creamy milk rice (kiribath) forms.",
+      "Cut into soft diamonds.",
+      "Serve with mild fish curry (deboned) and dhal curry."
+    ],
+    "safety_precautions": [
+      "Debone fish carefully.",
+      "Only for children aged 12 months or older."
+    ],
+    "restriction_groups_contained": ["RESTRICT_FISH", "RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Featured in the FHB weekly meal matrix for Monday breakfast, providing high energy and traditional cultural familiarity.",
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 17,
+      "pdf_page": 19,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Milk rice with fish featured as Monday breakfast in the FHB weekly meal planning matrix."
+    }
+  },
+  {
+    "dish_id": "DISH_VEGETARIAN_PULSE_DUO_MEAL",
+    "name": "High-Protein Vegetarian Meal: Rice with Dhal, Chickpeas & Pumpkin",
+    "sinhala_name": "පරිප්පු, කඩල සහ වට්ටක්කා සමඟ බත්",
+    "meal_category": "MAIN_MEAL",
+    "ingredients": ["ING_RICE_WHITE", "ING_DHAL", "ING_CHICKPEAS", "ING_PUMPKIN", "ING_COCONUT_MILK"],
+    "min_calendar_months": 7,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "COARSELY_MASHED",
+    "household_portion": "1/2 to 3/4 tea cup according to age stage",
+    "energy_enrichment": "Cooked with thick coconut milk",
+    "preparation_steps": [
+      "Boil dhal and soaked chickpeas until very soft.",
+      "Cook pumpkin tender with thick coconut milk.",
+      "Combine with soft rice and mash coarsely.",
+      "Provides dual-pulse plant protein for vegetarian households."
+    ],
+    "safety_precautions": [
+      "Ensure chickpeas are mashed thoroughly to prevent choking.",
+      "No salt before 1 year."
+    ],
+    "restriction_groups_contained": ["RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "developmental_rationale": "Nutritious plant-protein meal combining lentils, chickpeas, and pumpkin in a coarsely mashed texture.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 9,
+      "pdf_page": 11,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Derived vegetarian meal combination using FHB Tier A pulse and vegetable recommendations for non-meat households."
+    }
+  }
+]

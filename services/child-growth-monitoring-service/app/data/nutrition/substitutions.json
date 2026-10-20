@@ -1,0 +1,150 @@
+[
+  {
+    "category": "Grains and Staples",
+    "primary_food_id": "ING_RICE_WHITE",
+    "alternative_food_ids": [
+      "ING_RICE_RED",
+      "ING_STRING_HOPPERS",
+      "ING_HOPPER",
+      "ING_SWEET_POTATO",
+      "ING_JAK_FRUIT",
+      "ING_BREADFRUIT"
+    ],
+    "shared_dietary_role": "Provides dietary carbohydrates and energy base in meal patterns. Practical category rotation for weekly variety without claiming identical micronutrient equivalence.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 17,
+      "pdf_page": 19,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived staple rotation rule (Tier B) based on FHB weekly meal planning matrix rotating rice with string hoppers, hoppers, breadfruit, and jak fruit."
+    }
+  },
+  {
+    "category": "Pulses and Legumes",
+    "primary_food_id": "ING_DHAL",
+    "alternative_food_ids": [
+      "ING_GREEN_GRAM",
+      "ING_COWPEA",
+      "ING_CHICKPEAS",
+      "ING_SOYA"
+    ],
+    "shared_dietary_role": "Supplies plant protein, dietary fiber, and B-vitamins in 4-part mash and family meals. Practical pulse rotation to avoid taste fatigue.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived pulse rotation rule (Tier B) based on FHB daily food-group requirements table listing dhal, gram, green gram, and cowpea under pulses category."
+    }
+  },
+  {
+    "category": "Animal-Source Foods",
+    "primary_food_id": "ING_SPRATS",
+    "alternative_food_ids": [
+      "ING_FISH_SEA",
+      "ING_CHICKEN",
+      "ING_LIVER",
+      "ING_EGG_YOLK",
+      "ING_EGG_WHOLE",
+      "ING_KUNISSO"
+    ],
+    "shared_dietary_role": "Supplies high-biological-value protein, bioavailable iron, and zinc to support rapid brain and body growth. Rotating animal proteins helps ensure micronutrient diversity.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived protein rotation rule (Tier B) based on FHB daily table specifying sprats (10–20) or meat/fish/liver (2–4 matchbox pieces) or kunisso or egg."
+    }
+  },
+  {
+    "category": "Yellow/Orange Vegetables",
+    "primary_food_id": "ING_PUMPKIN",
+    "alternative_food_ids": [
+      "ING_CARROT",
+      "ING_SWEET_POTATO"
+    ],
+    "shared_dietary_role": "Supplies provitamin A carotenoids and soft vegetable fiber in the 4-part mash and family curries.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 7,
+      "pdf_page": 9,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived vegetable rotation rule (Tier B) based on FHB 4-part mash listing pumpkin, carrot, and yellow sweet potato as the yellow vegetable component."
+    }
+  },
+  {
+    "category": "Green Leafy Vegetables",
+    "primary_food_id": "ING_GOTUKOLA",
+    "alternative_food_ids": [
+      "ING_MURUNGA_LEAF",
+      "ING_SARANA",
+      "ING_THAMPALA",
+      "ING_MUKUNUWENNA",
+      "ING_SPINACH"
+    ],
+    "shared_dietary_role": "Provides folate, non-haem iron, calcium, and dietary fiber. FHB recommends rotating green leaves daily.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 8,
+      "pdf_page": 10,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived green leaf rotation rule (Tier B) based on FHB days 16 to 30 introducing gotukola, murunga leaves, sarana, thampala, and mukunuwenna."
+    }
+  },
+  {
+    "category": "Dairy Substitutes for Non-Breastfed Children",
+    "primary_food_id": "ING_CURD",
+    "alternative_food_ids": [
+      "ING_YOGHURT",
+      "ING_CHEESE"
+    ],
+    "shared_dietary_role": "Provides calcium, phosphorus, and milk protein for children aged 1–5 years who do not receive breast milk (1 cup curd OR 1 cup yoghurt OR 1 matchbox-sized cheese).",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived dairy substitution rule (Tier B) based on FHB daily requirements table specifying curd, yoghurt, or cheese as substitutes if child is not receiving breast milk."
+    }
+  },
+  {
+    "category": "Healthy Fats & Energy Density",
+    "primary_food_id": "ING_COCONUT_MILK",
+    "alternative_food_ids": [
+      "ING_COCONUT_OIL",
+      "ING_VEG_OIL",
+      "ING_BUTTER",
+      "ING_MARGARINE"
+    ],
+    "shared_dietary_role": "Enriches energy density of small infant portion volumes. FHB advises cooking with thick coconut milk or tempering with small amount of butter/oil.",
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 6,
+      "pdf_page": 8,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived fat substitution rule (Tier B) based on FHB guidance on energy enrichment: cook with thick coconut milk or temper with oil/butter."
+    }
+  }
+]

@@ -30,3 +30,4 @@ class Baby(Base):
     
     owner = relationship("User", back_populates="babies")
     measurements = relationship("GrowthMeasurement", back_populates="baby", cascade="all, delete-orphan", order_by="GrowthMeasurement.visit_date")
+    nutrition_preferences = relationship("BabyNutritionPreferences", back_populates="baby", uselist=False, cascade="all, delete-orphan")

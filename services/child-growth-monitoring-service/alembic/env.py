@@ -28,10 +28,12 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-# Set sqlalchemy.url from our application settings
-# ConfigParser uses % for interpolation, so we must escape it
-safe_database_url = database_url.replace('%', '%%')
-config.set_main_option("sqlalchemy.url", safe_database_url)
+# Set sqlalchemy.url from our application settings if not already explicitly provided
+existing_url = config.get_main_option("sqlalchemy.url")
+if not existing_url or "driver://user:pass" in existing_url:
+    safe_database_url = database_url.replace('%', '%%')
+    config.set_main_option("sqlalchemy.url", safe_database_url)
+
 
 
 def run_migrations_offline() -> None:

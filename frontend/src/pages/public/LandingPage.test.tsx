@@ -24,7 +24,14 @@ describe('Public BabyGrowth welcome page', () => {
     expect(screen.getByRole('link', { name: 'BabyGrowth home' })).toHaveAttribute('href', '/');
     expect(screen.getByRole('main')).toBeInTheDocument();
     expect(within(screen.getByRole('navigation', { name: 'Main navigation' })).getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('navigation', { name: 'Footer navigation' })).toBeInTheDocument();
+    const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
+    expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about');
+    expect(within(navigation).getByRole('link', { name: 'Sign In' })).toHaveAttribute('href', '/login');
+    expect(within(navigation).getByRole('link', { name: 'Create Account' })).toHaveAttribute('href', '/register');
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toHaveTextContent(`© ${new Date().getFullYear()} BabyGrowth. Every little moment matters.`);
+    expect(within(footer).queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.queryByRole('navigation', { name: 'Footer navigation' })).not.toBeInTheDocument();
   });
 
   it('uses existing public routes and real fragment destinations, with no placeholder links', () => {
@@ -41,14 +48,16 @@ describe('Public BabyGrowth welcome page', () => {
     expect(screen.queryByRole('link', { name: 'Privacy' })).not.toBeInTheDocument();
   });
 
-  it('describes implemented features with conditional estimates and retains the medical disclaimer', () => {
+  it('shows parent-friendly feature descriptions without the homepage disclaimer banner', () => {
     renderLanding();
-    ['Growth tracking', 'Growth predictions', 'Growth history'].forEach(name => {
+    ['Growth tracking', 'Growth predictions', 'Nutrition & Feeding'].forEach(name => {
       expect(screen.getByRole('heading', { level: 3, name })).toBeInTheDocument();
     });
-    expect(screen.getByText('Explore estimated growth over the next 30 days when enough measurements are available.')).toBeInTheDocument();
-    expect(screen.getByRole('complementary', { name: 'About the growth estimates' })).toHaveTextContent('not a medical diagnosis');
-    expect(screen.getByRole('complementary', { name: 'About the growth estimates' })).toHaveTextContent('Always consult with a healthcare professional');
+    expect(screen.getByText("Record your baby's weight and length, and see how they're growing over time.")).toBeInTheDocument();
+    expect(screen.getByText("Get a glimpse of your baby's possible growth over the next 30 days.")).toBeInTheDocument();
+    expect(screen.getByText('Get appropriate feeding guidance and discover healthy meal ideas as your baby grows.')).toBeInTheDocument();
+    expect(screen.queryByRole('complementary', { name: 'About the growth estimates' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/This system provides growth estimates and risk assessments/)).not.toBeInTheDocument();
   });
 
   it('provides a skip destination and descriptive, dimensioned existing artwork', () => {

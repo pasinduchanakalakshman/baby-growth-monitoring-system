@@ -1,0 +1,698 @@
+[
+  {
+    "rule_id": "RULE_01_BEFORE_6M",
+    "stage_id": "STAGE_0_TO_6M",
+    "stage_name": "Exclusive Breastfeeding (Before 6 Completed Calendar Months)",
+    "min_calendar_months": 0,
+    "max_calendar_months": 5,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "On demand, day and night (at least 8 to 12 times in 24 hours)",
+    "daily_snack_frequency": null,
+    "household_portion": "On demand breast milk volume; no solid food",
+    "texture": "LIQUID",
+    "recommended_food_groups": ["HUMAN_MILK"],
+    "preparation_instructions": [
+      "Feed exclusively on breast milk on demand, day and night.",
+      "Ensure proper positioning and latching.",
+      "No water, glucose water, formula milk, tea, or animal milk should be given unless ordered by a physician."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Strict ban on solid food and non-breast milk liquids before 6 completed months.",
+      "Formula milk should not be encouraged; introduction decided only by a doctor (Booklet inside cover).",
+      "Do not feed while distracted by television, mobile phones, or walking around."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 2,
+      "pdf_page": 4,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Exclusive breastfeeding on demand day and night until completion of 6 calendar months."
+    }
+  },
+  {
+    "rule_id": "RULE_02_DAY_1",
+    "stage_id": "STAGE_6M_DAY_1",
+    "stage_name": "Complementary Feeding Inception (Day 1)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": 1,
+    "days_since_start_max": 1,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "1 taste session per day",
+    "daily_snack_frequency": null,
+    "household_portion": "2 to 3 teaspoons (can give more if the baby eats)",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "HUMAN_MILK"],
+    "preparation_instructions": [
+      "Boil white or red rice soft until grains burst.",
+      "Mash thoroughly with a clean spoon to a smooth semi-solid form.",
+      "Moisten with expressed breast milk for familiar taste.",
+      "Offer 2–3 teaspoons when baby is alert, calm, and slightly hungry."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Strict prohibition: Absolutely no added salt or sugar.",
+      "Commercially prepared ultra-processed baby foods and drinks are strictly not recommended.",
+      "Wash hands thoroughly with soap before food preparation and feeding.",
+      "Feed in a calm designated place; no television or phone screens."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Day 1 inception: 2–3 teaspoons of soft mashed rice with expressed breast milk, once a day."
+    }
+  },
+  {
+    "rule_id": "RULE_03_DAYS_2_3",
+    "stage_id": "STAGE_6M_DAYS_2_3",
+    "stage_name": "Early Complementary Progression (Days 2 to 3)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": 2,
+    "days_since_start_max": 3,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "1 to 2 meals per day",
+    "daily_snack_frequency": null,
+    "household_portion": "Gradually increase the amount at each meal from 2–3 tsp baseline",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "HUMAN_MILK"],
+    "preparation_instructions": [
+      "Boil rice soft and mash with a clean spoon.",
+      "Gradually increase the amount at each meal based on baby's interest and swallowing comfort.",
+      "Continue breastfeeding on demand before and after meals."
+    ],
+    "safety_and_hygiene_guidance": [
+      "No added salt or sugar.",
+      "Use separate, dedicated clean plate and spoon for the baby.",
+      "Do not force-feed if the baby turns their head away."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 2 to 3: soft mashed rice, 1 to 2 meals a day, gradually increasing amount at each meal."
+    }
+  },
+  {
+    "rule_id": "RULE_04_DAYS_4_6",
+    "stage_id": "STAGE_6M_DAYS_4_6",
+    "stage_name": "Pulse & Fruit Introduction (Days 4 to 6)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": 4,
+    "days_since_start_max": 6,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 meals per day",
+    "daily_snack_frequency": null,
+    "household_portion": "3 to 4 teaspoons or more at a time + 1 teaspoon or more fruit",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "FRUITS"],
+    "preparation_instructions": [
+      "Cook red lentils (dhal) until soft and creamy; mash into puree.",
+      "Mash soft boiled rice and combine with dhal puree.",
+      "Mash 1 teaspoon of ripe banana or ripe papaya smoothly.",
+      "Offer fruit immediately after the meal to enhance iron absorption from dhal."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Single-food introduction rule: Introduce only ONE new food for 2–3 continuous days before introducing another.",
+      "No added salt or sugar.",
+      "Wash hands and utensils clean."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 4 to 6: mashed rice with dhal puree (3–4 tsp or more, twice a day) + 1 tsp or more fruit."
+    }
+  },
+  {
+    "rule_id": "RULE_05_DAYS_7_9",
+    "stage_id": "STAGE_6M_DAYS_7_9",
+    "stage_name": "Animal Protein & Sprat Powder Inception (Days 7 to 9)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": 7,
+    "days_since_start_max": 9,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 meals per day",
+    "daily_snack_frequency": null,
+    "household_portion": "Main meal portion building towards 5–6 tsp + ~1 tsp sprat powder + 1–2 tsp fruit",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "FATS_AND_DAIRY", "FRUITS"],
+    "preparation_instructions": [
+      "Follow FHB Sprat Protocol: Wash whole dried sprats without removing heads, roast/dry, grind whole into fine powder.",
+      "Add about 1 teaspoon of sprat powder when preparing meal.",
+      "Cook with thick coconut milk or temper with a little bit of pure oil or butter for energy enrichment.",
+      "Gradually increase particle size day by day."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Ensure sprat powder is finely ground to eliminate any sharp bone pieces.",
+      "If using fresh fish, inspect meticulously and remove all bones.",
+      "No added salt or sugar."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 6,
+      "pdf_page": 8,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 7 to 9: animal food introduction, FHB sprat protocol (~1 tsp whole sprat powder), coconut milk enrichment."
+    }
+  },
+  {
+    "rule_id": "RULE_06_DAYS_10_15",
+    "stage_id": "STAGE_6M_DAYS_10_15",
+    "stage_name": "4-Part Mash & Yellow Vegetables (Days 10 to 15)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": 10,
+    "days_since_start_max": 15,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 meals per day",
+    "daily_snack_frequency": null,
+    "household_portion": "5 to 6 teaspoons at a time, twice a day + 1 to 2 teaspoons fruit",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "FATS_AND_DAIRY", "FRUITS"],
+    "preparation_instructions": [
+      "Prepare the 4-part mash combining: (1) Staple rice, (2) Pulse (dhal, green gram, cowpea), (3) Animal food (sprats, fish, chicken, liver), and (4) Yellow vegetable (pumpkin, carrot, yellow sweet potato).",
+      "Cook with thick coconut milk or temper with a small dab of butter/oil.",
+      "Mash together smoothly into a soft paste."
+    ],
+    "safety_and_hygiene_guidance": [
+      "No added salt or sugar.",
+      "Cook liver and meat thoroughly before finely mincing.",
+      "Offer 1–2 teaspoons fruit after meal."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 7,
+      "pdf_page": 9,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 10 to 15: 4-part mash, 5–6 teaspoons twice a day + 1–2 teaspoons fruit."
+    }
+  },
+  {
+    "rule_id": "RULE_07_DAYS_16_30",
+    "stage_id": "STAGE_6M_DAYS_16_30",
+    "stage_name": "Half-Mashed Rice, Green Leaves & Egg Yolk (Days 16 to 30)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": 16,
+    "days_since_start_max": 30,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 to 3 meals per day",
+    "daily_snack_frequency": null,
+    "household_portion": "About 1/4 of a tea cup at a time + 1 to 2 teaspoons fruit",
+    "texture": "HALF_MASHED",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FATS_AND_DAIRY", "FRUITS"],
+    "preparation_instructions": [
+      "Cook rice to a half-mashed texture (soft tender grains).",
+      "Introduce green leafy vegetables (gotukola, murunga leaves, sarana, thampala, mukunuwenna).",
+      "FHB Egg Protocol: After 1.5 to 2 weeks of solids, hard-boil an egg, separate yolk, and feed a little bit of boiled egg yolk first.",
+      "Cook with thick coconut milk or add a dab of butter/margarine.",
+      "Water Protocol: Offer sips of boiled, cooled water after meals."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Egg yolk only; egg white is introduced ~1 week later.",
+      "No added salt or sugar.",
+      "Offer boiled cooled water in a cup, not a feeding bottle."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 8,
+      "pdf_page": 10,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Days 16 to 30: half-mashed rice (~1/4 tea cup, 2–3 times/day), green leaves, egg yolk, and boiled water sips."
+    }
+  },
+  {
+    "rule_id": "RULE_08_STAGE_6M_GENERAL",
+    "stage_id": "STAGE_6M_GENERAL",
+    "stage_name": "6-Month Introductory Complementary Feeding (General / Start Date Unknown)",
+    "min_calendar_months": 6,
+    "max_calendar_months": 6,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "1 to 3 meals per day progressing gradually",
+    "daily_snack_frequency": null,
+    "household_portion": "Starting from 2–3 tsp progressing towards ~1/4 tea cup + 1–2 tsp fruit",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Provides age-normative introductory guidance when exact start date is unrecorded:",
+      "Begin with soft mashed rice mixed with breast milk.",
+      "Follow single-food trial rule (one new food for 2–3 days).",
+      "Progress through dhal, whole sprat powder, pumpkin/carrot, green leaves, and boiled egg yolk.",
+      "Enrich with thick coconut milk or vegetable oil/butter.",
+      "Offer sips of boiled cooled water after meals."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Strict ban on added salt and sugar before 1 year.",
+      "No commercial ultra-processed foods.",
+      "Wash hands and utensils."
+    ],
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "General 6-month guidance synthesizing FHB pages 5–8 for caregivers when the complementary feeding start date is unknown."
+    }
+  },
+  {
+    "rule_id": "RULE_09A_STAGE_7M_COMPLETED",
+    "stage_id": "STAGE_7_TO_8M",
+    "stage_name": "7 Completed Calendar Months Baseline (Days 0 to 6)",
+    "min_calendar_months": 7,
+    "max_calendar_months": 7,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": 0,
+    "max_days_into_month": 6,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 to 3 meals per day",
+    "daily_snack_frequency": null,
+    "household_portion": "1/2 tea cup at a time + 2 to 3 teaspoons fruit",
+    "texture": "COARSELY_MASHED",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Texture: Coarsely mashed rice, pulses, and vegetables.",
+      "Portion: 1/2 tea cup at a time, 2 to 3 times a day + 2 to 3 teaspoons of scraped fruit.",
+      "Continue progressive single-food trials and breastfeed after meals.",
+      "No between-meal snacks are introduced during this baseline week."
+    ],
+    "safety_and_hygiene_guidance": [
+      "No added salt or sugar.",
+      "Ensure food hygiene: clean hands, cup, plate, and spoon.",
+      "Feed patiently in a quiet place without screen distractions."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 9,
+      "pdf_page": 11,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 completed months baseline: coarsely mashed, 1/2 tea cup 2–3 times a day + 2–3 tsp fruit, breastfeed after meals."
+    }
+  },
+  {
+    "rule_id": "RULE_09B_STAGE_7M_1WEEK",
+    "stage_id": "STAGE_7_TO_8M",
+    "stage_name": "7 Months + 1 Week (Snack Inception & Whole Egg Trial)",
+    "min_calendar_months": 7,
+    "max_calendar_months": 7,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": 7,
+    "max_days_into_month": 13,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 to 3 meals per day",
+    "daily_snack_frequency": "1 to 2 nutritious snacks per day",
+    "household_portion": "1/2 tea cup at a time + ~4 teaspoons fruit + 1 to 2 snacks",
+    "texture": "COARSELY_MASHED",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Texture: Coarsely mashed.",
+      "First introduction of nutritious snacks: offer 1 to 2 snacks between meals (e.g. boiled sweet potato, scraped fruit).",
+      "Portion: 1/2 tea cup main meal + ~4 teaspoons fruit + 1 to 2 snacks daily.",
+      "Whole Egg Trial: If boiled egg yolk was introduced earlier and tolerated well, trial a little bit of hard-boiled whole egg."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Verify that egg yolk was tolerated before introducing whole egg.",
+      "Do not add salt or sugar to snacks or meals.",
+      "Offer boiled cooled water after meals and snacks."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 10,
+      "pdf_page": 12,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months + 1 week: 1/2 tea cup + ~4 tsp fruit + 1–2 snacks per day, whole egg trial if yolk tolerated."
+    }
+  },
+  {
+    "rule_id": "RULE_09C_STAGE_7M_2WEEKS",
+    "stage_id": "STAGE_7_TO_8M",
+    "stage_name": "7 Months + 2 Weeks (Coarsely Chopped Transition)",
+    "min_calendar_months": 7,
+    "max_calendar_months": 7,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": 14,
+    "max_days_into_month": 31,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 to 3 meals per day",
+    "daily_snack_frequency": "1 to 2 nutritious snacks per day",
+    "household_portion": "1/2 tea cup at a time + 4 to 5 teaspoons fruit + 1 to 2 snacks",
+    "texture": "COARSELY_MASHED",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Texture: Transition from coarsely mashed towards coarsely chopped vegetables and soft tender foods.",
+      "Portion: 1/2 tea cup main meal + 4 to 5 teaspoons fruit + 1 to 2 nutritious snacks daily.",
+      "Continue diverse animal-source foods, pulses, and green leaves daily.",
+      "Breastfeed on demand after meals."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Ensure vegetable pieces are soft and finely chopped to avoid choking risk.",
+      "No added salt or sugar.",
+      "Never leave infant unattended while eating."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 11,
+      "pdf_page": 13,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months + 2 weeks: 1/2 tea cup + 4–5 tsp fruit + 1–2 snacks, coarsely chopped vegetable transition."
+    }
+  },
+  {
+    "rule_id": "RULE_10_STAGE_8M_MILESTONES",
+    "stage_id": "STAGE_7_TO_8M",
+    "stage_name": "8 Completed Calendar Months (Traditional Staples & Finger Foods)",
+    "min_calendar_months": 8,
+    "max_calendar_months": 8,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "2 to 3 meals per day",
+    "daily_snack_frequency": "1 to 2 snacks per day",
+    "household_portion": "A bit more than 1/2 tea cup at each meal + ~1/4 tea cup fruit",
+    "texture": "COARSELY_CHOPPED",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Texture: Coarsely chopped.",
+      "Introduce traditional Sri Lankan staples: boiled jak (kos), breadfruit (del), sweet potato, string hoppers.",
+      "Introduce supervised finger foods: soft center of hopper, ripe avocado piece, hard-boiled egg wedge, boiled sweet potato wedge.",
+      "Portion: A bit more than 1/2 tea cup at each meal + ~1/4 tea cup scraped fruit."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Mandatory Choking Safety: Adult supervision required; child must never be left unattended with finger foods.",
+      "No added salt or sugar.",
+      "Encourage self-feeding while caregiver assists."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "8 completed months: traditional staples, finger foods, portion a bit more than 1/2 tea cup."
+    }
+  },
+  {
+    "rule_id": "RULE_11_STAGE_9_TO_11M",
+    "stage_id": "STAGE_9_TO_11M",
+    "stage_name": "9 to 11 Completed Calendar Months (Separate Curries & Family Table Integration)",
+    "min_calendar_months": 9,
+    "max_calendar_months": 11,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "3 to 4 main meals per day",
+    "daily_snack_frequency": "1 to 2 nutritious snacks per day",
+    "household_portion": "3/4 tea cup of food at a time (a bit more at 9m) + ~1/4 tea cup fruit",
+    "texture": "COARSELY_CHOPPED",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Texture: Coarsely chopped; coarsely mashed at feeding time.",
+      "FHB Separate Plate Presentation: Serve rice and curries separately on the plate and mix while feeding.",
+      "Seat baby with family members at meal times.",
+      "Portion: A bit more than 3/4 tea cup at 9m; 3/4 tea cup at 9–11m.",
+      "Offer fruit (~1/4 cup) and finger foods as snacks."
+    ],
+    "safety_and_hygiene_guidance": [
+      "No added salt or sugar until 1 year of age.",
+      "Whole nuts and hard seeds must be crushed/mashed; whole nuts prohibited.",
+      "Ensure food hygiene: separate cup, plate, spoon."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 14,
+      "pdf_page": 16,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "9 to 11 months: 3–4 meals + 1–2 snacks, 3/4 tea cup, rice and curries served separately."
+    }
+  },
+  {
+    "rule_id": "RULE_12_STAGE_12_TO_23M",
+    "stage_id": "STAGE_12_TO_23M",
+    "stage_name": "12 to 23 Completed Calendar Months (1 to 2 Years)",
+    "min_calendar_months": 12,
+    "max_calendar_months": 23,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "3 main meals per day",
+    "daily_snack_frequency": "1 to 2 nutritious snacks per day",
+    "household_portion": "A bit more than 1 tea cup per main meal + full FHB daily requirements table",
+    "texture": "FAMILY_FOOD",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Texture: Wholesome chopped family foods.",
+      "Follow FHB 1–2 Years Daily Requirements Table:",
+      "- Cereals/staples: 1 1/2 to 2 tea cups daily.",
+      "- Cooked pulses: 3 to 6 tablespoons daily.",
+      "- Vegetables: 6 tablespoons daily (2 different vegetables).",
+      "- Green leaves: 3 tablespoons daily.",
+      "- Sprats: 10 to 20 numbers daily OR fish/meat/liver: 2 to 4 matchbox-sized pieces.",
+      "- Kunisso: 2 tablespoons daily.",
+      "- Eggs: 1 whole egg daily.",
+      "- Fruits: twice a day.",
+      "- Breastfeed 2 to 3 times a day after meals.",
+      "- Non-breastfed dairy substitutes: 1 cup curd OR 1 cup yoghurt OR 1 matchbox-sized cheese."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Mild seasoning only; limit salt and sugar.",
+      "Choking hazard rule: Never give whole peanuts or cashews; must be finely crushed/ground.",
+      "Manioc must be boiled thoroughly with lid open and water discarded."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "1 to 2 years daily food requirements table on booklet page 16."
+    }
+  },
+  {
+    "rule_id": "RULE_13_STAGE_24_TO_59M",
+    "stage_id": "STAGE_24_TO_59M",
+    "stage_name": "24 to 59 Completed Calendar Months (2 to 5 Years)",
+    "min_calendar_months": 24,
+    "max_calendar_months": 59,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "3 main meals per day",
+    "daily_snack_frequency": "1 to 2 nutritious snacks per day",
+    "household_portion": "Scaling from > 1 tea cup towards close to 2 tea cups by 5 years + full daily table",
+    "texture": "FAMILY_FOOD",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "Wholesome family diet with gradual portion scaling towards close to 2 tea cups.",
+      "Follow FHB 2–5 Years Daily Requirements Table:",
+      "- Cereals/staples: 2 tea cups or more daily.",
+      "- Cooked pulses: 3 to 6 tablespoons daily.",
+      "- Vegetables: 6 tablespoons daily (2 different vegetables).",
+      "- Green leaves: 3 tablespoons daily.",
+      "- Sprats: 20 numbers daily OR fish/meat/liver: 4 matchbox-sized pieces.",
+      "- Kunisso: 2 tablespoons daily.",
+      "- Eggs: 1 whole egg daily.",
+      "- Fruits: twice a day.",
+      "- Non-breastfed dairy substitutes: 1 to 2 cups curd/yoghurt or 1 to 2 matchbox pieces cheese."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Avoid ultra-processed commercial snacks, instant noodles, and sugary drinks.",
+      "Crush whole nuts before feeding to prevent choking.",
+      "Ensure proper handwashing before meals."
+    ],
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "2 to 5 years daily food requirements table on booklet page 16."
+    }
+  },
+  {
+    "rule_id": "RULE_14_COMPLETION_60M",
+    "stage_id": "STAGE_60M_PLUS",
+    "stage_name": "Completion Boundary (60 Completed Calendar Months / 5th Birthday)",
+    "min_calendar_months": 60,
+    "max_calendar_months": 60,
+    "days_since_start_min": null,
+    "days_since_start_max": null,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 10,
+    "requires_known_start_date": false,
+    "is_late_starter_rule": false,
+    "daily_meal_frequency": "Family meals as per school-age guidelines",
+    "daily_snack_frequency": null,
+    "household_portion": "Completion notice: Child has completed the 0–59 completed months research component boundary",
+    "texture": "FAMILY_FOOD",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "VEGETABLES", "GREEN_LEAVES", "FRUITS", "FATS_AND_DAIRY"],
+    "preparation_instructions": [
+      "The child has reached their fifth birthday (60 completed calendar months) and completed the target age window of this research component.",
+      "No newly generated daily or weekly complementary/preschool nutrition plan is generated.",
+      "Direct the caregiver to Family Health Bureau school-age nutrition guidelines and continued family meal variety."
+    ],
+    "safety_and_hygiene_guidance": [
+      "Continue healthy family eating patterns: plenty of vegetables, green leaves, fruits, and animal-source proteins.",
+      "Limit sugar, salt, and ultra-processed foods."
+    ],
+    "evidence_tier": "TIER_C",
+    "source_citation": {
+      "publication": "Baby Growth Monitoring System Research Scope Specification",
+      "organization": "Research Project Scope / FHB Transition",
+      "year": 2025,
+      "booklet_page": 15,
+      "pdf_page": 17,
+      "evidence_tier": "TIER_C",
+      "evidence_description": "Agreed project research boundary (0–59 completed months). At 60 completed months, system transitions caregiver to school-age guidance."
+    }
+  },
+  {
+    "rule_id": "RULE_15_LATE_STARTER_TRANSITION",
+    "stage_id": "STAGE_6M_GENERAL",
+    "stage_name": "Late-Starting Complementary Feeding Transition Guidance (Age >= 7m, Start Date <= 30 Days)",
+    "min_calendar_months": 7,
+    "max_calendar_months": 59,
+    "days_since_start_min": 1,
+    "days_since_start_max": 30,
+    "min_days_into_month": null,
+    "max_days_into_month": null,
+    "precedence": 5,
+    "requires_known_start_date": true,
+    "is_late_starter_rule": true,
+    "daily_meal_frequency": "1 to 2 meals per day initially, building to 2 to 3 meals",
+    "daily_snack_frequency": null,
+    "household_portion": "Introductory progression (2–3 tsp building to ~1/4 cup), adapting to appetite",
+    "texture": "SEMI_SOLID_MASH",
+    "recommended_food_groups": ["GRAINS_AND_STAPLES", "PULSES_AND_LEGUMES", "ANIMAL_SOURCE_FOODS", "HUMAN_MILK"],
+    "preparation_instructions": [
+      "Application-derived transition guidance (Tier B) for late starters:",
+      "When complementary feeding begins after 6 completed months, chronological age and complementary feeding start date remain distinct.",
+      "Initiate solids with single-food trials (rice, dhal, sprat powder, egg yolk) over the initial weeks to observe digestive tolerance and food acceptance.",
+      "Do not automatically apply an entire inflexible 6-month feeding schedule to an older child.",
+      "Allow portion amounts and texture progression to scale up more rapidly if the child shows vigorous appetite and tolerates the food well."
+    ],
+    "safety_and_hygiene_guidance": [
+      "No added salt or sugar before 1 year.",
+      "Monitor tolerance of newly introduced foods carefully.",
+      "Ensure adult supervision."
+    ],
+    "evidence_tier": "TIER_B",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 5,
+      "pdf_page": 7,
+      "evidence_tier": "TIER_B",
+      "evidence_description": "Application-derived guidance (Tier B): Late starters progress through introductory food tolerance trials while adapting portion scaling to the child's developmental readiness."
+    }
+  }
+]

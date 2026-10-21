@@ -1,0 +1,102 @@
+[
+  {
+    "group_code": "RESTRICT_FISH",
+    "name": "Fish and Finfish",
+    "description": "Allergy or dietary exclusion of finfish and small dried fish products.",
+    "matching_ingredients": ["ING_FISH_SEA", "ING_SPRATS"],
+    "rules": [
+      "Strictly excludes fresh and dried finfish (sea fish, sprats).",
+      "Excludes sprat powder and dishes containing sprat powder (e.g. DISH_FHB_SPRAT_RICE).",
+      "Does NOT automatically exclude shellfish (kunisso); finfish and shellfish restrictions are modeled separately.",
+      "Excludes alternative substitutions containing fish or sprats."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_SHELLFISH",
+    "name": "Crustaceans and Shellfish",
+    "description": "Allergy or dietary exclusion of crustaceans, prawns, and shellfish products.",
+    "matching_ingredients": ["ING_KUNISSO"],
+    "rules": [
+      "Strictly excludes dried small prawns (kunisso) and other crustacean products.",
+      "Does NOT exclude finfish (sea fish, sprats); finfish and shellfish restrictions are modeled separately.",
+      "Excludes dishes and substitutions containing kunisso (e.g. DISH_FAMILY_MEAL_RICE_KUNISSO_DHAL)."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_DAIRY",
+    "name": "Cow and Buffalo Dairy Products",
+    "description": "Cow's milk protein allergy, lactose intolerance, or dairy dietary restrictions.",
+    "matching_ingredients": ["ING_BUTTER", "ING_CURD", "ING_YOGHURT", "ING_CHEESE", "ING_MARGARINE"],
+    "rules": [
+      "Strictly excludes dairy butter, curd, yoghurt, and cheese.",
+      "Margarine is included under dairy restrictions because commercial margarine frequently contains milk solids, whey, or dairy derivatives.",
+      "Excludes dishes tempered with butter or snacks containing curd, yoghurt, cheese, or commercial margarine.",
+      "Does NOT exclude pure vegetable oils (ING_VEG_OIL) or coconut milk (ING_COCONUT_MILK)."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_EGG",
+    "name": "Eggs (All Forms)",
+    "description": "Allergy or dietary exclusion of chicken eggs in all culinary forms.",
+    "matching_ingredients": ["ING_EGG_YOLK", "ING_EGG_WHITE", "ING_EGG_WHOLE"],
+    "rules": [
+      "Strictly excludes hard-boiled egg yolk, egg white, and whole egg.",
+      "Excludes composite dishes and snacks containing egg (e.g. DISH_HALFMASHED_GOTUKOLA_EGGYOLK, SNACK_EGG_HOPPER, SNACK_BOILED_EGG_WEDGE).",
+      "Excludes egg items from substitution suggestions."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_SOYA",
+    "name": "Soya Beans and Products",
+    "description": "Allergy or dietary exclusion of soya beans, soya flour, and soya products.",
+    "matching_ingredients": ["ING_SOYA"],
+    "rules": [
+      "Strictly excludes germinated soya beans, soya flour, and soya meat curries.",
+      "Excludes dishes containing soya (e.g. DISH_COARSE_MASH_7M_SOYA_EGG).",
+      "Does NOT exclude non-soya legumes (dhal, green gram, cowpea, chickpeas) unless RESTRICT_LEGUMES is also active."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_LEGUMES",
+    "name": "Pulses and Legumes",
+    "description": "Allergy, favism, or dietary exclusion of pulses and legumes.",
+    "matching_ingredients": ["ING_DHAL", "ING_GREEN_GRAM", "ING_COWPEA", "ING_CHICKPEAS"],
+    "rules": [
+      "Strictly excludes red lentils (dhal), green gram (mung), cowpea, and chickpeas.",
+      "Excludes dhal purees, pulse mashes, boiled pulse snacks (SNACK_GREEN_GRAM_COCONUT, SNACK_CHICKPEAS_COCONUT, SNACK_COWPEA_COCONUT).",
+      "Excludes pulses from substitution suggestions."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_PEANUT",
+    "name": "Peanuts",
+    "description": "Severe peanut allergy exclusion.",
+    "matching_ingredients": ["ING_PEANUT"],
+    "rules": [
+      "Strictly excludes peanuts, crushed peanut powders, and peanut pastes.",
+      "Excludes snacks containing peanut (SNACK_CRUSHED_PEANUT_PASTE).",
+      "Does NOT exclude tree nuts (cashew) unless RESTRICT_TREE_NUT is also selected."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_TREE_NUT",
+    "name": "Tree Nuts (Cashew)",
+    "description": "Tree nut allergy exclusion.",
+    "matching_ingredients": ["ING_CASHEW"],
+    "rules": [
+      "Strictly excludes cashew nuts, cashew curries, and crushed cashew pastes.",
+      "Does NOT exclude peanuts unless RESTRICT_PEANUT is also selected."
+    ]
+  },
+  {
+    "group_code": "RESTRICT_COCONUT",
+    "name": "Coconut Products",
+    "description": "Allergy or dietary exclusion of coconut milk, coconut oil, and scraped coconut.",
+    "matching_ingredients": ["ING_COCONUT_MILK", "ING_COCONUT_SCRAP", "ING_COCONUT_OIL"],
+    "rules": [
+      "Strictly excludes thick coconut milk (miti kiri), fresh scraped coconut, and pure coconut oil (ING_COCONUT_OIL).",
+      "Does NOT exclude non-coconut vegetable oils (ING_VEG_OIL).",
+      "Excludes curries cooked in coconut milk, coconut oil tempering, and snacks topped with scraped coconut."
+    ]
+  }
+]

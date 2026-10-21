@@ -82,3 +82,47 @@ def test_gateway_proxy_hybrid_explanation(mock_send):
     request = mock_send.call_args.args[0]
     assert str(request.url).endswith('/api/v1/growth/risk/explanation')
     assert request.headers['cookie'] == 'access_token=synthetic'
+
+
+@patch("httpx.AsyncClient.send")
+def test_gateway_proxy_nutrition_recommendations(mock_send):
+    mock_send.return_value = Response(200, json={"child_age_completed_months": 7, "recommendations": []})
+    response = client.get(
+        "/api/v1/nutrition/recommendations?baby_id=1",
+        headers={"Authorization": "Bearer fake_token"}
+    )
+    assert response.status_code == 200
+    assert response.json()["child_age_completed_months"] == 7
+    called_request = mock_send.call_args[0][0]
+    assert "/api/v1/nutrition/recommendations" in str(called_request.url)
+    assert "baby_id=1" in str(called_request.url)
+    assert called_request.headers.get("authorization") == "Bearer fake_token"
+
+
+@patch("httpx.AsyncClient.send")
+def test_gateway_proxy_nutrition_preferences_put(mock_send):
+    mock_send.return_value = Response(200, json={"baby_id": 1, "dietary_preferences": ["VEGETARIAN"]})
+    payload = {"dietary_preferences": ["VEGETARIAN"]}
+    response = client.put(
+        "/api/v1/nutrition/preferences?baby_id=1",
+        json=payload,
+        headers={"Cookie": "access_token=synthetic_cookie"}
+    )
+    assert response.status_code == 200
+    assert response.json()["baby_id"] == 1
+    called_request = mock_send.call_args[0][0]
+    assert "/api/v1/nutrition/preferences" in str(called_request.url)
+    assert "baby_id=1" in str(called_request.url)
+    assert called_request.method == "PUT"
+    assert called_request.headers.get("cookie") == "access_token=synthetic_cookie"
+
+
+@patch("httpx.AsyncClient.send")
+def test_gateway_nutrition_error_forwarding(mock_send):
+    mock_send.return_value = Response(403, json={"detail": "Not authorized to access this baby's records"})
+    response = client.get(
+        "/api/v1/nutrition/recommendations?baby_id=2",
+        headers={"Authorization": "Bearer parent_a_token"}
+    )
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Not authorized to access this baby's records"

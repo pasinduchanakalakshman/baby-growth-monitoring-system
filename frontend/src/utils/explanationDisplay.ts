@@ -1,4 +1,11 @@
-import type { ModelCombination, RiskExplanation, Risk180Day, FrontendSafeExplanation } from '@/types/growth';
+import type {
+  ModelCombination,
+  RiskExplanation,
+  Risk180Day,
+  FrontendSafeExplanation,
+  GrowthHistoryPoint,
+  Forecast30Day
+} from '@/types/growth';
 
 /**
  * Utility functions for formatting SHAP risk explanations into parent-friendly language.
@@ -295,14 +302,124 @@ const BOOLEAN_FEATURES = new Set([
 ]);
 const MEASURED_CHANGES = new Set(['weight_change_kg', 'height_change_cm']);
 
-interface RecordedFactor extends FrontendSafeExplanation {
+export interface RecordedFactor extends FrontendSafeExplanation {
   label: string;
   recordedValue: string;
   influence: string;
+  description: string;
+}
+
+/**
+ * Generates an honest, non-causal, personalized explanation sentence tailored to
+ * each child's actual recorded measurement and observed XAI contribution.
+ */
+export function getPersonalizedDescription(
+  factor: FrontendSafeExplanation,
+  recordedValue: string,
+  influence: string,
+  status?: 'elevated' | 'below' | null
+): string {
+  const isConfirmed = status === 'elevated' || status === 'below';
+  const isIncreasing = factor.direction === 'increased model-predicted risk' && influence.includes('increased');
+  const isDecreasing = factor.direction === 'decreased model-predicted risk' && influence.includes('decreased');
+  const directionText = isIncreasing
+    ? 'higher in this assessment'
+    : isDecreasing
+      ? 'lower in this assessment'
+      : 'in the model calculation';
+
+  switch (factor.feature) {
+    case 'weight_kg':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's current recorded weight of ${recordedValue} was evaluated by the screening model, shifting the screening score ${directionText}.`
+        : `Your baby's current recorded weight of ${recordedValue} was evaluated as part of this growth check.`;
+    case 'length_height_cm':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's current recorded length/height of ${recordedValue} was evaluated by the screening model, shifting the screening score ${directionText}.`
+        : `Your baby's current recorded length/height of ${recordedValue} was evaluated as part of this growth check.`;
+    case 'birth_weight_kg':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's recorded birth weight of ${recordedValue} was included in the model's assessment, shifting the screening score ${directionText}.`
+        : `Your baby's recorded birth weight of ${recordedValue} was included in the model's assessment.`;
+    case 'birth_length_cm':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's recorded length at birth of ${recordedValue} was taken into account by the model, shifting the screening score ${directionText}.`
+        : `Your baby's recorded length at birth of ${recordedValue} was taken into account by the model.`;
+    case 'age_days':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's age of ${recordedValue} at this check was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Your baby's age of ${recordedValue} at this check was evaluated by the model.`;
+    case 'gestational_age_weeks':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's gestational age of ${recordedValue} was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Your baby's gestational age of ${recordedValue} was evaluated by the model.`;
+    case 'verified_waz':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's weight-for-age growth information for this check was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Your baby's weight-for-age growth information for this check was evaluated by the model.`;
+    case 'verified_haz':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's length-for-age growth information for this check was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Your baby's length-for-age growth information for this check was evaluated by the model.`;
+    case 'days_since_previous_visit':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `The interval of ${recordedValue} since your baby's previous growth check was evaluated, shifting the screening score ${directionText}.`
+        : `The time since your baby's previous growth check (${recordedValue}) was evaluated by the model.`;
+    case 'weight_change_kg':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `A recorded weight change of ${recordedValue} between checks was evaluated by the model, shifting the screening score ${directionText}.`
+        : `The recorded weight change of ${recordedValue} between checks was evaluated by the model.`;
+    case 'height_change_cm':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `A recorded length/height change of ${recordedValue} between checks was evaluated by the model, shifting the screening score ${directionText}.`
+        : `The recorded length/height change of ${recordedValue} between checks was evaluated by the model.`;
+    case 'waz_change':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `The change in your baby's weight-for-age position between checks (${recordedValue}) was evaluated by the model, shifting the screening score ${directionText}.`
+        : `The change in your baby's weight-for-age position between checks (${recordedValue}) was evaluated by the model.`;
+    case 'haz_change':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `The change in your baby's length-for-age position between checks (${recordedValue}) was evaluated by the model, shifting the screening score ${directionText}.`
+        : `The change in your baby's length-for-age position between checks (${recordedValue}) was evaluated by the model.`;
+    case 'weight_velocity_kg_per_day':
+    case 'weight_velocity':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's daily weight gain rate of ${recordedValue} was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Your baby's daily weight gain rate of ${recordedValue} was evaluated by the model.`;
+    case 'waz_velocity_per_day':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Your baby's daily change in weight-for-age score (${recordedValue}) was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Your baby's daily change in weight-for-age score (${recordedValue}) was evaluated by the model.`;
+    case 'breastfeeding_status':
+    case 'breastfeeding_frequency_per_day':
+    case 'formula_feeding':
+    case 'formula_feeds_per_day':
+    case 'complementary_feeding_started':
+    case 'meals_per_day':
+    case 'food_groups_consumed':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Recorded feeding information (${recordedValue}) was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Recorded feeding information (${recordedValue}) was evaluated by the model.`;
+    case 'recent_illness':
+    case 'diarrhea_recent':
+    case 'fever_recent':
+    case 'respiratory_illness_recent':
+    case 'illness_duration_days':
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `Recorded illness information (${recordedValue}) was evaluated by the model, shifting the screening score ${directionText}.`
+        : `Recorded illness information (${recordedValue}) was evaluated by the model.`;
+    default:
+      return isConfirmed && (isIncreasing || isDecreasing)
+        ? `This recorded measurement (${recordedValue}) was evaluated by the model, shifting the screening score ${directionText}.`
+        : `This recorded measurement (${recordedValue}) was considered by the model.`;
+  }
 }
 
 /** Preserve API order, rank, and direction, but display only known factors with real raw values. */
-export function getMotherFriendlyFactors(explanation: RiskExplanation): { measurements: RecordedFactor[]; changes: RecordedFactor[] } {
+export function getMotherFriendlyFactors(
+  explanation: RiskExplanation,
+  status?: 'elevated' | 'below' | null
+): { measurements: RecordedFactor[]; changes: RecordedFactor[] } {
   const measurements: RecordedFactor[] = [];
   const changes: RecordedFactor[] = [];
   const seen = new Set<string>();
@@ -325,10 +442,444 @@ export function getMotherFriendlyFactors(explanation: RiskExplanation): { measur
     const recordedValue = factor.feature === 'verified_waz' || factor.feature === 'verified_haz'
       ? 'Recorded for this growth check'
       : formatRecordedValue(factor.feature, value);
-    const item = { ...factor, label: getParentFriendlyFeatureName(factor.feature), recordedValue,
-      influence: getFactorInfluence(explanation, factor, contribution?.shap_contribution) };
+    const influence = getFactorInfluence(explanation, factor, contribution?.shap_contribution);
+    const description = getPersonalizedDescription(factor, recordedValue, influence, status ?? null);
+    const item: RecordedFactor = {
+      ...factor,
+      label: getParentFriendlyFeatureName(factor.feature),
+      recordedValue,
+      influence,
+      description
+    };
     if (isChange) changes.push(item);
     else measurements.push(item);
   }
   return { measurements: measurements.slice(0, 4), changes: changes.slice(0, 2) };
 }
+
+export interface WeightHistoryPointSimple {
+  date: string;
+  weightKg: number;
+}
+
+export interface WeightHistoryAnalysis {
+  hasEnoughData: boolean;
+  totalVisits: number;
+  latest: WeightHistoryPointSimple | null;
+  previous: WeightHistoryPointSimple | null;
+  changeKg: number | null;
+  daysBetween: number | null;
+  rateGramsPerDay: number | null;
+  summaryText: string;
+  points: WeightHistoryPointSimple[];
+}
+
+export function analyzeWeightHistory(
+  history?: { visit_date: string; weight_kg?: number | null }[] | null,
+  fallbackExplanation?: RiskExplanation | null
+): WeightHistoryAnalysis {
+  const validPoints: WeightHistoryPointSimple[] = [];
+
+  if (Array.isArray(history)) {
+    for (const p of history) {
+      if (
+        p &&
+        typeof p.weight_kg === 'number' &&
+        Number.isFinite(p.weight_kg) &&
+        p.weight_kg > 0 &&
+        typeof p.visit_date === 'string' &&
+        p.visit_date.trim() !== ''
+      ) {
+        validPoints.push({ date: p.visit_date.trim(), weightKg: p.weight_kg });
+      }
+    }
+  }
+
+  // If no history array was provided, inspect explanation metadata for visit & weight
+  if (validPoints.length === 0 && fallbackExplanation) {
+    const date = fallbackExplanation.assessment?.visit_date;
+    const weightContrib = fallbackExplanation.technical_explanation?.contributions?.find(
+      c => c.feature === 'weight_kg'
+    );
+    const rawWeight = weightContrib?.raw_value;
+    if (typeof date === 'string' && typeof rawWeight === 'number' && Number.isFinite(rawWeight) && rawWeight > 0) {
+      validPoints.push({ date: date.trim(), weightKg: rawWeight });
+    }
+  }
+
+  // Sort points chronologically
+  validPoints.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  if (validPoints.length === 0) {
+    return {
+      hasEnoughData: false,
+      totalVisits: 0,
+      latest: null,
+      previous: null,
+      changeKg: null,
+      daysBetween: null,
+      rateGramsPerDay: null,
+      summaryText: 'No weight checks recorded yet.',
+      points: []
+    };
+  }
+
+  if (validPoints.length === 1) {
+    const single = validPoints[0];
+    return {
+      hasEnoughData: false,
+      totalVisits: 1,
+      latest: single,
+      previous: null,
+      changeKg: null,
+      daysBetween: null,
+      rateGramsPerDay: null,
+      summaryText: `We have one recorded weight check for your baby (${single.weightKg.toFixed(2)} kg on ${single.date}). At least two recorded measurements are needed to determine weight changes over time.`,
+      points: validPoints
+    };
+  }
+
+  const previous = validPoints[validPoints.length - 2];
+  const latest = validPoints[validPoints.length - 1];
+  const changeKg = Math.round((latest.weightKg - previous.weightKg) * 100) / 100;
+
+  const prevTime = new Date(previous.date).getTime();
+  const latestTime = new Date(latest.date).getTime();
+  const diffDays = Math.round((latestTime - prevTime) / (1000 * 60 * 60 * 24));
+  const daysBetween = Number.isFinite(diffDays) && diffDays > 0 ? diffDays : 1;
+  const rateGramsPerDay = Math.round((changeKg * 1000) / daysBetween);
+
+  let directionText = 'maintained weight';
+  if (changeKg > 0) {
+    directionText = `gained ${changeKg.toFixed(2)} kg`;
+  } else if (changeKg < 0) {
+    directionText = `lost ${Math.abs(changeKg).toFixed(2)} kg`;
+  }
+
+  const rateStr = rateGramsPerDay > 0
+    ? `+${rateGramsPerDay} g/day`
+    : `${rateGramsPerDay} g/day`;
+
+  const summaryText = `Between ${previous.date} and ${latest.date}, your baby ${directionText} over ${daysBetween} days (about ${rateStr}).`;
+
+  return {
+    hasEnoughData: true,
+    totalVisits: validPoints.length,
+    latest,
+    previous,
+    changeKg,
+    daysBetween,
+    rateGramsPerDay,
+    summaryText,
+    points: validPoints
+  };
+}
+
+export const WEIGHT_RELATED_FEATURES = new Set([
+  'weight_kg',
+  'birth_weight_kg',
+  'verified_waz',
+  'weight_change_kg',
+  'waz_change',
+  'weight_velocity_kg_per_day',
+  'weight_velocity_kg_per_30d',
+  'waz_velocity_per_day',
+  'waz_velocity_per_30d',
+  'weight_rolling_mean_3',
+  'waz_rolling_mean_3',
+]);
+
+export function getWeightRelatedFactors(
+  explanation: RiskExplanation,
+  status?: 'elevated' | 'below' | null
+): RecordedFactor[] {
+  const { measurements, changes } = getMotherFriendlyFactors(explanation, status);
+  const combined = [...measurements, ...changes];
+  const weightFactors = combined.filter(f => WEIGHT_RELATED_FEATURES.has(f.feature));
+  return weightFactors;
+}
+
+export interface WazComparison {
+  hasEnoughData: boolean;
+  previousWaz: number | null;
+  latestWaz: number | null;
+  wazChange: number | null;
+  status: 'lower' | 'steady' | 'higher' | 'single_check' | 'unavailable';
+  summaryText: string;
+  cautionText: string;
+}
+
+export function analyzeWazComparison(
+  history?: GrowthHistoryPoint[] | null,
+  fallbackExplanation?: RiskExplanation | null
+): WazComparison {
+  const cautionText =
+    'Important: Gaining weight does not necessarily mean a baby’s weight-for-age position has improved. If weight gain is slower than expected for their age, their weight increases while their relative position on age-based growth charts shifts lower.';
+
+  if (!Array.isArray(history) || history.length === 0) {
+    // Check fallback explanation
+    const wazContrib = fallbackExplanation?.technical_explanation?.contributions?.find(
+      c => c.feature === 'verified_waz'
+    );
+    const rawWaz = typeof wazContrib?.raw_value === 'number' && Number.isFinite(wazContrib.raw_value)
+      ? Math.round(wazContrib.raw_value * 100) / 100
+      : null;
+
+    if (rawWaz !== null) {
+      return {
+        hasEnoughData: false,
+        previousWaz: null,
+        latestWaz: rawWaz,
+        wazChange: null,
+        status: 'single_check',
+        summaryText: `Your baby's current recorded weight-for-age score is ${rawWaz > 0 ? '+' : ''}${rawWaz.toFixed(2)}. At least two recorded checks are needed to track how their growth position compares over time.`,
+        cautionText: 'Growth scores compare your baby’s measurements against age-based population growth references.'
+      };
+    }
+
+    return {
+      hasEnoughData: false,
+      previousWaz: null,
+      latestWaz: null,
+      wazChange: null,
+      status: 'unavailable',
+      summaryText: 'Weight-for-age growth score records are not available for comparison.',
+      cautionText: 'Growth scores compare your baby’s measurements against standard population growth references.'
+    };
+  }
+
+  // Filter valid points with visit_date
+  const sorted = [...history]
+    .filter(p => p && typeof p.visit_date === 'string' && p.visit_date.trim() !== '')
+    .sort((a, b) => new Date(a.visit_date).getTime() - new Date(b.visit_date).getTime());
+
+  if (sorted.length < 2) {
+    const single = sorted[0];
+    const singleWaz = typeof single?.verified_waz === 'number' && Number.isFinite(single.verified_waz)
+      ? Math.round(single.verified_waz * 100) / 100
+      : null;
+
+    return {
+      hasEnoughData: false,
+      previousWaz: null,
+      latestWaz: singleWaz,
+      wazChange: null,
+      status: 'single_check',
+      summaryText: singleWaz !== null
+        ? `Your baby's current recorded weight-for-age score is ${singleWaz > 0 ? '+' : ''}${singleWaz.toFixed(2)}. At least two recorded checks are needed to track how their growth position compares over time.`
+        : 'At least two recorded growth checks are needed to compare growth positions over time.',
+      cautionText: 'Growth scores compare your baby’s measurements against age-based growth charts.'
+    };
+  }
+
+  const prev = sorted[sorted.length - 2];
+  const latest = sorted[sorted.length - 1];
+
+  const prevWaz = typeof prev.verified_waz === 'number' && Number.isFinite(prev.verified_waz)
+    ? Math.round(prev.verified_waz * 100) / 100
+    : null;
+  const latestWaz = typeof latest.verified_waz === 'number' && Number.isFinite(latest.verified_waz)
+    ? Math.round(latest.verified_waz * 100) / 100
+    : null;
+
+  if (prevWaz === null || latestWaz === null) {
+    return {
+      hasEnoughData: false,
+      previousWaz: prevWaz,
+      latestWaz: latestWaz,
+      wazChange: null,
+      status: 'unavailable',
+      summaryText: 'A complete weight-for-age comparison between these checks is not available.',
+      cautionText
+    };
+  }
+
+  const wazChange = Math.round((latestWaz - prevWaz) * 100) / 100;
+
+  if (wazChange <= -0.1) {
+    return {
+      hasEnoughData: true,
+      previousWaz: prevWaz,
+      latestWaz: latestWaz,
+      wazChange,
+      status: 'lower',
+      summaryText: `Between ${prev.visit_date} and ${latest.visit_date}, your baby's weight-for-age position shifted lower (from ${prevWaz > 0 ? '+' : ''}${prevWaz.toFixed(2)} to ${latestWaz > 0 ? '+' : ''}${latestWaz.toFixed(2)}) relative to standard age-based growth curves. Even when a baby gains weight, tracking below the expected growth pace for their age group shifts their relative curve position lower.`,
+      cautionText
+    };
+  }
+
+  if (wazChange >= 0.1) {
+    return {
+      hasEnoughData: true,
+      previousWaz: prevWaz,
+      latestWaz: latestWaz,
+      wazChange,
+      status: 'higher',
+      summaryText: `Between ${prev.visit_date} and ${latest.visit_date}, your baby's weight-for-age position moved higher (from ${prevWaz > 0 ? '+' : ''}${prevWaz.toFixed(2)} to ${latestWaz > 0 ? '+' : ''}${latestWaz.toFixed(2)}) relative to standard age-based growth curves, showing good progress relative to age-based references.`,
+      cautionText
+    };
+  }
+
+  return {
+    hasEnoughData: true,
+    previousWaz: prevWaz,
+    latestWaz: latestWaz,
+    wazChange,
+    status: 'steady',
+    summaryText: `Between ${prev.visit_date} and ${latest.visit_date}, your baby's weight maintained a steady position relative to age-based growth curves (from ${prevWaz > 0 ? '+' : ''}${prevWaz.toFixed(2)} to ${latestWaz > 0 ? '+' : ''}${latestWaz.toFixed(2)}).`,
+    cautionText: 'A steady weight-for-age score indicates that your baby’s weight gain is keeping pace with standard growth curves.'
+  };
+}
+
+export interface ForecastComparison {
+  available: boolean;
+  estimatedWeightKg: number | null;
+  estimatedWeightChangeKg: number | null;
+  estimatedWaz: number | null;
+  horizonDays: number;
+  summaryText: string;
+  differenceText: string;
+}
+
+export function analyzeForecastComparison(forecast?: Forecast30Day | null): ForecastComparison {
+  const differenceText =
+    'Distinguishing Forecast from Screening: The 30-day forecast is a short-term projection of expected weight based on recent growth. In contrast, the 180-day screening looks 6 months ahead to determine whether closer growth monitoring may be helpful. Both are predictive estimates and do not represent actual observed measurements.';
+
+  if (!forecast || !forecast.forecast_available) {
+    return {
+      available: false,
+      estimatedWeightKg: null,
+      estimatedWeightChangeKg: null,
+      estimatedWaz: null,
+      horizonDays: forecast?.nominal_horizon_days ?? 30,
+      summaryText: forecast?.reason
+        ? `A 30-day growth forecast is not available yet: ${forecast.reason}`
+        : 'A 30-day growth forecast is not available yet. Additional recorded growth checks are needed before a short-term projection can be generated.',
+      differenceText
+    };
+  }
+
+  const estWeight = typeof forecast.estimated_future_weight_kg === 'number' && Number.isFinite(forecast.estimated_future_weight_kg)
+    ? Math.round(forecast.estimated_future_weight_kg * 100) / 100
+    : null;
+  const estChange = typeof forecast.estimated_weight_change_kg === 'number' && Number.isFinite(forecast.estimated_weight_change_kg)
+    ? Math.round(forecast.estimated_weight_change_kg * 100) / 100
+    : null;
+  const estWaz = typeof forecast.estimated_future_waz === 'number' && Number.isFinite(forecast.estimated_future_waz)
+    ? Math.round(forecast.estimated_future_waz * 100) / 100
+    : null;
+  const days = forecast.nominal_horizon_days ?? 30;
+
+  const parts: string[] = [];
+  if (estWeight !== null) {
+    parts.push(`estimated weight of approximately ${estWeight.toFixed(2)} kg`);
+  }
+  if (estChange !== null) {
+    const sign = estChange > 0 ? '+' : '';
+    parts.push(`an estimated change of ${sign}${estChange.toFixed(2)} kg`);
+  }
+  if (estWaz !== null) {
+    const sign = estWaz > 0 ? '+' : '';
+    parts.push(`an estimated growth score of ${sign}${estWaz.toFixed(2)}`);
+  }
+
+  const summaryText = parts.length > 0
+    ? `The 30-day growth forecast suggests an ${parts.join(' with ')} over approximately the next ${days} days based on your baby's recorded trend.`
+    : `The 30-day growth forecast is available for approximately the next ${days} days.`;
+
+  return {
+    available: true,
+    estimatedWeightKg: estWeight,
+    estimatedWeightChangeKg: estChange,
+    estimatedWaz: estWaz,
+    horizonDays: days,
+    summaryText,
+    differenceText
+  };
+}
+
+export interface IntegratedGrowthStory {
+  isGainingWeight: string;
+  whyAiConcerned: string;
+  whatMeansForFuture: string;
+  whatToDoNext: string;
+}
+
+export function buildIntegratedGrowthStory(
+  weightAnalysis: WeightHistoryAnalysis,
+  wazComparison: WazComparison,
+  status: 'elevated' | 'below' | null,
+  weightFactors: RecordedFactor[],
+  _forecastComparison: ForecastComparison
+): IntegratedGrowthStory {
+  // Question 1: Is my baby gaining weight?
+  let isGainingWeight = '';
+  if (!weightAnalysis.hasEnoughData) {
+    if (weightAnalysis.latest) {
+      isGainingWeight = `Your baby's latest recorded weight was ${weightAnalysis.latest.weightKg.toFixed(2)} kg on ${weightAnalysis.latest.date}. At least two checks are needed to determine weight changes over time.`;
+    } else {
+      isGainingWeight = 'No recorded weight checks are available yet.';
+    }
+  } else if (weightAnalysis.changeKg !== null) {
+    const prevDate = weightAnalysis.previous?.date;
+    const latestDate = weightAnalysis.latest?.date;
+    const gainStr = weightAnalysis.changeKg > 0
+      ? `gained ${weightAnalysis.changeKg.toFixed(2)} kg`
+      : weightAnalysis.changeKg < 0
+        ? `lost ${Math.abs(weightAnalysis.changeKg).toFixed(2)} kg`
+        : 'maintained their weight';
+    const rateStr = weightAnalysis.rateGramsPerDay !== null
+      ? ` (${weightAnalysis.rateGramsPerDay > 0 ? '+' : ''}${weightAnalysis.rateGramsPerDay} g/day)`
+      : '';
+
+    let wazNote = '';
+    if (wazComparison.status === 'lower') {
+      wazNote = ` While your baby gained weight, their position relative to age-based growth charts shifted lower.`;
+    } else if (wazComparison.status === 'higher') {
+      wazNote = ` Their weight gain has also kept pace well with age-based growth charts.`;
+    } else if (wazComparison.status === 'steady') {
+      wazNote = ` Their weight maintained a steady position on age-based growth charts.`;
+    }
+
+    isGainingWeight = `Between ${prevDate} and ${latestDate}, your baby ${gainStr} over ${weightAnalysis.daysBetween} days${rateStr}.${wazNote}`;
+  }
+
+  // Question 2: Why is the AI concerned about my baby?
+  let whyAiConcerned = '';
+  if (status === 'elevated') {
+    const factorLabels = weightFactors.map(f => f.label.toLowerCase()).slice(0, 2).join(' and ');
+    const factorMention = factorLabels ? ` (including ${factorLabels})` : '';
+    whyAiConcerned = `The model identified an elevated early screening score based on recorded growth patterns${factorMention}. These findings highlight statistical patterns for closer monitoring, not medical causes.`;
+  } else if (status === 'below') {
+    whyAiConcerned = `The model did not trigger an elevated screening alert for your baby. Recorded growth patterns remained below the monitoring threshold.`;
+  } else {
+    whyAiConcerned = `A confirmed screening result is currently unavailable. Recorded measurements were considered without a confirmed risk flag.`;
+  }
+
+  // Question 3: What might this mean for my baby's future growth?
+  let whatMeansForFuture = '';
+  if (status === 'elevated') {
+    whatMeansForFuture = `This is an early monitoring flag suggesting closer growth monitoring over the next 6 months may be helpful. It is not a clinical diagnosis and does not predict future weight decline or medical conditions.`;
+  } else if (status === 'below') {
+    whatMeansForFuture = `This assessment is reassuring, though ongoing regular growth checks remain important as normal growth varies over time.`;
+  } else {
+    whatMeansForFuture = `Continue regular growth visits to track your baby's growth journey as more information is recorded.`;
+  }
+
+  // Question 4: What should I do next?
+  let whatToDoNext = '';
+  if (status === 'elevated') {
+    whatToDoNext = `Continue regular clinic visits, bring your baby's CHDR booklet, and discuss this screening result with your Public Health Midwife or doctor.`;
+  } else {
+    whatToDoNext = `Continue regular growth visits with your healthcare provider and bring your baby's CHDR booklet to each visit.`;
+  }
+
+  return {
+    isGainingWeight,
+    whyAiConcerned,
+    whatMeansForFuture,
+    whatToDoNext
+  };
+}
+
+

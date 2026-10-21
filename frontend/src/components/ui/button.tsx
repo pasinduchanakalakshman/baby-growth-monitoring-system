@@ -5,20 +5,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-control hover:bg-primary-hover",
+          "bg-btn-primary text-btn-primary-foreground shadow-control hover:bg-btn-primary-hover active:bg-btn-primary-active focus-visible:ring-btn-primary",
+        prediction:
+          "bg-btn-prediction text-btn-prediction-foreground shadow-control hover:bg-btn-prediction-hover active:bg-btn-prediction-active focus-visible:ring-btn-prediction",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-control hover:bg-destructive-hover",
+          "bg-destructive text-destructive-foreground shadow-control hover:bg-destructive-hover focus-visible:ring-destructive",
         outline:
-          "border border-input bg-card text-card-foreground shadow-control hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-card text-card-foreground shadow-control hover:bg-accent hover:text-accent-foreground focus-visible:ring-btn-primary",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-control hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:text-primary-hover hover:underline",
+          "bg-secondary text-secondary-foreground shadow-control hover:bg-secondary/80 focus-visible:ring-btn-primary",
+        ghost: "hover:bg-accent hover:text-accent-foreground focus-visible:ring-btn-primary",
+        link: "text-btn-primary underline-offset-4 hover:text-btn-primary-hover hover:underline focus-visible:ring-btn-primary",
+        "prediction-link":
+          "text-btn-prediction underline-offset-4 hover:text-btn-prediction-hover hover:underline focus-visible:ring-btn-prediction",
       },
       size: {
         default: "h-control px-4 py-2",

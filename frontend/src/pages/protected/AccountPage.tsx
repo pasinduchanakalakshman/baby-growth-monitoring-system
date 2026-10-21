@@ -49,8 +49,7 @@ export default function AccountPage() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="border-t pt-6 bg-slate-50 flex justify-between rounded-b-lg">
-          <Button variant="outline" disabled>Edit Profile (Stage 16B)</Button>
+        <CardFooter className="border-t pt-6 bg-slate-50 flex justify-end rounded-b-lg">
           <Button variant="destructive" onClick={logout} className="gap-2">
             <LogOut className="h-4 w-4" />
             Sign Out

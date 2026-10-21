@@ -26,6 +26,16 @@
   --color-destructive-hover: hsl(var(--destructive-hover));
   --color-destructive-soft: hsl(var(--destructive-soft));
 
+  /* Centralized button color tokens: Blue and Pink */
+  --color-btn-primary: var(--btn-primary);
+  --color-btn-primary-hover: var(--btn-primary-hover);
+  --color-btn-primary-active: var(--btn-primary-active);
+  --color-btn-primary-foreground: var(--btn-primary-foreground);
+  --color-btn-prediction: var(--btn-prediction);
+  --color-btn-prediction-hover: var(--btn-prediction-hover);
+  --color-btn-prediction-active: var(--btn-prediction-active);
+  --color-btn-prediction-foreground: var(--btn-prediction-foreground);
+
   --font-heading: var(--font-sans);
   --text-heading: clamp(1.5rem, 1.25rem + 1vw, 2rem);
   --text-heading--line-height: 1.25;
@@ -75,6 +85,18 @@
     --destructive-foreground: 0 0% 100%;
     --destructive-hover: 349.3548 69.6629% 34.902%; /* #971B31 */
     --destructive-soft: 352 100% 97.0588%; /* #FFF0F2 */
+
+    /* Approved standard primary button: BLUE (#0793E8) */
+    --btn-primary: #0793e8;
+    --btn-primary-hover: #067ec8;
+    --btn-primary-active: #056ea0;
+    --btn-primary-foreground: #ffffff;
+
+    /* Approved prediction & forecasting button: PINK (#FF42A4) */
+    --btn-prediction: #ff42a4;
+    --btn-prediction-hover: #e62b8c;
+    --btn-prediction-active: #cc1f78;
+    --btn-prediction-foreground: #ffffff;
 
     --radius: 0.75rem;
     --card-shadow: 0 4px 24px hsl(var(--foreground) / 0.05),

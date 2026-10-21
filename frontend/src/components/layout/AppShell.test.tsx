@@ -17,14 +17,14 @@ const baby = { id: 1, owner_id: 1, name: 'Emma', sex: 'Female' as const, date_of
 const destinations = [
   ['/app', 'Dashboard'],
   ['/baby', 'Baby Profile'],
+  ['/growth/add', 'Add Measurement'],
   ['/growth', 'Growth Overview'],
+  ['/growth/history', 'Growth History'],
   ['/growth/charts', 'Growth Charts'],
   ['/growth/forecast', 'Growth Forecast'],
-  ['/growth/history', 'Growth History'],
-  ['/growth/add', 'Add Measurement'],
-  ['/growth/risk', 'Growth Risk'],
+  ['/growth/risk', 'Growth Risk & Insights'],
   ['/growth/risk/history', 'Risk History'],
-  ['/growth/explanation', 'Risk Explanation'],
+  ['/nutrition', 'Nutrition & Feeding'],
   ['/account', 'Account'],
 ];
 const logout = vi.fn();
@@ -83,6 +83,9 @@ describe('Authenticated shell and navigation', () => {
     renderShell();
     const navigation = await screen.findByRole('navigation', { name: 'Desktop navigation' });
     expect(within(navigation).getAllByRole('link').map(link => link.getAttribute('href'))).toEqual(destinations.map(([path]) => path));
+    expect(within(navigation).getAllByRole('list').map(list => list.getAttribute('aria-label'))).toEqual([
+      'Your Baby', 'Growth Monitoring', 'AI Growth Insights', 'Nutrition', 'Account',
+    ]);
     expect(screen.getByRole('link', { name: 'BabyGrowth dashboard' })).toHaveAttribute('href', '/app');
     expect(screen.queryByText(/Notifications|Reminders|Health Records|Search/i)).not.toBeInTheDocument();
   });
@@ -91,7 +94,7 @@ describe('Authenticated shell and navigation', () => {
     renderShell('/growth/risk/history?range=30#visits');
     const navigation = await screen.findByRole('navigation', { name: 'Desktop navigation' });
     expect(within(navigation).getByRole('link', { name: 'Risk History' })).toHaveAttribute('aria-current', 'page');
-    expect(within(navigation).getByRole('link', { name: 'Growth Risk' })).not.toHaveAttribute('aria-current');
+    expect(within(navigation).getByRole('link', { name: 'Growth Risk & Insights' })).not.toHaveAttribute('aria-current');
     expect(within(navigation).getByRole('link', { name: 'Growth Overview' })).not.toHaveAttribute('aria-current');
   });
 

@@ -60,6 +60,7 @@ describe('GrowthChartsPage', () => {
     expect(await screen.findByRole('heading', { name: 'Growth Charts' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Detailed Growth Charts' })).toBeVisible();
     expect(screen.getByText('Longitudinal visualization of actual measurement history.')).toBeVisible();
+    expect(screen.getByText('Birth weight (kg)')).toBeVisible();
     fireEvent.click(screen.getByRole('link', { name: 'Back to Overview' }));
     expect(screen.getByRole('heading', { name: 'Overview destination' })).toBeVisible();
   });
@@ -146,7 +147,7 @@ describe('GrowthChartsPage', () => {
     expect(screen.getByRole('heading', { name: 'Growth Charts' })).toBeVisible();
     expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Retry birth details' }));
-    expect(await screen.findByRole('img', { name: /Recorded Weight by visit date/ })).toBeVisible();
+    expect(await screen.findByRole('img', { name: /Recorded Weight by age in months/ })).toBeVisible();
   });
 
   it('does not encourage entry when a birth date is missing or invalid', async () => {
@@ -157,10 +158,10 @@ describe('GrowthChartsPage', () => {
     expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
   });
 
-  it('retains the medical disclaimer in empty and failed states', async () => {
+  it('removes the marked disclaimer while retaining the existing error state', async () => {
     vi.mocked(growthApi.getGrowthHistory).mockRejectedValue(new Error('Unavailable'));
     renderPage();
     await screen.findByRole('alert');
-    expect(screen.getByRole('note', { name: 'Medical disclaimer' })).toHaveTextContent('Monitoring information. This is not a medical diagnosis.');
+    expect(screen.queryByRole('note', { name: 'Medical disclaimer' })).not.toBeInTheDocument();
   });
 });

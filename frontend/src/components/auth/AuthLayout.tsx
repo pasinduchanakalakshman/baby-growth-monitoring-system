@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ChartNoAxesCombined, Heart, NotebookPen, Sparkles } from 'lucide-react';
+import { ChartNoAxesCombined, Heart, NotebookPen, Sparkles, UtensilsCrossed } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthBranding } from './AuthBranding';
 import { AuthIllustration } from './AuthIllustration';
@@ -8,6 +8,7 @@ const features = [
   { icon: ChartNoAxesCombined, title: 'Growth tracking', description: 'Follow weight and length over time.', surface: 'bg-accent' },
   { icon: Sparkles, title: 'Personalized insights', description: 'Explore growth forecasts and risk insights.', surface: 'bg-secondary' },
   { icon: NotebookPen, title: 'Your baby’s growth story', description: 'Keep measurements together in one place.', surface: 'bg-brand/10' },
+  { icon: UtensilsCrossed, title: 'Nutrition & Feeding', description: 'Discover age-appropriate feeding guidance and healthy meal ideas.', surface: 'bg-secondary' },
 ];
 
 export function AuthLayout({ children, mode = 'login' }: { children: ReactNode; mode?: 'login' | 'register' }) {
@@ -27,12 +28,12 @@ export function AuthLayout({ children, mode = 'login' }: { children: ReactNode; 
           {mode === 'register' ? (
             <>
               <span aria-current="page" className="inline-flex min-h-11 items-center font-medium text-primary">Create Account</span>
-              <Link to="/login" className="inline-flex min-h-11 items-center rounded-lg bg-primary px-6 py-2.5 text-primary-foreground shadow-control hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">Sign In</Link>
+              <Link to="/login" className="inline-flex min-h-11 items-center rounded-lg bg-btn-primary px-6 py-2.5 text-btn-primary-foreground shadow-control hover:bg-btn-primary-hover active:bg-btn-primary-active focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-btn-primary">Sign In</Link>
             </>
           ) : (
             <>
               <Link to="/register" className="inline-flex min-h-11 items-center rounded-md hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">Create Account</Link>
-              <span aria-current="page" className="rounded-lg bg-primary px-6 py-2.5 text-primary-foreground shadow-control">Sign In</span>
+              <span aria-current="page" className="rounded-lg bg-btn-primary px-6 py-2.5 text-btn-primary-foreground shadow-control">Sign In</span>
             </>
           )}
         </nav>

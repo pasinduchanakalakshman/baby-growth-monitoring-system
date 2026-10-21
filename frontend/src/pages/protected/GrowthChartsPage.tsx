@@ -10,7 +10,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ResearchDisclaimer } from '@/components/ui/shared/ResearchDisclaimer';
 
 export default function GrowthChartsPage() {
   const profile = useQuery({ queryKey: ['baby.profile'], queryFn: babyApi.getBabyProfile, retry: false });
@@ -30,7 +29,6 @@ export default function GrowthChartsPage() {
     {history.isLoading ? <div role="status" aria-label="Loading recorded growth charts" className="space-y-3"><Skeleton className="h-10 w-48" /><Skeleton className="h-72 w-full" /></div>
       : history.isError ? <Alert className="rounded-xl bg-secondary/50"><AlertDescription><p>We couldn't load growth charts right now. Please try again.</p><Button variant="outline" className="mt-3 min-h-11" onClick={() => void history.refetch()}>Retry recorded visits</Button></AlertDescription></Alert>
       : !history.data?.length ? <Card className="rounded-2xl border-border/50"><CardContent className="space-y-3 p-6"><h2 className="text-lg font-semibold">No measurements yet</h2><p className="text-sm leading-relaxed text-muted-foreground">{newborn ? 'There are no saved visit measurements to show. The first-month illustration uses birth details and needs no extra weight entries.' : 'Recorded visit measurements will appear here when available.'}</p>{days !== null && days > 30 && <Button asChild className="min-h-11"><Link to="/growth/add">Add Measurement</Link></Button>}</CardContent></Card>
-      : <>{newborn && <div role="note" aria-label="Recorded visit source" className="rounded-xl bg-secondary/60 p-4 text-sm leading-relaxed"><h2 className="font-semibold">Saved visit measurements</h2><p className="mt-2 text-muted-foreground">These are saved visit records, separate from the illustrative journey above. They do not identify who took or entered the measurements. No values from the illustrative curve are added to this history.</p></div>}<GrowthCharts history={history.data} /></>}
-    <div role="note" aria-label="Medical disclaimer" className="rounded-xl border border-primary/15 bg-primary/5 p-4 [&>div]:border-0 [&>div]:p-0 [&>div]:text-muted-foreground"><ResearchDisclaimer /></div>
+      : <>{newborn && <div role="note" aria-label="Recorded visit source" className="rounded-xl bg-secondary/60 p-4 text-sm leading-relaxed"><h2 className="font-semibold">Saved visit measurements</h2><p className="mt-2 text-muted-foreground">These are saved visit records, separate from the illustrative journey above. They do not identify who took or entered the measurements. No values from the illustrative curve are added to this history.</p></div>}<GrowthCharts history={history.data} detailed baby={profile.data} /></>}
   </div>;
 }

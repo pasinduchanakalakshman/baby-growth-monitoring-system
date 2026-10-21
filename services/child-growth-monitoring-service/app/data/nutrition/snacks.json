@@ -1,0 +1,600 @@
+[
+  {
+    "snack_id": "SNACK_HOPPER_SOFT_CENTER",
+    "name": "Soft Center of Plain Hopper (Appa)",
+    "sinhala_name": "ආප්ප මැද මෘදු කොටස",
+    "ingredients": ["ING_HOPPER"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "1 to 2 soft centers of hoppers",
+    "preparation_instructions": [
+      "Prepare fresh plain hopper using rice flour batter.",
+      "Tear off the soft, spongy central portion.",
+      "Remove crisp, brittle outer edges to prevent throat scratching.",
+      "Hand to the child to practice grasping and biting under supervision."
+    ],
+    "safety_precautions": [
+      "Adult supervision mandatory; child must never be left unattended.",
+      "Ensure soft center is cool before offering."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Soft center of hopper introduced as a chewable finger food at 8 completed calendar months."
+    }
+  },
+  {
+    "snack_id": "SNACK_EGG_HOPPER",
+    "name": "Soft Egg Hopper (Biththara Appa)",
+    "sinhala_name": "බිත්තර ආප්ප",
+    "ingredients": ["ING_HOPPER", "ING_EGG_WHOLE"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "1 egg hopper",
+    "preparation_instructions": [
+      "Swirl hopper batter in pan, break a fresh whole egg into the center.",
+      "Cover and steam-cook thoroughly until the egg yolk and white are completely cooked through.",
+      "Tear into manageable soft pieces for the toddler."
+    ],
+    "safety_precautions": [
+      "Ensure egg is cooked thoroughly (no raw or runny yolk).",
+      "Allergy restriction: Excluded if egg is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_EGG"],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Egg hopper illustrated in the 16 nutritious snacks gallery for children."
+    }
+  },
+  {
+    "snack_id": "SNACK_AVOCADO_SLICES",
+    "name": "Ripe Avocado Slices / Soft Mash",
+    "sinhala_name": "ඉදුණු අලිගැටපේර පෙති",
+    "ingredients": ["ING_AVOCADO"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "2 to 3 soft slices or 2 tablespoons mash",
+    "preparation_instructions": [
+      "Select a naturally ripe, soft avocado.",
+      "Wash peel, slice open, remove pit.",
+      "Scoop soft green-yellow flesh and cut into thick, easy-to-grip batons.",
+      "Offer to baby as self-feeding finger food."
+    ],
+    "safety_precautions": [
+      "Ensure avocado is completely ripe and soft.",
+      "Supervise self-feeding."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Piece of ripe avocado introduced as finger food at 8 completed calendar months and in snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_BOILED_EGG_WEDGE",
+    "name": "Hard-Boiled Egg Wedge",
+    "sinhala_name": "තැම්බූ බිත්තර කෑල්ලක්",
+    "ingredients": ["ING_EGG_WHOLE"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "1/4 to 1/2 of a hard-boiled egg",
+    "preparation_instructions": [
+      "Boil egg until hard (10–12 minutes).",
+      "Cool, peel shell, and slice into soft wedges.",
+      "Eligible only if child has already tolerated egg yolk.",
+      "Hand wedge to baby to hold and nibble."
+    ],
+    "safety_precautions": [
+      "Adult supervision required.",
+      "Excluded if egg is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_EGG"],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Piece of hard-boiled egg introduced as finger food at 8 completed calendar months."
+    }
+  },
+  {
+    "snack_id": "SNACK_SWEET_POTATO_BOILED",
+    "name": "Boiled Sweet Potato Wedge",
+    "sinhala_name": "තැම්බූ බතල පෙති",
+    "ingredients": ["ING_SWEET_POTATO"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "1 to 2 soft boiled wedges",
+    "preparation_instructions": [
+      "Wash yellow sweet potato, peel skin.",
+      "Boil or steam until thoroughly soft and yielding.",
+      "Cut into longitudinal finger-sized batons.",
+      "Let child hold and bite."
+    ],
+    "safety_precautions": [
+      "Must be tender enough to squash easily between fingers to prevent choking hazard.",
+      "Supervise during eating."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled sweet potato finger food introduced at 8 completed calendar months."
+    }
+  },
+  {
+    "snack_id": "SNACK_BANANA_SLICES",
+    "name": "Ripe Banana Slices / Sticks",
+    "sinhala_name": "කෙසෙල් පෙති",
+    "ingredients": ["ING_BANANA"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "1/2 small banana in rounds or sticks",
+    "preparation_instructions": [
+      "Peel ripe ambul or kolikuttu banana.",
+      "Slice into rounds or split lengthwise into thirds.",
+      "Allow baby to pick up with fingers and self-feed."
+    ],
+    "safety_precautions": [
+      "Always supervise while eating.",
+      "Ensure banana is ripe and soft."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Banana featured in the 16 nutritious snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_PAPAYA_PIECES",
+    "name": "Soft Ripe Papaya Pieces",
+    "sinhala_name": "ඉදුණු පැපොල් කෑලි",
+    "ingredients": ["ING_PAPAYA"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "3 to 4 soft cubes or batons",
+    "preparation_instructions": [
+      "Peel ripe papaya, discard all seeds.",
+      "Cut into soft bite-sized cubes.",
+      "Encourage the child to pick up and eat."
+    ],
+    "safety_precautions": [
+      "Remove all black seeds thoroughly.",
+      "Supervise self-feeding."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Papaya pieces featured in the 16 nutritious snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_GREEN_GRAM_COCONUT",
+    "name": "Boiled Green Gram with Scraped Coconut",
+    "sinhala_name": "තැම්බූ මුං ඇට සහ පොල්",
+    "ingredients": ["ING_GREEN_GRAM", "ING_COCONUT_SCRAP"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "2 to 3 tablespoons cooked green gram with 1 teaspoon scraped coconut",
+    "preparation_instructions": [
+      "Wash green gram, boil until very soft.",
+      "Drain excess water.",
+      "Toss with freshly scraped clean coconut and a tiny pinch of salt (after 1 year).",
+      "Serve warm."
+    ],
+    "safety_precautions": [
+      "Ensure grains are boiled very soft to avoid choking.",
+      "Excluded if legumes or coconut is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled green gram with coconut illustrated in the 16 nutritious snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_CHICKPEAS_COCONUT",
+    "name": "Boiled Chickpeas with Scraped Coconut",
+    "sinhala_name": "තැම්බූ කඩල සහ පොල්",
+    "ingredients": ["ING_CHICKPEAS", "ING_COCONUT_SCRAP"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "2 to 3 tablespoons soft cooked chickpeas",
+    "preparation_instructions": [
+      "Soak chickpeas overnight.",
+      "Boil until soft and tender (easily flattened between fingers).",
+      "Toss with fresh scraped coconut.",
+      "Serve under supervision."
+    ],
+    "safety_precautions": [
+      "Choking prevention: Slightly crush whole chickpeas before feeding toddlers.",
+      "Supervise closely."
+    ],
+    "restriction_groups": ["RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled chickpeas with coconut featured in the 16 nutritious snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_COWPEA_COCONUT",
+    "name": "Boiled Cowpea with Scraped Coconut",
+    "sinhala_name": "තැම්බූ කවුපි සහ පොල්",
+    "ingredients": ["ING_COWPEA", "ING_COCONUT_SCRAP"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "2 to 3 tablespoons soft cowpea",
+    "preparation_instructions": [
+      "Boil cowpea until soft.",
+      "Mix with fresh scraped coconut.",
+      "Serve as protein-rich traditional afternoon snack."
+    ],
+    "safety_precautions": [
+      "Ensure cowpea is completely soft.",
+      "Excluded if legumes or coconut is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_LEGUMES", "RESTRICT_COCONUT"],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled cowpea with coconut featured in the 16 nutritious snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_BOILED_MANIOC_COCONUT",
+    "name": "Boiled Manioc with Scraped Coconut",
+    "sinhala_name": "තැම්බූ මඤ්ඤොක්කා සහ පොල්",
+    "ingredients": ["ING_MANIOC", "ING_COCONUT_SCRAP"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "2 to 3 soft small pieces of manioc",
+    "preparation_instructions": [
+      "Manioc preparation protocol: Peel deeply, wash thoroughly.",
+      "Boil vigorously in plenty of water with the pot lid completely open.",
+      "Drain all cooking water thoroughly once soft.",
+      "Serve warm, soft pieces with freshly scraped coconut."
+    ],
+    "safety_precautions": [
+      "Mandatory safety rule: Always boil manioc with lid open and discard all water.",
+      "Never give undercooked manioc."
+    ],
+    "restriction_groups": ["RESTRICT_COCONUT"],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 18,
+      "pdf_page": 20,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled manioc with coconut illustrated in the 16 nutritious snacks gallery."
+    }
+  },
+  {
+    "snack_id": "SNACK_BOILED_JAK_FINGER",
+    "name": "Boiled Jak Fruit Pieces (Kos)",
+    "sinhala_name": "තැම්බූ කොස් කෑලි",
+    "ingredients": ["ING_JAK_FRUIT"],
+    "min_calendar_months": 8,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "2 to 3 soft pieces",
+    "preparation_instructions": [
+      "Boil young jak fruit (kos) until completely soft.",
+      "Cut into small tender bite-sized pieces.",
+      "Offer as traditional finger food under supervision."
+    ],
+    "safety_precautions": [
+      "Ensure pieces are very soft so child can mash with gums.",
+      "Supervise closely."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 12,
+      "pdf_page": 14,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Boiled jak pieces introduced as finger food at 8 completed calendar months."
+    }
+  },
+  {
+    "snack_id": "SNACK_CURD_FRUIT",
+    "name": "Buffalo Curd with Mashed Papaya",
+    "sinhala_name": "මී කිරි සමඟ පැපොල්",
+    "ingredients": ["ING_CURD", "ING_PAPAYA"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "1/2 cup curd with 2 tablespoons mashed papaya",
+    "preparation_instructions": [
+      "Spoon fresh curd into a clean bowl.",
+      "Top with naturally sweet ripe mashed papaya.",
+      "Do not add sugar or treacle."
+    ],
+    "safety_precautions": [
+      "No added sugar.",
+      "Excluded if dairy is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_DAIRY"],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Curd recommended as dairy alternative for non-breastfed children aged 1–5 years."
+    }
+  },
+  {
+    "snack_id": "SNACK_YOGHURT_PLAIN",
+    "name": "Plain Natural Yoghurt",
+    "sinhala_name": "ස්වාභාවික යෝගට්",
+    "ingredients": ["ING_YOGHURT"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "1 cup plain yoghurt",
+    "preparation_instructions": [
+      "Serve plain, unsweetened fresh yoghurt.",
+      "Can mix with mashed fresh banana or ripe mango if sweetness is desired naturally."
+    ],
+    "safety_precautions": [
+      "Avoid commercially sweetened or fruit-flavored yoghurts with added refined sugar.",
+      "Excluded if dairy is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_DAIRY"],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "One cup of yoghurt specified in FHB 1–5 years daily requirements for non-breastfed children."
+    }
+  },
+  {
+    "snack_id": "SNACK_CHEESE_CUBE",
+    "name": "Natural Cheese Piece",
+    "sinhala_name": "චීස් කෑල්ලක්",
+    "ingredients": ["ING_CHEESE"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FINGER_FOOD",
+    "household_portion": "1 matchbox-sized piece of cheese",
+    "preparation_instructions": [
+      "Cut a piece of natural cheese equal to the size of a matchbox.",
+      "Offer as finger food snack or grate over warm vegetables."
+    ],
+    "safety_precautions": [
+      "Moderate sodium intake; choose mild natural cheese.",
+      "Excluded if dairy is restricted."
+    ],
+    "restriction_groups": ["RESTRICT_DAIRY"],
+    "is_finger_food": true,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 16,
+      "pdf_page": 18,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Matchbox-sized cheese piece specified in FHB 1–5 years table."
+    }
+  },
+  {
+    "snack_id": "SNACK_CRUSHED_PEANUT_PASTE",
+    "name": "Finely Crushed Peanut with Mashed Banana",
+    "sinhala_name": "කුඩු කළ රටකජු සහ කෙසෙල්",
+    "ingredients": ["ING_PEANUT", "ING_BANANA"],
+    "min_calendar_months": 12,
+    "eligible_stages": ["STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "FAMILY_FOOD",
+    "household_portion": "1 teaspoon finely ground peanut powder mixed into 1/2 mashed banana",
+    "preparation_instructions": [
+      "Nut Safety Rule: Roast peanuts, grind or crush with pestle into an ultra-fine powder.",
+      "Never give whole or split peanuts to children under 5 years.",
+      "Stir 1 teaspoon of fine powder into mashed banana to create a smooth, nutrient-dense paste."
+    ],
+    "safety_precautions": [
+      "Severe Choking Hazard: Whole nuts strictly prohibited.",
+      "Must be ground fine.",
+      "Excluded if peanut restriction is active."
+    ],
+    "restriction_groups": ["RESTRICT_PEANUT"],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 19,
+      "pdf_page": 21,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "Nuts must be crushed or mashed finely before feeding to prevent choking."
+    }
+  },
+  {
+    "snack_id": "SNACK_SCRAPED_PAPAYA_7M",
+    "name": "Fresh Scraped Ripe Papaya",
+    "sinhala_name": "ගාගත් ඉදුණු පැපොල්",
+    "ingredients": ["ING_PAPAYA"],
+    "min_calendar_months": 7,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "COARSELY_MASHED",
+    "household_portion": "About 4 teaspoons freshly scraped fruit (FHB verbatim: about 4 teaspoons as tolerated)",
+    "preparation_instructions": [
+      "Select a clean, fully ripe papaya.",
+      "Wash outer skin, slice open, and discard black seeds.",
+      "Scrape soft pulp with a clean spoon.",
+      "Offer immediately as a fresh between-meal snack without added sugar."
+    ],
+    "safety_precautions": [
+      "Prepare freshly before serving; do not store leftover fruit.",
+      "Never add sugar or honey."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 10,
+      "pdf_page": 12,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months + 1 week: introduction of 1 to 2 nutritious snacks between meals, such as fresh scraped fruit like ripe papaya (verbatim portion: about 4 teaspoons)."
+    }
+  },
+  {
+    "snack_id": "SNACK_SCRAPED_BANANA_7M",
+    "name": "Fresh Scraped Ripe Banana",
+    "sinhala_name": "ගාගත් ඉදුණු කෙසෙල්",
+    "ingredients": ["ING_BANANA"],
+    "min_calendar_months": 7,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "COARSELY_MASHED",
+    "household_portion": "About 4 teaspoons freshly scraped fruit (FHB verbatim: about 4 teaspoons as tolerated)",
+    "preparation_instructions": [
+      "Peel a fresh ripe banana.",
+      "Scrape thin, soft shavings along the fruit with a clean spoon.",
+      "Feed immediately with a spoon between main meals."
+    ],
+    "safety_precautions": [
+      "Ensure banana is thoroughly ripe and soft.",
+      "Feed with spoon; do not give whole pieces before finger-food readiness."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 10,
+      "pdf_page": 12,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months + 1 week: fresh scraped fruit like ripe banana offered as early snack between meals (verbatim portion: about 4 teaspoons)."
+    }
+  },
+  {
+    "snack_id": "SNACK_MASHED_SWEET_POTATO_7M",
+    "name": "Soft Mashed Boiled Sweet Potato",
+    "sinhala_name": "තැම්බූ පොඩි කළ බතල",
+    "ingredients": ["ING_SWEET_POTATO"],
+    "min_calendar_months": 7,
+    "eligible_stages": ["STAGE_7_TO_8M", "STAGE_9_TO_11M", "STAGE_12_TO_23M", "STAGE_24_TO_59M"],
+    "texture": "COARSELY_MASHED",
+    "household_portion": "Small portion soft mash (derived guidance: 2 to 3 tablespoons according to appetite)",
+    "preparation_instructions": [
+      "Wash yellow sweet potato, peel skin, cut into small pieces.",
+      "Boil until soft and tender.",
+      "Mash thoroughly with a fork or back of spoon into a soft consistency.",
+      "Serve warm between main meals."
+    ],
+    "safety_precautions": [
+      "Ensure sweet potato is soft with no hard unmashed chunks.",
+      "No added salt or sugar."
+    ],
+    "restriction_groups": [],
+    "is_finger_food": false,
+    "evidence_tier": "TIER_A",
+    "source_citation": {
+      "publication": "Right Food at the Right Time, To Make My Baby Healthy and Bright",
+      "organization": "Family Health Bureau, Ministry of Health, Sri Lanka",
+      "year": 2025,
+      "booklet_page": 10,
+      "pdf_page": 12,
+      "evidence_tier": "TIER_A",
+      "evidence_description": "7 months + 1 week: boiled sweet potato offered as a nutritious snack between meals. Specific tablespoon portion is derived guidance based on infant appetite."
+    }
+  }
+]
+

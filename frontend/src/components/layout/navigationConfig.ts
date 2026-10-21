@@ -3,10 +3,28 @@ import { Activity, Baby, ChartNoAxesCombined, History, LayoutDashboard, Lightbul
 // Existing App.tsx destinations; onboarding stays outside the shell navigation.
 export const appNavigation = [
   {
-    label: 'Your baby',
+    label: 'Your Baby',
     items: [
       { title: 'Dashboard', href: '/app', icon: LayoutDashboard },
       { title: 'Baby Profile', href: '/baby', icon: Baby },
+    ],
+  },
+  {
+    label: 'Growth Monitoring',
+    items: [
+      { title: 'Add Measurement', href: '/growth/add', icon: PlusCircle },
+      { title: 'Growth Overview', href: '/growth', icon: Activity },
+      { title: 'Growth History', href: '/growth/history', icon: History },
+      { title: 'Growth Charts', href: '/growth/charts', icon: ChartNoAxesCombined },
+    ],
+  },
+  {
+    label: 'AI Growth Insights',
+    items: [
+      { title: 'Growth Forecast', href: '/growth/forecast', icon: TrendingUp },
+      { title: 'Growth Risk', href: '/growth/risk', icon: ShieldCheck },
+      { title: 'Risk History', href: '/growth/risk/history', icon: ListChecks },
+      { title: 'Risk Explanation', href: '/growth/explanation', icon: Lightbulb },
     ],
   },
   {
@@ -16,25 +34,7 @@ export const appNavigation = [
     ],
   },
   {
-    label: 'Growth',
-    items: [
-      { title: 'Growth Overview', href: '/growth', icon: Activity },
-      { title: 'Growth Charts', href: '/growth/charts', icon: ChartNoAxesCombined },
-      { title: 'Growth Forecast', href: '/growth/forecast', icon: TrendingUp },
-      { title: 'Growth History', href: '/growth/history', icon: History },
-      { title: 'Add Measurement', href: '/growth/add', icon: PlusCircle },
-    ],
-  },
-  {
-    label: 'Insights',
-    items: [
-      { title: 'Growth Risk', href: '/growth/risk', icon: ShieldCheck },
-      { title: 'Risk History', href: '/growth/risk/history', icon: ListChecks },
-      { title: 'Risk Explanation', href: '/growth/explanation', icon: Lightbulb },
-    ],
-  },
-  {
-    label: 'Your account',
+    label: 'Account',
     items: [{ title: 'Account', href: '/account', icon: Settings }],
   },
 ];

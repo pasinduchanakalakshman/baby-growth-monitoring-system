@@ -3,8 +3,10 @@ import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Too
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { GrowthHistoryPoint } from '@/types/growth';
+import { birthMeasurement, type GrowthChartProfile } from '@/features/growth/detailedGrowthData';
 import { formatCalendarDate } from '@/utils/growthDisplay';
 import { useChartTooltipTrigger } from '@/features/growth/useChartTooltipTrigger';
+import DetailedGrowthPlot from './DetailedGrowthPlot';
 
 type Metric = 'weight' | 'height' | 'waz' | 'haz';
 type MetricKey = 'weight_kg' | 'length_height_cm' | 'verified_waz' | 'verified_haz';
@@ -34,7 +36,11 @@ export function RecordedGrowthTooltip({ active, payload, metric }: {
   </div>;
 }
 
-export default function GrowthCharts({ history }: { history: GrowthHistoryPoint[] }) {
+export default function GrowthCharts({ history, detailed = false, baby }: {
+  history: GrowthHistoryPoint[];
+  detailed?: boolean;
+  baby?: GrowthChartProfile;
+}) {
   const id = useId();
   const [activeTab, setActiveTab] = useState<Metric>('weight');
   const [selectedDate, setSelectedDate] = useState('');
@@ -42,6 +48,7 @@ export default function GrowthCharts({ history }: { history: GrowthHistoryPoint[
   const config = metrics[activeTab];
   const chartData = [...history].sort((a, b) => new Date(a.visit_date).getTime() - new Date(b.visit_date).getTime());
   const validCount = chartData.filter(visit => hasValue(visit[config.key], config.key)).length;
+  const birth = detailed ? birthMeasurement(activeTab, baby, chartData) : null;
   // Retain every visit so nulls create gaps, rather than bridging a missing value.
   const plotData = chartData.map(visit => ({ ...visit, [config.key]: hasValue(visit[config.key], config.key) ? visit[config.key] : null }));
   const selected = chartData.find(visit => visit.visit_date === selectedDate) ?? chartData.at(-1);
@@ -65,7 +72,8 @@ export default function GrowthCharts({ history }: { history: GrowthHistoryPoint[
       </div>
     </CardHeader>
     <CardContent role="tabpanel" id={id + 'panel'} aria-labelledby={id + activeTab} tabIndex={0} className="min-w-0 space-y-4 px-3 pb-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:px-5 sm:pb-6">
-      {!validCount ? <p className="mx-2 flex min-h-40 items-center justify-center rounded-xl bg-muted/60 p-5 text-center text-sm text-muted-foreground">{config.empty}</p> : <>
+      {!validCount && !birth ? <p className="mx-2 flex min-h-40 items-center justify-center rounded-xl bg-muted/60 p-5 text-center text-sm text-muted-foreground">{config.empty}</p> : <>
+        {detailed ? <DetailedGrowthPlot history={plotData} metric={activeTab} config={config} baby={baby} /> : <>
         <ul aria-label="Recorded chart legend" className="flex flex-wrap justify-end gap-x-4 gap-y-2 px-2 text-xs text-muted-foreground"><li className="inline-flex items-center gap-2"><span aria-hidden="true" className="size-2.5 rounded-full bg-primary" />Recorded {config.title} ({config.unit})</li>{score && <li>WHO reference lines: −2 and −3 Z-score</li>}</ul>
         <div role="img" aria-label={'Recorded ' + config.title + ' by visit date, in ' + config.unit + '. ' + validCount + ' recorded values. Use the visit selector or text table below to explore.'} className="h-72 w-full min-w-0 sm:h-80">
           <ResponsiveContainer width="100%" height="100%" minWidth={0}>
@@ -79,9 +87,10 @@ export default function GrowthCharts({ history }: { history: GrowthHistoryPoint[
             </LineChart>
           </ResponsiveContainer>
         </div>
-        <p className="px-2 text-xs leading-relaxed text-muted-foreground">{validCount === 1 ? 'One recorded value is available. More visits are needed to show a trend. ' : ''}Points are saved visits, not daily estimates. Missing values remain gaps.</p>
+        </>}
+        {!detailed && <p className="px-2 text-xs leading-relaxed text-muted-foreground">{validCount === 1 ? 'One recorded value is available. More visits are needed to show a trend. ' : ''}Points are saved visits, not daily estimates. Missing values remain gaps.</p>}
       </>}
-      {selected && <div className="mx-2 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-muted/60 p-3 text-xs sm:p-4">
+      {!detailed && selected && <div className="mx-2 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-muted/60 p-3 text-xs sm:p-4">
         <label htmlFor={id + 'visit'} className="font-medium">Explore a recorded visit</label>
         <select id={id + 'visit'} value={selected.visit_date} onChange={event => setSelectedDate(event.target.value)} className="min-h-11 max-w-full rounded-lg border border-input bg-card px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">{chartData.map(visit => <option key={visit.id} value={visit.visit_date}>{formatCalendarDate(visit.visit_date)}</option>)}</select>
         <output htmlFor={id + 'visit'} aria-live="polite" className="min-w-0 flex-1 basis-44 leading-relaxed"><span className="block text-muted-foreground">{typeof selected.age_days === 'number' ? 'Age: ' + selected.age_days + ' days' : 'Age not recorded'}</span><span className="font-medium text-primary">{config.title}: {hasValue(selectedValue, config.key) ? selectedValue.toFixed(2) + ' ' + config.unit : 'Not recorded'}</span></output>

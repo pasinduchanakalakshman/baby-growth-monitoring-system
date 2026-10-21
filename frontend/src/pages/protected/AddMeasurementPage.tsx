@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/auth/AuthProvider';
@@ -6,8 +6,13 @@ import { growthApi } from '@/api/growth';
 import { babyApi } from '@/api/baby';
 import { ApiClientError } from '@/api/client';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { GrowthMeasurementRequest } from '@/types/growth';
+import { GrowthHistoryPoint, GrowthMeasurementRequest } from '@/types/growth';
 import { PageHeader } from '@/components/ui/shared/PageHeader';
+import { cn } from '@/lib/utils';
+import {
+  localCalendarDate, validateMeasurement, validateMeasurementField,
+  type MeasurementErrors, type MeasurementField, type MeasurementFormData,
+} from '@/utils/measurementValidation';
 
 export default function AddMeasurementPage() {
   const navigate = useNavigate();
@@ -15,6 +20,9 @@ export default function AddMeasurementPage() {
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<MeasurementErrors>({});
+  const badInput = useRef<Partial<Record<MeasurementField, boolean>>>({});
+  const submitting = useRef(false);
 
   // We need baby DOB for validation
   const { data: baby } = useQuery({
@@ -22,16 +30,23 @@ export default function AddMeasurementPage() {
     queryFn: babyApi.getBabyProfile
   });
 
-  const [formData, setFormData] = useState<GrowthMeasurementRequest>({
-    visit_date: new Date().toISOString().split('T')[0],
-    weight_kg: 0,
-    length_height_cm: undefined,
+  const [formData, setFormData] = useState<MeasurementFormData>({
+    visit_date: localCalendarDate(),
+    weight_kg: '',
+    length_height_cm: '',
     currently_breastfeeding: undefined,
     formula_feeding: undefined,
     solid_foods_started: undefined,
     diarrhea_last_14_days: undefined,
     fever_last_14_days: undefined,
     cough_last_14_days: undefined
+  });
+
+  const validationContext = () => ({
+    dateOfBirth: baby?.date_of_birth,
+    babyId: baby?.id,
+    history: queryClient.getQueryData<GrowthHistoryPoint[]>(['growth.history']),
+    badInput: badInput.current,
   });
 
   const mutation = useMutation({
@@ -56,53 +71,70 @@ export default function AddMeasurementPage() {
       } else {
         setError('Network error or server unavailable');
       }
-    }
+    },
+    onSettled: () => { submitting.current = false; },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting.current || mutation.isPending) return;
     setError(null);
+    for (const field of ['visit_date', 'weight_kg', 'length_height_cm'] as const) {
+      const input = e.currentTarget.elements.namedItem(field) as HTMLInputElement;
+      badInput.current[field] = input.validity.badInput;
+    }
+    const errors = validateMeasurement(formData, validationContext());
+    setFieldErrors(errors);
+    if (Object.keys(errors).length) return;
 
-    // Frontend Validations
-    if (!formData.visit_date) {
-      return setError("Visit date is required.");
-    }
-    const visitDate = new Date(formData.visit_date);
-    const today = new Date();
-    if (visitDate > today) {
-      return setError("Visit date cannot be in the future.");
-    }
-    if (baby?.date_of_birth) {
-      const dob = new Date(baby.date_of_birth);
-      if (visitDate < dob) {
-        return setError("Visit date cannot be before the baby's date of birth.");
-      }
-    }
-    if (formData.weight_kg <= 0) {
-      return setError("Weight must be greater than 0 kg.");
-    }
-    if (formData.length_height_cm !== undefined && formData.length_height_cm !== null && formData.length_height_cm <= 0) {
-      return setError("Length / Height must be greater than 0 cm.");
-    }
-
-    mutation.mutate(formData);
+    const payload: GrowthMeasurementRequest = {
+      ...formData,
+      weight_kg: Number(formData.weight_kg),
+      length_height_cm: formData.length_height_cm.trim() === '' ? undefined : Number(formData.length_height_cm),
+    };
+    submitting.current = true;
+    mutation.mutate(payload);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    
-    if (type === 'number') {
-      setFormData(prev => ({ ...prev, [name]: value === '' ? undefined : Number(value) }));
-    } else if (type === 'radio') {
-      // Convert string "true"/"false" to boolean
-      let boolVal = undefined;
-      if (value === 'true') boolVal = true;
-      if (value === 'false') boolVal = false;
-      setFormData(prev => ({ ...prev, [name]: boolVal }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, validity } = e.target;
+    const field = name as MeasurementField;
+    badInput.current[field] = validity.badInput;
+    if (type === 'radio' && value !== 'true' && value !== 'false') {
+      badInput.current[field] = true;
+      setFieldErrors(prev => ({ ...prev, [field]: 'Please select Yes or No.' }));
+      return;
+    }
+    const updated = { ...formData, [field]: type === 'radio' ? value === 'true' : value };
+    setFormData(updated);
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: validateMeasurementField(field, updated, validationContext()) }));
     }
   };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const field = e.target.name as MeasurementField;
+    badInput.current[field] = e.target.type === 'radio'
+      ? e.target.value !== 'true' && e.target.value !== 'false'
+      : e.target.validity.badInput;
+    setFieldErrors(prev => ({ ...prev, [field]: validateMeasurementField(field, formData, validationContext()) }));
+  };
+
+  const fieldProps = (field: MeasurementField) => ({
+    onBlur: handleBlur,
+    'aria-invalid': Boolean(fieldErrors[field]),
+    'aria-describedby': fieldErrors[field] ? `${field}-error` : undefined,
+  });
+
+  const inlineError = (field: MeasurementField) => fieldErrors[field] && (
+    <p id={`${field}-error`} role="alert" className="text-xs font-medium text-destructive mt-1">
+      {fieldErrors[field]}
+    </p>
+  );
+
+  const invalidClass = (field: MeasurementField) => fieldErrors[field]
+    ? 'border-destructive focus:border-destructive focus-visible:ring-destructive'
+    : '';
 
   if (isSuccess) {
     return (
@@ -124,7 +156,9 @@ export default function AddMeasurementPage() {
             </button>
             <button 
               onClick={() => {
-                setFormData(prev => ({ ...prev, weight_kg: 0, length_height_cm: undefined }));
+                setFormData(prev => ({ ...prev, weight_kg: '', length_height_cm: '' }));
+                setFieldErrors({});
+                badInput.current = {};
                 setIsSuccess(false);
               }}
               className="border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2 rounded-md font-medium transition-colors"
@@ -151,7 +185,7 @@ export default function AddMeasurementPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} noValidate aria-busy={mutation.isPending} className="space-y-8">
         {/* Anthropometry Section */}
         <section className="bg-card border rounded-xl shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4 text-slate-800 border-b pb-2">Measurement Details</h2>
@@ -167,8 +201,10 @@ export default function AddMeasurementPage() {
                 required
                 value={formData.visit_date}
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                {...fieldProps('visit_date')}
+                className={cn("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50", invalidClass('visit_date'))}
               />
+              {inlineError('visit_date')}
             </div>
             
             <div className="space-y-2">
@@ -180,17 +216,19 @@ export default function AddMeasurementPage() {
                   type="number"
                   id="weight_kg"
                   name="weight_kg"
-                  step="0.01"
+                  step="any"
                   required
-                  value={formData.weight_kg || ''}
+                  value={formData.weight_kg}
                   onChange={handleChange}
+                  {...fieldProps('weight_kg')}
                   placeholder="e.g. 4.5"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className={cn("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", invalidClass('weight_kg'))}
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground text-sm">
                   kg
                 </div>
               </div>
+              {inlineError('weight_kg')}
             </div>
 
             <div className="space-y-2">
@@ -202,17 +240,18 @@ export default function AddMeasurementPage() {
                   type="number"
                   id="length_height_cm"
                   name="length_height_cm"
-                  step="0.1"
-                  min="1"
-                  value={formData.length_height_cm || ''}
+                  step="any"
+                  value={formData.length_height_cm}
                   onChange={handleChange}
+                  {...fieldProps('length_height_cm')}
                   placeholder="Optional"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className={cn("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", invalidClass('length_height_cm'))}
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground text-sm">
                   cm
                 </div>
               </div>
+              {inlineError('length_height_cm')}
             </div>
           </div>
         </section>
@@ -227,36 +266,39 @@ export default function AddMeasurementPage() {
               <label className="text-sm font-medium leading-none">Currently Breastfeeding?</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="currently_breastfeeding" value="true" checked={formData.currently_breastfeeding === true} onChange={handleChange} className="accent-primary" /> Yes
+                  <input type="radio" name="currently_breastfeeding" value="true" checked={formData.currently_breastfeeding === true} onChange={handleChange} {...fieldProps('currently_breastfeeding')} className={cn("accent-primary", invalidClass('currently_breastfeeding'))} /> Yes
                 </label>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="currently_breastfeeding" value="false" checked={formData.currently_breastfeeding === false} onChange={handleChange} className="accent-primary" /> No
+                  <input type="radio" name="currently_breastfeeding" value="false" checked={formData.currently_breastfeeding === false} onChange={handleChange} {...fieldProps('currently_breastfeeding')} className={cn("accent-primary", invalidClass('currently_breastfeeding'))} /> No
                 </label>
               </div>
+              {inlineError('currently_breastfeeding')}
             </div>
 
             <div className="space-y-3">
               <label className="text-sm font-medium leading-none">Formula Feeding?</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="formula_feeding" value="true" checked={formData.formula_feeding === true} onChange={handleChange} className="accent-primary" /> Yes
+                  <input type="radio" name="formula_feeding" value="true" checked={formData.formula_feeding === true} onChange={handleChange} {...fieldProps('formula_feeding')} className={cn("accent-primary", invalidClass('formula_feeding'))} /> Yes
                 </label>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="formula_feeding" value="false" checked={formData.formula_feeding === false} onChange={handleChange} className="accent-primary" /> No
+                  <input type="radio" name="formula_feeding" value="false" checked={formData.formula_feeding === false} onChange={handleChange} {...fieldProps('formula_feeding')} className={cn("accent-primary", invalidClass('formula_feeding'))} /> No
                 </label>
               </div>
+              {inlineError('formula_feeding')}
             </div>
 
             <div className="space-y-3">
               <label className="text-sm font-medium leading-none">Solid Foods Started?</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="solid_foods_started" value="true" checked={formData.solid_foods_started === true} onChange={handleChange} className="accent-primary" /> Yes
+                  <input type="radio" name="solid_foods_started" value="true" checked={formData.solid_foods_started === true} onChange={handleChange} {...fieldProps('solid_foods_started')} className={cn("accent-primary", invalidClass('solid_foods_started'))} /> Yes
                 </label>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="solid_foods_started" value="false" checked={formData.solid_foods_started === false} onChange={handleChange} className="accent-primary" /> No
+                  <input type="radio" name="solid_foods_started" value="false" checked={formData.solid_foods_started === false} onChange={handleChange} {...fieldProps('solid_foods_started')} className={cn("accent-primary", invalidClass('solid_foods_started'))} /> No
                 </label>
               </div>
+              {inlineError('solid_foods_started')}
             </div>
           </div>
         </section>
@@ -271,36 +313,39 @@ export default function AddMeasurementPage() {
               <label className="text-sm font-medium leading-none">Diarrhea</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="diarrhea_last_14_days" value="true" checked={formData.diarrhea_last_14_days === true} onChange={handleChange} className="accent-primary" /> Yes
+                  <input type="radio" name="diarrhea_last_14_days" value="true" checked={formData.diarrhea_last_14_days === true} onChange={handleChange} {...fieldProps('diarrhea_last_14_days')} className={cn("accent-primary", invalidClass('diarrhea_last_14_days'))} /> Yes
                 </label>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="diarrhea_last_14_days" value="false" checked={formData.diarrhea_last_14_days === false} onChange={handleChange} className="accent-primary" /> No
+                  <input type="radio" name="diarrhea_last_14_days" value="false" checked={formData.diarrhea_last_14_days === false} onChange={handleChange} {...fieldProps('diarrhea_last_14_days')} className={cn("accent-primary", invalidClass('diarrhea_last_14_days'))} /> No
                 </label>
               </div>
+              {inlineError('diarrhea_last_14_days')}
             </div>
 
             <div className="space-y-3">
               <label className="text-sm font-medium leading-none">Fever</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="fever_last_14_days" value="true" checked={formData.fever_last_14_days === true} onChange={handleChange} className="accent-primary" /> Yes
+                  <input type="radio" name="fever_last_14_days" value="true" checked={formData.fever_last_14_days === true} onChange={handleChange} {...fieldProps('fever_last_14_days')} className={cn("accent-primary", invalidClass('fever_last_14_days'))} /> Yes
                 </label>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="fever_last_14_days" value="false" checked={formData.fever_last_14_days === false} onChange={handleChange} className="accent-primary" /> No
+                  <input type="radio" name="fever_last_14_days" value="false" checked={formData.fever_last_14_days === false} onChange={handleChange} {...fieldProps('fever_last_14_days')} className={cn("accent-primary", invalidClass('fever_last_14_days'))} /> No
                 </label>
               </div>
+              {inlineError('fever_last_14_days')}
             </div>
 
             <div className="space-y-3">
               <label className="text-sm font-medium leading-none">Cough / Respiratory</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="cough_last_14_days" value="true" checked={formData.cough_last_14_days === true} onChange={handleChange} className="accent-primary" /> Yes
+                  <input type="radio" name="cough_last_14_days" value="true" checked={formData.cough_last_14_days === true} onChange={handleChange} {...fieldProps('cough_last_14_days')} className={cn("accent-primary", invalidClass('cough_last_14_days'))} /> Yes
                 </label>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="cough_last_14_days" value="false" checked={formData.cough_last_14_days === false} onChange={handleChange} className="accent-primary" /> No
+                  <input type="radio" name="cough_last_14_days" value="false" checked={formData.cough_last_14_days === false} onChange={handleChange} {...fieldProps('cough_last_14_days')} className={cn("accent-primary", invalidClass('cough_last_14_days'))} /> No
                 </label>
               </div>
+              {inlineError('cough_last_14_days')}
             </div>
           </div>
         </section>

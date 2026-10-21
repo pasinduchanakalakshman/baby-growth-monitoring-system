@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CartesianGrid, Line, LineChart, ReferenceDot, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, ReferenceArea, ReferenceDot, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import type { GrowthHistoryPoint } from '@/types/growth';
 import { formatCalendarDate } from '@/utils/growthDisplay';
 import {
@@ -10,14 +10,23 @@ import {
 type ChartConfig = { key: RecordedMetricKey; title: string; unit: string; axis: string };
 type PlotPoint = ReturnType<typeof agePlotData>[number];
 
-function RecordedMeasurementDot({ cx, cy, index, selectedIndex, onShow, onLeave, birth = false }: {
+const scoreReferences = [
+  { value: -3, color: '#be436d', tint: '#fff0f5' },
+  { value: -2, color: '#a86c13', tint: '#fff6e5' },
+  { value: 0, color: '#177d76', tint: '#ebf9f3' },
+  { value: 2, color: '#287db3', tint: '#edf6ff' },
+  { value: 3, color: '#7952b7', tint: '#f5efff' },
+];
+
+function RecordedMeasurementDot({ cx, cy, index, selectedIndex, onShow, onLeave, birth = false, emphasized = false }: {
   cx?: number; cy?: number; index?: number; selectedIndex?: number;
   birth?: boolean;
+  emphasized?: boolean;
   onShow: (element: SVGCircleElement, index: number, cx: number, cy: number, pinned: boolean) => void;
   onLeave: () => void;
 }) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy) || index === undefined) return null;
-  return <circle className={birth ? 'birth-measurement-dot' : 'recharts-line-dot'} data-recorded-index={birth ? undefined : index} data-birth-measurement={birth ? 'true' : undefined} cx={cx} cy={cy} r={selectedIndex === index ? 6.5 : birth ? 5 : 4.5} fill={birth ? 'var(--color-card)' : 'var(--color-primary)'} stroke={birth ? 'var(--color-primary)' : 'var(--color-card)'} strokeWidth={2}
+  return <circle className={birth ? 'birth-measurement-dot' : 'recharts-line-dot'} data-recorded-index={birth ? undefined : index} data-birth-measurement={birth ? 'true' : undefined} cx={cx} cy={cy} r={selectedIndex === index ? emphasized ? 8 : 6.5 : emphasized ? 6 : birth ? 5 : 4.5} fill={birth ? 'var(--color-card)' : 'var(--color-primary)'} stroke={birth ? 'var(--color-primary)' : 'var(--color-card)'} strokeWidth={emphasized ? 2.5 : 2}
     onMouseEnter={event => onShow(event.currentTarget, index, cx!, cy!, false)}
     onMouseLeave={onLeave}
     onTouchEnd={event => {
@@ -72,6 +81,18 @@ export default function DetailedGrowthPlot({ history, metric, config, baby }: {
   const hasAges = data.every(visit => visit.ageMonths !== null);
   const birth = hasAges ? birthMeasurement(metric, baby, history) : null;
   const score = metric === 'waz' || metric === 'haz';
+  const scores = score ? data.flatMap(visit => {
+    const value = visit[config.key];
+    return typeof value === 'number' && Number.isFinite(value) ? [value] : [];
+  }) : [];
+  // Shading follows the existing reference levels and never classifies a visit.
+  const scoreBands = [
+    { from: Math.min(-3.5, ...scores), to: -3, fill: '#fff0f5' },
+    { from: -3, to: -2, fill: '#fff6e5' },
+    { from: -2, to: 2, fill: '#ebf9f3' },
+    { from: 2, to: 3, fill: '#edf6ff' },
+    { from: 3, to: Math.max(3.5, ...scores), fill: '#f5efff' },
+  ];
   const reference = useMemo(() => hasAges && matchingProfile ? whoReference(metric, baby.sex) : null, [hasAges, matchingProfile, metric, baby]);
   const lastReference = reference?.segments.at(-1)?.at(-1);
   const referenceEnd = lastReference?.ageMonths ?? 60;
@@ -99,11 +120,11 @@ export default function DetailedGrowthPlot({ history, metric, config, baby }: {
       <li className="inline-flex items-center gap-2 font-medium text-primary"><span aria-hidden="true" className="size-2.5 rounded-full bg-primary" />Recorded {config.title} ({config.unit})</li>
       {birth && <li className="inline-flex items-center gap-2 font-medium text-primary"><span aria-hidden="true" className="size-2.5 rounded-full border-2 border-primary bg-card" />{birth.label} ({config.unit})</li>}
       {reference && whoPercentiles.map(percentile => <li key={percentile.key} className="inline-flex items-center gap-1.5"><span aria-hidden="true" className="h-0.5 w-4" style={{ background: percentile.color }} />{percentile.label} percentile</li>)}
-      {score && <li>WHO Z-score reference lines: −3, −2, 0, +2, +3</li>}
+      {score && scoreReferences.map(reference => <li key={reference.value} className="inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-medium" style={{ color: reference.color, backgroundColor: reference.tint, borderColor: `${reference.color}30` }}><span aria-hidden="true" className="w-4 border-t-2" style={{ borderColor: reference.color, borderStyle: reference.value === 0 ? 'solid' : 'dashed' }} />{reference.value > 0 ? '+' : ''}{reference.value} Z-score</li>)}
     </ul>
     {!hasAges && <p role="note" className="px-2 text-xs leading-relaxed text-muted-foreground">Age is unavailable for one or more visits. Showing recorded measurements by date.</p>}
     {hasAges && !score && !reference && <p role="note" className="px-2 text-xs leading-relaxed text-muted-foreground">WHO reference curves are unavailable for the current birth details. Recorded measurements are shown.</p>}
-    <div data-chart-scroll role="region" aria-label="Growth chart, scroll horizontally to view every month" tabIndex={0} className="w-full min-w-0 overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-ring">
+    <div data-chart-scroll role="region" aria-label="Growth chart, scroll horizontally to view every month" tabIndex={0} className={`w-full min-w-0 overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-ring${score ? ' rounded-2xl border border-border/60 bg-muted/20' : ''}`}>
     <div role="img" aria-label={`Recorded ${config.title} by ${hasAges ? 'age in months' : 'visit date'}, in ${config.unit}. ${validCount} recorded values.${birth ? ` ${birth.label} from the baby profile at age zero.` : ''}${reference ? ` WHO reference percentiles for ${reference.sexLabel}.` : ''} Hover or tap a point, or use the text table below to explore.`} className="relative h-80 w-full sm:h-96" style={{ minWidth: hasAges ? Math.max(1280, (Math.floor(maxAge) + 1) * 20 + 100) : undefined }}
       onClick={() => setActivePoint(null)}
       onMouseLeave={() => setActivePoint(previous => previous?.pinned ? previous : null)}
@@ -115,6 +136,7 @@ export default function DetailedGrowthPlot({ history, metric, config, baby }: {
     >
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <LineChart data={data} margin={{ top: 16, right: reference ? 38 : 16, left: 0, bottom: 30 }} accessibilityLayer={false}>
+          {score && scoreBands.map(band => <ReferenceArea key={band.from} y1={band.from} y2={band.to} fill={band.fill} fillOpacity={1} stroke="none" zIndex={-200} pointerEvents="none" />)}
           <CartesianGrid vertical={false} stroke="var(--color-border)" strokeDasharray="3 5" />
           <XAxis
             dataKey={hasAges ? 'ageMonths' : 'visit_date'} type={hasAges ? 'number' : 'category'}
@@ -132,8 +154,8 @@ export default function DetailedGrowthPlot({ history, metric, config, baby }: {
             tooltipType="none" legendType="none" isAnimationActive={false} connectNulls={false}
           />))}
           {lastReference && whoPercentiles.map(percentile => <ReferenceDot key={percentile.key} x={lastReference.ageMonths} y={lastReference[percentile.key]} r={0} label={{ value: percentile.label, position: 'right', fill: percentile.color, fontSize: 10 }} />)}
-          {score && [-3, -2, 0, 2, 3].map(value => <ReferenceLine key={value} y={value} ifOverflow="extendDomain" stroke="var(--color-muted-foreground)" strokeDasharray={value === 0 ? undefined : '4 4'} strokeOpacity={value === 0 ? 0.65 : 0.45} label={{ value: `WHO ${value > 0 ? '+' : ''}${value}`, position: 'insideTopRight', fill: 'var(--color-muted-foreground)', fontSize: 10 }} />)}
-          <Line dataKey={config.key} name={`Recorded ${config.title}`} type="linear" stroke={validCount > 1 ? 'var(--color-primary)' : 'none'} strokeWidth={2.75} dot={<RecordedMeasurementDot
+          {score && scoreReferences.map(({ value, color }) => <ReferenceLine key={value} y={value} ifOverflow="extendDomain" stroke={color} strokeWidth={value === 0 ? 1.75 : 1.2} strokeDasharray={value === 0 ? undefined : '5 5'} strokeOpacity={0.8} label={{ value: `WHO ${value > 0 ? '+' : ''}${value}`, position: 'insideTopRight', fill: color, fontSize: 11 }} />)}
+          <Line dataKey={config.key} name={`Recorded ${config.title}`} type="linear" stroke={validCount > 1 ? 'var(--color-primary)' : 'none'} strokeWidth={score ? 3.25 : 2.75} dot={<RecordedMeasurementDot emphasized={score}
             selectedIndex={selectedPoint?.source === 'visit' ? selectedPoint.index : undefined} onShow={showPoint}
             onLeave={() => setActivePoint(previous => previous?.pinned ? previous : null)}
           />} activeDot={false} isAnimationActive={false} connectNulls={false} />

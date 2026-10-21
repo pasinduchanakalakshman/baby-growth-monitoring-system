@@ -1,4 +1,4 @@
-import { useId, useState, type KeyboardEvent } from 'react';
+import { useId, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,13 +36,16 @@ export function RecordedGrowthTooltip({ active, payload, metric }: {
   </div>;
 }
 
-export default function GrowthCharts({ history, detailed = false, baby }: {
+export default function GrowthCharts({ history, detailed = false, baby, headerAction, weightOnly = false }: {
   history: GrowthHistoryPoint[];
   detailed?: boolean;
   baby?: GrowthChartProfile;
+  headerAction?: ReactNode;
+  weightOnly?: boolean;
 }) {
   const id = useId();
-  const [activeTab, setActiveTab] = useState<Metric>('weight');
+  const [selectedTab, setActiveTab] = useState<Metric>('weight');
+  const activeTab = weightOnly ? 'weight' : selectedTab;
   const [selectedDate, setSelectedDate] = useState('');
   const tooltipTrigger = useChartTooltipTrigger();
   const config = metrics[activeTab];
@@ -66,12 +69,12 @@ export default function GrowthCharts({ history, detailed = false, baby }: {
 
   return <Card className="min-w-0 rounded-2xl border-border/50">
     <CardHeader className="space-y-4 p-5 sm:p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Growth Charts</h2><p className="mt-1 text-sm text-muted-foreground">Recorded visits, separate from illustrations and forecasts.</p></div><span className="rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">{history.length} {history.length === 1 ? 'visit' : 'visits'}</span></div>
-      <div role="tablist" aria-label="Growth measurement" className="grid grid-cols-2 gap-2 rounded-2xl bg-muted/60 p-1.5 sm:grid-cols-4">
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 id={id + 'title'} className="text-lg font-semibold">Growth Charts</h2><p className="mt-1 text-sm text-muted-foreground">Recorded visits, separate from illustrations and forecasts.</p></div><div className="flex flex-wrap items-center gap-3"><span className="rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">{history.length} {history.length === 1 ? 'visit' : 'visits'}</span>{headerAction}</div></div>
+      {!weightOnly && <div role="tablist" aria-label="Growth measurement" className="grid grid-cols-2 gap-2 rounded-2xl bg-muted/60 p-1.5 sm:grid-cols-4">
         {metricOrder.map(tab => <Button key={tab} role="tab" id={id + tab} aria-selected={activeTab === tab} aria-controls={id + 'panel'} tabIndex={activeTab === tab ? 0 : -1} variant={activeTab === tab ? 'default' : 'ghost'} onClick={() => setActiveTab(tab)} onKeyDown={event => moveTab(event, tab)} className="min-h-11 rounded-full px-2 text-xs sm:text-sm">{metrics[tab].label}</Button>)}
-      </div>
+      </div>}
     </CardHeader>
-    <CardContent role="tabpanel" id={id + 'panel'} aria-labelledby={id + activeTab} tabIndex={0} className="min-w-0 space-y-4 px-3 pb-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:px-5 sm:pb-6">
+    <CardContent role={weightOnly ? 'group' : 'tabpanel'} id={id + 'panel'} aria-labelledby={id + (weightOnly ? 'title' : activeTab)} tabIndex={0} className="min-w-0 space-y-4 px-3 pb-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:px-5 sm:pb-6">
       {!validCount && !birth ? <p className="mx-2 flex min-h-40 items-center justify-center rounded-xl bg-muted/60 p-5 text-center text-sm text-muted-foreground">{config.empty}</p> : <>
         {detailed ? <DetailedGrowthPlot history={plotData} metric={activeTab} config={config} baby={baby} /> : <>
         <ul aria-label="Recorded chart legend" className="flex flex-wrap justify-end gap-x-4 gap-y-2 px-2 text-xs text-muted-foreground"><li className="inline-flex items-center gap-2"><span aria-hidden="true" className="size-2.5 rounded-full bg-primary" />Recorded {config.title} ({config.unit})</li>{score && <li>WHO reference lines: −2 and −3 Z-score</li>}</ul>

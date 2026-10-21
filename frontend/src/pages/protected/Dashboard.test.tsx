@@ -37,8 +37,8 @@ function renderDashboard() {
 }
 
 async function ready() {
-  await screen.findByText('7.20');
-  await screen.findByRole('img', { name: /Recorded weight in kilograms/ });
+  await screen.findByText('7.20', { selector: 'dd' });
+  await screen.findByRole('img', { name: /Recorded Weight by age in months/ });
 }
 
 function stat(label: string) {
@@ -68,8 +68,8 @@ describe('Dashboard content', () => {
     expect(stat('Latest Weight')).toHaveTextContent('7.20 kg');
     expect(stat('Weight Change')).toHaveTextContent('+4.00 kg');
     expect(stat('Last Measurement')).toHaveTextContent('15 Oct 2026');
-    expect(screen.getAllByRole('region')).toHaveLength(2);
-    expect(screen.getByRole('heading', { name: 'Weight Progress' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Growth Charts' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Growth Charts' })).toBeInTheDocument();
     expect(screen.queryByText(/Explore your baby's growth|Birth weight:/)).not.toBeInTheDocument();
     expect(babyApi.getBabyProfile).toHaveBeenCalledOnce();
     expect(growthApi.getGrowthOverview).toHaveBeenCalledOnce();
@@ -80,12 +80,32 @@ describe('Dashboard content', () => {
   it('preserves the measured chart, units and accessible recorded values', async () => {
     const { container } = renderDashboard(); await ready();
     expect(container.querySelector('svg.recharts-surface')).toHaveAttribute('width', '300');
-    expect(screen.getByText('Age (days)')).toBeInTheDocument();
-    expect(screen.getByText('Weight (kg)')).toBeInTheDocument();
+    expect(screen.getByText('Age (months)')).toBeInTheDocument();
+    expect(screen.getByText('Weight (kg)', { selector: 'tspan' })).toBeInTheDocument();
     expect(container.querySelector('.recharts-line-curve')).not.toHaveAttribute('stroke-dasharray');
     fireEvent.click(screen.getByText('View recorded values'));
-    expect(screen.getByText('15 Oct 2026 · Age 287 days · 7.20 kg')).toBeInTheDocument();
+    const row = screen.getByText('October 15, 2026').closest('tr')!;
+    expect(row).toHaveTextContent('287');
+    expect(row).toHaveTextContent('7.20');
     expect(screen.queryByText(/Illustrative example/)).not.toBeInTheDocument();
+  });
+
+  it('shows only the weight chart with references, birth marker and saved visit tooltips, and links to all charts', async () => {
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue(history.map(visit => ({ ...visit, length_height_cm: 65, verified_waz: -0.5, verified_haz: -0.25 })));
+    const { container } = renderDashboard(); await ready();
+    expect(screen.getByText('2 visits')).toBeInTheDocument();
+    expect(screen.getByText('50th percentile')).toBeInTheDocument();
+    fireEvent.mouseEnter(container.querySelector('.birth-measurement-dot')!);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Birth weight: 3.2 kg');
+    fireEvent.mouseLeave(container.querySelector('.birth-measurement-dot')!);
+    fireEvent.mouseEnter(container.querySelectorAll('.recharts-line-dot')[1]);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Recorded Weight: 7.2 kg');
+    expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.getByRole('img')).toHaveAccessibleName(/Recorded Weight by age in months, in kg/);
+    expect(screen.getByRole('link', { name: 'View Growth Charts' })).toHaveAttribute('href', '/growth/charts');
+    expect(growthApi.getGrowthHistory).toHaveBeenCalledOnce();
+    expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
   });
 
   it('shows loading placeholders without invented values or premature data reads', () => {
@@ -160,13 +180,16 @@ describe('Dashboard content', () => {
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07' });
     vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: { visit_date: '2026-10-19', weight_kg: 3.3 } });
     vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([{ ...history[0], visit_date: '2026-10-19', age_days: 12, weight_kg: 3.3 }]);
-    renderDashboard();
-    await screen.findByRole('img', { name: /Recorded weight in kilograms/ });
+    const { container } = renderDashboard();
+    await screen.findByRole('img', { name: /Recorded Weight by age in months/ });
     expect(screen.getByText('12 days old')).toBeInTheDocument();
     expect(stat('Latest Weight')).toHaveTextContent('3.30 kg');
     expect(stat('Weight Change')).toHaveTextContent('+0.10 kg');
     expect(screen.getByRole('link', { name: 'Add Measurement' })).toHaveAttribute('href', '/growth/add');
     expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
+    expect(container.querySelectorAll('.recharts-line-dot')).toHaveLength(1);
+    expect(container.querySelector('.birth-measurement-dot')).toBeInTheDocument();
+    expect(screen.getByText('1 visit')).toBeInTheDocument();
   });
 
   it('shows the first-measurement empty state for a newborn without saved visits', async () => {
@@ -191,7 +214,7 @@ describe('Dashboard content', () => {
     renderDashboard();
     await screen.findByText("We couldn't load recorded weights. Please try again.");
     expect(screen.getByRole('heading', { name: 'Emma' })).toBeInTheDocument();
-    expect(screen.getByText('7.20')).toBeInTheDocument();
+    expect(stat('Latest Weight')).toHaveTextContent('7.20 kg');
     expect(screen.queryByRole('heading', { name: "Your baby's growth journey starts here" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Retry weight progress' }));
     await ready();
@@ -203,7 +226,7 @@ describe('Dashboard content', () => {
     vi.mocked(growthApi.getGrowthOverview).mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(overview);
     renderDashboard();
     await screen.findByText(/We couldn't load the latest growth summary/);
-    expect(await screen.findByRole('img', { name: /Recorded weight in kilograms/ })).toBeInTheDocument();
+    expect(await screen.findByRole('img', { name: /Recorded Weight by age in months/ })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     await ready();
     expect(growthApi.getGrowthOverview).toHaveBeenCalledTimes(2);

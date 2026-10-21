@@ -122,7 +122,7 @@ describe('GrowthOverviewPage', () => {
     });
   });
 
-  it('renders one genuine measurement correctly with WAZ and HAZ', async () => {
+  it('omits the marked measurement and status cards while retaining the journey and header actions', async () => {
     (growthApi.getGrowthOverview as any).mockResolvedValue({
       baby: { name: 'Test' },
       current_growth: {
@@ -140,18 +140,18 @@ describe('GrowthOverviewPage', () => {
     renderComponent();
     
     await waitFor(() => {
-      // 1.05 should be formatted to -1.05
-      expect(screen.getByText('-1.05')).toBeTruthy();
-      expect(screen.getByText('0.40')).toBeTruthy();
-      // Status string check
-      expect(screen.getAllByText('Within expected WHO threshold').length).toBeGreaterThan(0);
-      
-      // Should show the "More visits are needed" message because history length == 1
-      expect(screen.getByText('More visits are needed to show a growth trend')).toBeTruthy();
+      expect(screen.getByText('Your Baby\'s First 30 Days')).toBeInTheDocument();
+      expect(screen.queryByText('Latest Measurement')).not.toBeInTheDocument();
+      expect(screen.queryByText('Current WHO Growth Status')).not.toBeInTheDocument();
+      expect(screen.queryByText('More visits are needed to show a growth trend')).not.toBeInTheDocument();
+      expect(screen.queryByText('Growth Charts')).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'History List' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Detailed Charts' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Add Measurement' })).toBeVisible();
     });
   });
 
-  it('handles missing height by showing Not recorded and missing HAZ', async () => {
+  it('keeps the marked cards absent when saved height and HAZ are missing', async () => {
     (growthApi.getGrowthOverview as any).mockResolvedValue({
       baby: { name: 'Test' },
       current_growth: {
@@ -169,13 +169,14 @@ describe('GrowthOverviewPage', () => {
     renderComponent();
     
     await waitFor(() => {
-      expect(screen.getAllByText('Not recorded').length).toBeGreaterThan(0);
-      expect(screen.getByText('Not available')).toBeTruthy();
-      expect(screen.getByText('Length/height was not recorded for this visit.')).toBeTruthy();
+      expect(screen.getByText('Growth Monitoring')).toBeInTheDocument();
+      expect(screen.queryByText('Latest Measurement')).not.toBeInTheDocument();
+      expect(screen.queryByText('Current WHO Growth Status')).not.toBeInTheDocument();
+      expect(screen.queryByText('Growth Charts')).not.toBeInTheDocument();
     });
   });
 
-  it('displays multiple measurements with charts', async () => {
+  it('removes the marked explorer, explanation, recorded charts and forecast links with multiple visits', async () => {
     (growthApi.getGrowthOverview as any).mockResolvedValue({
       baby: { name: 'Test' },
       current_growth: {
@@ -191,9 +192,15 @@ describe('GrowthOverviewPage', () => {
     renderComponent();
     
     await waitFor(() => {
-      expect(screen.queryByText('More visits are needed to show a growth trend')).not.toBeTruthy();
-      // Charts should render
-      expect(screen.getByText('Growth Charts')).toBeTruthy();
+      expect(screen.getByText('Growth Monitoring')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Explore a day')).not.toBeInTheDocument();
+      expect(screen.queryByText(/This chart shows an example of how a newborn/)).not.toBeInTheDocument();
+      expect(screen.queryByText('Latest Measurement')).not.toBeInTheDocument();
+      expect(screen.queryByText('Current WHO Growth Status')).not.toBeInTheDocument();
+      expect(screen.queryByText('Growth Charts')).not.toBeInTheDocument();
+      expect(screen.queryByText('30-Day Forecast')).not.toBeInTheDocument();
+      expect(screen.queryByText('Early Growth Risk')).not.toBeInTheDocument();
+      expect(screen.getByText('Understanding this journey and when to seek advice')).toBeInTheDocument();
     });
   });
 });

@@ -15,7 +15,7 @@ export function JourneyTooltip({ active, payload }: {
 }
 
 // Presentation only: the endpoint's complete points array goes directly to Recharts.
-export function NewbornJourneyPlot({ journey, compact = false }: { journey: NewbornWeightJourney; compact?: boolean }) {
+export function NewbornJourneyPlot({ journey, compact = false, showDayExplorer = true, showIllustrativeLabel = true }: { journey: NewbornWeightJourney; compact?: boolean; showDayExplorer?: boolean; showIllustrativeLabel?: boolean }) {
   const id = useId();
   const [selectedDay, setSelectedDay] = useState(0);
   const tooltipTrigger = useChartTooltipTrigger();
@@ -26,9 +26,9 @@ export function NewbornJourneyPlot({ journey, compact = false }: { journey: Newb
   return <div className="min-w-0 space-y-4">
     <ul aria-label="Journey legend" className="flex flex-wrap gap-x-5 gap-y-2 text-xs leading-relaxed text-muted-foreground">
       <li className="flex items-center gap-2"><span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-primary" /><span>Recorded birth weight: {journey.birth_weight_kg} kg</span></li>
-      <li className="flex items-center gap-2"><span aria-hidden="true" className="w-6 shrink-0 border-t-2 border-dashed border-primary" /><span>Illustrative example</span></li>
+      <li className="flex items-center gap-2" aria-label={showIllustrativeLabel ? undefined : 'Illustrative example'}><span aria-hidden="true" className="w-6 shrink-0 border-t-2 border-dashed border-primary" />{showIllustrativeLabel && <span>Illustrative example</span>}</li>
     </ul>
-    <div className={`w-full min-w-0 ${compact ? 'h-60 sm:h-64' : 'h-72 sm:h-80'}`} role="img" aria-label={`Illustrative weight journey beginning at the recorded birth weight of ${journey.birth_weight_kg} kg. All later values are illustrative, not actual measurements or individual predictions. Explore each day using the selector below.`}>
+    <div className={`w-full min-w-0 ${compact ? 'h-60 sm:h-64' : 'h-72 sm:h-80'}`} role="img" aria-label={`Illustrative weight journey beginning at the recorded birth weight of ${journey.birth_weight_kg} kg. All later values are illustrative, not actual measurements or individual predictions.${showDayExplorer ? ' Explore each day using the selector below.' : ''}`}>
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <LineChart data={points} margin={{ top: 12, right: 12, left: 0, bottom: 28 }} accessibilityLayer={false}>
           <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 5" vertical={false} />
@@ -40,12 +40,12 @@ export function NewbornJourneyPlot({ journey, compact = false }: { journey: Newb
         </LineChart>
       </ResponsiveContainer>
     </div>
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-muted/60 p-3 text-xs sm:p-4">
+    {showDayExplorer && <div className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl bg-muted/60 p-3 text-xs sm:p-4">
       <label htmlFor={id} className="font-medium">Explore a day</label>
       <select id={id} value={point.day} onChange={event => setSelectedDay(Number(event.target.value))} className="min-h-11 rounded-lg border border-input bg-card px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
         {points.map(p => <option key={p.day} value={p.day}>Day {p.day}</option>)}
       </select>
       <output htmlFor={id} aria-live="polite" className="min-w-0 flex-1 basis-44 leading-relaxed"><span className="block text-muted-foreground">{point.phase}</span><span className="font-medium text-primary">{point.value_type === 'recorded_birth_weight' ? 'Recorded birth weight' : 'Illustrative example'}: {point.weight_kg.toFixed(2)} kg</span></output>
-    </div>
+    </div>}
   </div>;
 }

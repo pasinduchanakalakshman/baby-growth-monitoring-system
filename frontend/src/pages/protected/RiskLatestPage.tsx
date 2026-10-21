@@ -70,7 +70,7 @@ export default function RiskLatestPage() {
             {risk?.risk_available && (
               <button
                 onClick={() => navigate('/growth/explanation')}
-                className="bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm"
+                className="bg-[#FFE7F4] border border-[#FFD0E8] hover:bg-[#FFD9EE] text-[#D81B7C] px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-prediction"
               >
                 <Info className="h-4 w-4" />
                 Why This Risk?

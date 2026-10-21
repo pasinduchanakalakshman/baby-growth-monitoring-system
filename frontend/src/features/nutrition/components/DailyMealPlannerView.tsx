@@ -493,9 +493,9 @@ function PlannedSlotCard({ slot, item, onOpenSubstitute }: PlannedSlotCardProps)
               size="sm"
               variant="outline"
               onClick={onOpenSubstitute}
-              className="text-2xs h-7 px-2.5 rounded-lg gap-1 border-border/80 hover:border-primary cursor-pointer"
+              className="text-2xs h-7 px-2.5 rounded-lg gap-1 border-border/80 hover:border-btn-primary hover:text-btn-primary cursor-pointer"
             >
-              <RefreshCw className="size-3 text-primary" />
+              <RefreshCw className="size-3 text-btn-primary" />
               Change Meal
             </Button>
           )}

@@ -118,7 +118,7 @@ export default function AddMeasurementPage() {
           <div className="flex flex-col space-y-3 pt-4">
             <button 
               onClick={() => navigate('/growth/history')}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium transition-colors"
+              className="bg-btn-primary text-btn-primary-foreground hover:bg-btn-primary-hover active:bg-btn-primary-active px-4 py-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-primary"
             >
               View History
             </button>
@@ -309,7 +309,7 @@ export default function AddMeasurementPage() {
           <button
             type="submit"
             disabled={mutation.isPending}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-8 py-2 rounded-md font-medium transition-colors shadow-md disabled:opacity-50 flex items-center gap-2"
+            className="bg-btn-primary text-btn-primary-foreground hover:bg-btn-primary-hover active:bg-btn-primary-active h-10 px-8 py-2 rounded-md font-medium transition-colors shadow-md disabled:opacity-50 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-primary"
           >
             {mutation.isPending ? 'Saving...' : 'Save Measurement'}
           </button>

@@ -25,7 +25,7 @@ export function GrowthChartPreview({ baby, newborn, journey: response, history, 
           <h2 className="font-semibold">{newborn ? 'Weight journey · Birth to 30 days' : 'Weight progress'}</h2>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{newborn ? 'A birth-weight-based illustrative example' : allRecorded.length > 12 ? 'Your 12 most recent recorded visits' : 'Your recorded weight measurements'}</p>
         </div>
-        {baby && <Button asChild variant="ghost" className="min-h-11 shrink-0 gap-2 px-2 text-xs text-primary"><Link to={newborn ? '/growth' : '/growth/charts'}>{newborn ? 'About this journey' : 'View Charts'}<ExternalLink aria-hidden="true" className="size-3.5" /></Link></Button>}
+        {baby && <Button asChild variant="ghost" className="min-h-11 shrink-0 gap-2 px-2 text-xs text-btn-primary hover:text-btn-primary-hover hover:bg-btn-primary/10"><Link to={newborn ? '/growth' : '/growth/charts'}>{newborn ? 'About this journey' : 'View Charts'}<ExternalLink aria-hidden="true" className="size-3.5" /></Link></Button>}
       </CardHeader>
       <CardContent className="px-3 pb-5 sm:px-5 sm:pb-6">
         {loading ? <div role="status" aria-label="Loading weight chart" className="px-2"><Skeleton className="h-60 w-full" /></div> : error ? <>

@@ -411,7 +411,7 @@ export function PreferencesEditor({ baby, preferences, onSave, saving }: Prefere
                   setFoodsIntroduced(INGREDIENTS_CATALOG.map((i) => i.id));
                   markChanged();
                 }}
-                className="text-2xs h-7 px-2 text-primary"
+                className="text-2xs h-7 px-2 text-btn-primary"
               >
                 Select All
               </Button>
@@ -514,7 +514,7 @@ export function PreferencesEditor({ baby, preferences, onSave, saving }: Prefere
                 variant="ghost"
                 size="sm"
                 onClick={selectAllIngredientsForAvailable}
-                className="text-2xs h-7 px-2 text-primary"
+                className="text-2xs h-7 px-2 text-btn-primary"
               >
                 Select All
               </Button>
@@ -608,7 +608,7 @@ export function PreferencesEditor({ baby, preferences, onSave, saving }: Prefere
             type="submit"
             size="sm"
             disabled={saving}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold h-9 min-w-28 gap-2"
+            className="bg-btn-primary hover:bg-btn-primary-hover active:bg-btn-primary-active text-btn-primary-foreground text-xs font-semibold h-9 min-w-28 gap-2 focus-visible:ring-btn-primary"
           >
             {saving ? (
               <>

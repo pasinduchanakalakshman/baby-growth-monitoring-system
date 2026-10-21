@@ -466,7 +466,7 @@ function WeeklyDaySlotItem({ slot, item, onOpenSubstitute }: WeeklyDaySlotItemPr
             size="sm"
             variant="ghost"
             onClick={onOpenSubstitute}
-            className="text-3xs h-6 px-2 rounded-lg text-primary hover:text-primary hover:bg-primary/5"
+            className="text-3xs h-6 px-2 rounded-lg text-btn-primary hover:text-btn-primary-hover hover:bg-btn-primary/10"
           >
             Change
           </Button>

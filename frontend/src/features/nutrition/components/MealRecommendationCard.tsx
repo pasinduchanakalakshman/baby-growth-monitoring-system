@@ -205,7 +205,7 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
           variant="ghost"
           size="sm"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full text-xs text-primary hover:text-primary/90 hover:bg-primary/5 min-h-9 gap-1.5"
+          className="w-full text-xs text-btn-primary hover:text-btn-primary-hover hover:bg-btn-primary/10 min-h-9 gap-1.5"
           aria-expanded={isExpanded}
         >
           {isExpanded ? (

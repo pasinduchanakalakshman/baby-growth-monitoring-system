@@ -35,7 +35,7 @@ export default function HistoryPage() {
         actions={
           <button
             onClick={() => navigate('/growth/add')}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm"
+            className="bg-btn-primary text-btn-primary-foreground hover:bg-btn-primary-hover active:bg-btn-primary-active px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-primary"
           >
             <Plus className="h-4 w-4" />
             Add Measurement
@@ -51,7 +51,7 @@ export default function HistoryPage() {
           action={
             <button
               onClick={() => navigate('/growth/add')}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-xl font-medium transition-colors shadow-sm inline-flex items-center gap-2"
+              className="bg-btn-primary text-btn-primary-foreground hover:bg-btn-primary-hover active:bg-btn-primary-active px-6 py-2 rounded-xl font-medium transition-colors shadow-sm inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-primary"
             >
               <Plus className="h-4 w-4" />
               Add First Measurement

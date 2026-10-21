@@ -17,7 +17,7 @@ export function DashboardQuickActions({ newborn, olderBaby, hasProfile, hasHisto
         </>}
         {!newborn && <div className="rounded-xl bg-secondary/50 p-3">
           <p className="flex items-center gap-2 text-sm font-medium"><Sparkles aria-hidden="true" className="size-4 text-primary" />Growth forecast</p>
-          {forecastAvailable ? <Button asChild variant="link" className="mt-1 min-h-11 px-0"><Link to="/growth/forecast">View Forecast<ArrowUpRight aria-hidden="true" className="size-4" /></Link></Button> : <p className="mt-2 text-xs leading-relaxed text-muted-foreground">No forecast is available for the recorded growth history yet.</p>}
+          {forecastAvailable ? <Button asChild variant="prediction-link" className="mt-1 min-h-11 px-0"><Link to="/growth/forecast">View Forecast<ArrowUpRight aria-hidden="true" className="size-4" /></Link></Button> : <p className="mt-2 text-xs leading-relaxed text-muted-foreground">No forecast is available for the recorded growth history yet.</p>}
         </div>}
         {olderBaby && <div className="border-t border-border/60 px-3 pt-3 pb-2"><Button disabled variant="outline" className="min-h-11 w-full gap-2"><Plus aria-hidden="true" className="size-4" />Add Measurement</Button><p className="mt-2 text-xs leading-relaxed text-muted-foreground">Not available from the dashboard yet.</p></div>}
         {newborn && <p className="px-3 py-2 text-xs leading-relaxed text-muted-foreground">Your first-month journey uses the birth weight already in your baby's profile.</p>}

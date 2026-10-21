@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChartNoAxesCombined, Heart, History, Info, Menu, TrendingUp } from 'lucide-react';
+import { ArrowRight, ChartNoAxesCombined, Heart, Menu, TrendingUp, UtensilsCrossed } from 'lucide-react';
 import { AuthBranding } from '@/components/auth/AuthBranding';
 import { AuthIllustration } from '@/components/auth/AuthIllustration';
 import { Button } from '@/components/ui/button';
@@ -15,19 +15,19 @@ const features = [
   {
     icon: ChartNoAxesCombined,
     title: 'Growth tracking',
-    description: "Record weight and length, and follow changes on your baby's growth charts.",
+    description: "Record your baby's weight and length, and see how they're growing over time.",
     surface: 'bg-accent',
   },
   {
     icon: TrendingUp,
     title: 'Growth predictions',
-    description: 'Explore estimated growth over the next 30 days when enough measurements are available.',
+    description: "Get a glimpse of your baby's possible growth over the next 30 days.",
     surface: 'bg-secondary',
   },
   {
-    icon: History,
-    title: 'Growth history',
-    description: 'Look back at previous measurements and visits, all in one place.',
+    icon: UtensilsCrossed,
+    title: 'Nutrition & Feeding',
+    description: 'Get appropriate feeding guidance and discover healthy meal ideas as your baby grows.',
     surface: 'bg-brand/10',
   },
 ];
@@ -141,12 +141,6 @@ export default function LandingPage() {
               </Card>
             ))}
           </div>
-          <aside aria-label="About the growth estimates" className="mt-8 flex items-start gap-3 rounded-xl bg-secondary/70 p-5 sm:p-6">
-            <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" />
-            <p className="text-sm leading-relaxed text-foreground/85">
-              This system provides growth estimates and risk assessments and is not a medical diagnosis. Always consult with a healthcare professional for medical advice.
-            </p>
-          </aside>
         </section>
       </main>
 
@@ -154,11 +148,6 @@ export default function LandingPage() {
         <Separator />
         <div className="flex flex-col items-center justify-between gap-2 py-5 text-sm sm:flex-row sm:gap-4">
           <p className="text-center text-muted-foreground">&copy; {currentYear} BabyGrowth. Every little moment matters.</p>
-          <nav aria-label="Footer navigation" className="flex flex-wrap justify-center gap-2">
-            <a href="#about" className={navigationLink}>About</a>
-            <Link to="/login" className={navigationLink}>Sign In</Link>
-            <Link to="/register" className={navigationLink}>Create Account</Link>
-          </nav>
         </div>
       </footer>
     </div>

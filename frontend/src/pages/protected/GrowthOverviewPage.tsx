@@ -77,7 +77,7 @@ export default function GrowthOverviewPage() {
             </button>
             {!isNewborn && <button
               onClick={() => navigate('/growth/add')}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm"
+              className="bg-btn-primary text-btn-primary-foreground hover:bg-btn-primary-hover active:bg-btn-primary-active px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-primary"
             >
               <Plus className="h-4 w-4" />
               Add Measurement
@@ -96,7 +96,7 @@ export default function GrowthOverviewPage() {
           action={!isNewborn && (
             <button
               onClick={() => navigate('/growth/add')}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-xl font-medium transition-colors shadow-sm inline-flex items-center gap-2"
+              className="bg-btn-primary text-btn-primary-foreground hover:bg-btn-primary-hover active:bg-btn-primary-active px-6 py-2 rounded-xl font-medium transition-colors shadow-sm inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-primary"
             >
               <Plus className="h-4 w-4" />
               Add First Measurement
@@ -183,10 +183,10 @@ export default function GrowthOverviewPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
             <button
               onClick={() => navigate('/growth/forecast')}
-              className="bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-6 py-6 rounded-2xl font-medium transition-colors shadow-sm flex flex-col justify-center items-center text-center gap-2"
+              className="bg-[#FFE7F4] border border-[#FFD0E8] hover:bg-[#FFD9EE] text-[#D81B7C] px-6 py-6 rounded-2xl font-medium transition-colors shadow-sm flex flex-col justify-center items-center text-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-prediction"
             >
               <span className="text-lg">30-Day Forecast</span>
-              <span className="text-sm text-indigo-600/70 font-normal">Short-term weight estimate</span>
+              <span className="text-sm text-[#D81B7C]/80 font-normal">Short-term weight estimate</span>
             </button>
             <button
               onClick={() => navigate('/growth/risk')}

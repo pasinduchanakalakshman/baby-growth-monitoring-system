@@ -4,12 +4,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Baby, Loader2, Info } from 'lucide-react';
+import { Baby, Heart, Loader2, Ruler } from 'lucide-react';
 import { babyApi } from '@/api/baby';
 import { ApiClientError } from '@/api/client';
 import { BabyRegistrationRequest } from '@/types/baby';
+
+const registrationControl = 'h-12 min-w-0 rounded-lg border-input/70 bg-background/50 px-3.5 shadow-none focus:border-btn-primary focus:outline-none focus:ring-2 focus:ring-btn-primary focus:ring-offset-2 focus-visible:border-btn-primary focus-visible:ring-btn-primary';
 
 export default function BabyRegistrationPage() {
   const navigate = useNavigate();
@@ -85,37 +87,48 @@ export default function BabyRegistrationPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[#F8F9FB]">
-      <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
-        <div className="flex justify-center items-center gap-2">
-          <Baby className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">Baby Growth</span>
+    <div className="relative isolate min-h-dvh bg-background px-4 py-8 text-foreground sm:px-8 sm:py-10 lg:px-12">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden sm:inset-4 sm:rounded-2xl xl:inset-6">
+        <div className="absolute inset-0 auth-decoration opacity-50" />
+        <div className="absolute -top-48 right-0 h-80 w-[90%] rotate-12 rounded-[50%] bg-secondary" />
+        <div className="absolute right-0 bottom-0 h-2/3 w-1/2 rounded-tl-[70%] bg-accent/50" />
+      </div>
+      <header className="mx-auto w-full max-w-3xl text-center">
+        <div className="flex items-center justify-center gap-2 font-heading text-lg font-bold tracking-tight">
+          <Heart aria-hidden="true" className="size-8 fill-accent text-brand" strokeWidth={2.5} />
+          <span>BabyGrowth</span>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h1 id="baby-registration-heading" className="mx-auto mt-6 max-w-xl font-heading text-2xl leading-tight font-bold tracking-tight text-foreground sm:text-3xl">
           Welcome! Let's set up your baby's profile
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600 max-w">
+        </h1>
+        <p id="baby-registration-description" className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
           Enter your baby's birth details to enable personalized growth monitoring and WHO-standard assessments.
         </p>
-      </div>
+      </header>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
-        <Card className="shadow-lg">
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-6 pt-6">
+      <main className="mx-auto mt-7 w-full max-w-3xl sm:mt-8">
+        <Card className="rounded-2xl border-border/70 bg-card shadow-auth">
+          <form onSubmit={handleSubmit} aria-labelledby="baby-registration-heading" aria-describedby={error ? 'baby-registration-error' : 'baby-registration-description'} aria-busy={registerBabyMutation.isPending}>
+            <CardContent className="space-y-8 p-5 sm:p-8">
               {error && (
-                <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20 font-medium">
+                <div role="alert" id="baby-registration-error" className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm leading-relaxed font-medium text-destructive">
                   {error}
                 </div>
               )}
               
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium border-b pb-2">Basic Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <section aria-labelledby="basic-information-heading" className="space-y-5">
+                <h2 id="basic-information-heading" className="flex items-center gap-3 border-b border-border/70 pb-4 text-base font-semibold">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-btn-primary"><Baby aria-hidden="true" className="size-4" /></span>
+                  Basic Information
+                </h2>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">Baby's Name *</Label>
                     <Input 
                       id="name" 
+                      className={registrationControl}
+                      aria-invalid={error === 'Name is required' || undefined}
+                      aria-describedby={error === 'Name is required' ? 'baby-registration-error' : undefined}
                       placeholder="e.g. Emma" 
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -129,12 +142,12 @@ export default function BabyRegistrationPage() {
                       onValueChange={v => setFormData({ ...formData, sex: v as any })}
                       required
                     >
-                      <SelectTrigger id="sex">
+                      <SelectTrigger id="sex" className={registrationControl} aria-invalid={error === 'Sex is required' || undefined} aria-describedby={error === 'Sex is required' ? 'baby-registration-error' : undefined}>
                         <SelectValue placeholder="Select sex" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="Male" className="min-h-11 rounded-md">Male</SelectItem>
+                        <SelectItem value="Female" className="min-h-11 rounded-md">Female</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -142,6 +155,9 @@ export default function BabyRegistrationPage() {
                     <Label htmlFor="dob">Date of Birth *</Label>
                     <Input 
                       id="dob" 
+                      className={registrationControl}
+                      aria-invalid={error.startsWith('Date of birth') || undefined}
+                      aria-describedby={error.startsWith('Date of birth') ? 'baby-registration-error' : undefined}
                       type="date"
                       max={new Date().toISOString().split('T')[0]}
                       value={formData.date_of_birth}
@@ -150,15 +166,21 @@ export default function BabyRegistrationPage() {
                     />
                   </div>
                 </div>
-              </div>
+              </section>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium border-b pb-2">Birth Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <section aria-labelledby="birth-details-heading" className="space-y-5">
+                <h2 id="birth-details-heading" className="flex items-center gap-3 border-b border-border/70 pb-4 text-base font-semibold">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><Ruler aria-hidden="true" className="size-4" /></span>
+                  Birth Details
+                </h2>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6">
                   <div className="space-y-2">
                     <Label htmlFor="weight">Birth Weight (kg) *</Label>
                     <Input 
                       id="weight" 
+                      className={registrationControl}
+                      aria-invalid={error === 'Valid birth weight is required' || undefined}
+                      aria-describedby={error === 'Valid birth weight is required' ? 'baby-registration-error' : undefined}
                       type="number" 
                       step="0.01" 
                       min="0.5" 
@@ -173,6 +195,7 @@ export default function BabyRegistrationPage() {
                     <Label htmlFor="length">Birth Length (cm) <span className="text-muted-foreground font-normal">(Optional)</span></Label>
                     <Input 
                       id="length" 
+                      className={registrationControl}
                       type="number" 
                       step="0.1" 
                       min="20"
@@ -186,6 +209,7 @@ export default function BabyRegistrationPage() {
                     <Label htmlFor="gestational_age">Gestational Age (weeks) <span className="text-muted-foreground font-normal">(Optional)</span></Label>
                     <Input 
                       id="gestational_age" 
+                      className={registrationControl}
                       type="number" 
                       min="20"
                       max="45"
@@ -198,6 +222,7 @@ export default function BabyRegistrationPage() {
                     <Label htmlFor="birth_order">Birth Order <span className="text-muted-foreground font-normal">(Optional)</span></Label>
                     <Input 
                       id="birth_order" 
+                      className={registrationControl}
                       type="number" 
                       min="1"
                       placeholder="e.g. 1 (first child)" 
@@ -211,12 +236,12 @@ export default function BabyRegistrationPage() {
                       value={formData.delivery_type} 
                       onValueChange={v => setFormData({ ...formData, delivery_type: v })}
                     >
-                      <SelectTrigger id="delivery_type">
+                      <SelectTrigger id="delivery_type" className={registrationControl}>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Vaginal">Vaginal</SelectItem>
-                        <SelectItem value="Caesarean">Caesarean</SelectItem>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="Vaginal" className="min-h-11 rounded-md">Vaginal</SelectItem>
+                        <SelectItem value="Caesarean" className="min-h-11 rounded-md">Caesarean</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -224,6 +249,7 @@ export default function BabyRegistrationPage() {
                     <Label htmlFor="apgar">APGAR Score (5 min) <span className="text-muted-foreground font-normal">(Optional)</span></Label>
                     <Input 
                       id="apgar" 
+                      className={registrationControl}
                       type="number" 
                       min="0"
                       max="10"
@@ -233,27 +259,23 @@ export default function BabyRegistrationPage() {
                     />
                   </div>
                 </div>
-              </div>
+              </section>
             </CardContent>
-            <CardFooter className="flex flex-col border-t p-6 bg-slate-50 gap-4">
-              <Button className="w-full md:w-auto md:min-w-[200px] self-end" size="lg" type="submit" disabled={registerBabyMutation.isPending}>
+            <CardFooter className="justify-end rounded-b-2xl border-t border-border/70 bg-secondary/30 px-5 py-5 sm:px-8 sm:py-6">
+              <Button className="h-12 w-full rounded-lg px-7 md:w-auto md:min-w-[224px]" size="lg" type="submit" disabled={registerBabyMutation.isPending}>
                 {registerBabyMutation.isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
                     Saving profile...
                   </>
                 ) : (
                   'Complete Registration'
                 )}
               </Button>
-              <div className="flex gap-2 text-sm text-slate-500 items-start w-full">
-                <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                <p>Ensure these details are accurate, as they form the baseline for WHO growth standard calculations and risk assessments.</p>
-              </div>
             </CardFooter>
           </form>
         </Card>
-      </div>
+      </main>
     </div>
   );
 }

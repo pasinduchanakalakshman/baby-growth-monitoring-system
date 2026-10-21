@@ -17,6 +17,7 @@ const baby = { id: 1, owner_id: 1, name: 'Emma', sex: 'Female' as const, date_of
 const destinations = [
   ['/app', 'Dashboard'],
   ['/baby', 'Baby Profile'],
+  ['/nutrition', 'Nutrition & Feeding'],
   ['/growth', 'Growth Overview'],
   ['/growth/charts', 'Growth Charts'],
   ['/growth/forecast', 'Growth Forecast'],
@@ -79,7 +80,7 @@ describe('Authenticated shell and navigation', () => {
     expect(screen.getByRole('heading', { level: 1, name: `${title} content` })).toBeInTheDocument();
   });
 
-  it('lists all eleven implemented destinations without unsupported placeholder routes', async () => {
+  it('lists all twelve implemented destinations without unsupported placeholder routes', async () => {
     renderShell();
     const navigation = await screen.findByRole('navigation', { name: 'Desktop navigation' });
     expect(within(navigation).getAllByRole('link').map(link => link.getAttribute('href'))).toEqual(destinations.map(([path]) => path));

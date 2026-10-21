@@ -1,4 +1,4 @@
-import { Activity, Baby, ChartNoAxesCombined, History, LayoutDashboard, Lightbulb, ListChecks, PlusCircle, Settings, ShieldCheck, TrendingUp } from 'lucide-react';
+import { Activity, Baby, ChartNoAxesCombined, History, LayoutDashboard, Lightbulb, ListChecks, PlusCircle, Settings, ShieldCheck, TrendingUp, UtensilsCrossed } from 'lucide-react';
 
 // Existing App.tsx destinations; onboarding stays outside the shell navigation.
 export const appNavigation = [
@@ -7,6 +7,12 @@ export const appNavigation = [
     items: [
       { title: 'Dashboard', href: '/app', icon: LayoutDashboard },
       { title: 'Baby Profile', href: '/baby', icon: Baby },
+    ],
+  },
+  {
+    label: 'Nutrition',
+    items: [
+      { title: 'Nutrition & Feeding', href: '/nutrition', icon: UtensilsCrossed },
     ],
   },
   {

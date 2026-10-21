@@ -25,6 +25,7 @@ import GrowthForecastPage from '@/pages/protected/GrowthForecastPage';
 import RiskLatestPage from '@/pages/protected/RiskLatestPage';
 import RiskHistoryPage from '@/pages/protected/RiskHistoryPage';
 import RiskExplanationPage from '@/pages/protected/RiskExplanationPage';
+import NutritionPage from '@/pages/protected/NutritionPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -56,6 +57,7 @@ function App() {
               <Route path="/app" element={<Dashboard />} />
               <Route path="/account" element={<AccountPage />} />
               <Route path="/baby" element={<BabyProfilePage />} />
+              <Route path="/nutrition" element={<NutritionPage />} />
               <Route path="/growth" element={<GrowthOverviewPage />} />
               <Route path="/growth/add" element={<AddMeasurementPage />} />
               <Route path="/growth/history" element={<HistoryPage />} />

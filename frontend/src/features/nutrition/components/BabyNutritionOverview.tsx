@@ -114,9 +114,14 @@ export function BabyNutritionOverview({
               <Sparkles className="size-4 text-amber-500 inline" aria-hidden="true" />
               {stageName}
             </h3>
-            {recommendations?.feeding_rule?.stage_id && (
+            {completedMonths >= 6 && recommendations?.feeding_rule?.stage_id && (
               <p className="text-xs text-muted-foreground">
                 Target Texture: <strong className="text-foreground">{recommendations.feeding_rule.texture.replace(/_/g, ' ')}</strong> &bull; Rule Precedence: {recommendations.feeding_rule.precedence}
+              </p>
+            )}
+            {completedMonths < 6 && (
+              <p className="text-xs text-muted-foreground">
+                Feeding Mode: <strong className="text-foreground">Exclusive Milk (Liquid)</strong> &bull; Zero solids or purées before 6 completed months
               </p>
             )}
           </div>
@@ -128,61 +133,100 @@ export function BabyNutritionOverview({
         </div>
 
         {/* Feeding Overview Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
-          {/* Meals */}
-          <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wide">Main Meals</span>
-              <Utensils className="size-4 text-emerald-600" aria-hidden="true" />
+        {completedMonths < 6 ? (
+          /* Under 6 Completed Months: Milk-Feeding Overview Cards */
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+            {/* Card 1: 100% Milk Feeding */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Nutrition Source</span>
+                <Milk className="size-4 text-purple-600" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug">100% Milk Feeding</p>
+              <p className="text-xs text-muted-foreground">Exclusive breast milk or doctor-guided formula</p>
             </div>
-            <p className="text-sm font-semibold text-foreground leading-snug">{mealFrequency}</p>
-            <p className="text-xs text-muted-foreground">Planned for child appetite</p>
-          </div>
 
-          {/* Snacks */}
-          <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wide">Nutritious Snacks</span>
-              <Heart className="size-4 text-rose-500" aria-hidden="true" />
+            {/* Card 2: Feeding Rhythm */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Feeding Frequency</span>
+                <Heart className="size-4 text-rose-500" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug">On demand, day &amp; night</p>
+              <p className="text-xs text-muted-foreground">At least 8 to 12 feeds in 24 hours</p>
             </div>
-            <p className="text-sm font-semibold text-foreground leading-snug">
-              {snackFrequency ?? 'Not applicable at this stage'}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {completedMonths < 7 ? 'Snacks start at 7m + 1 week' : 'Fresh fruit & soft snacks'}
-            </p>
-          </div>
 
-          {/* Portions */}
-          <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wide">Portion Guidance</span>
-              <Clock className="size-4 text-amber-600" aria-hidden="true" />
+            {/* Card 3: Milestone Timeline */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Complementary Milestone</span>
+                <Clock className="size-4 text-amber-600" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug">Starts at 6 Completed Months</p>
+              <p className="text-xs text-muted-foreground">Zero solids or extra water before 6 months</p>
             </div>
-            <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2" title={portionGuidance}>
-              {portionGuidance}
-            </p>
-            <p className="text-xs text-muted-foreground">Standard Sri Lankan tea cup</p>
           </div>
+        ) : (
+          /* Complementary Feeding Stats Grid (6-59 Completed Months) */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+            {/* Meals */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Main Meals</span>
+                <Utensils className="size-4 text-emerald-600" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug">{mealFrequency}</p>
+              <p className="text-xs text-muted-foreground">Planned for child appetite</p>
+            </div>
 
-          {/* Milk Guidance */}
-          <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wide">Milk & Fluids</span>
-              <Milk className="size-4 text-purple-600" aria-hidden="true" />
+            {/* Snacks */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Nutritious Snacks</span>
+                <Heart className="size-4 text-rose-500" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug">
+                {snackFrequency ?? 'Not applicable at this stage'}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {completedMonths < 7 ? 'Snacks start at 7m + 1 week' : 'Fresh fruit & soft snacks'}
+              </p>
             </div>
-            <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2" title={milkGuidance}>
-              {milkGuidance}
-            </p>
-            <p className="text-xs text-muted-foreground">Breastfeed after / between meals</p>
+
+            {/* Portions */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Portion Guidance</span>
+                <Clock className="size-4 text-amber-600" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2" title={portionGuidance}>
+                {portionGuidance}
+              </p>
+              <p className="text-xs text-muted-foreground">Standard Sri Lankan tea cup</p>
+            </div>
+
+            {/* Milk Guidance */}
+            <div className="rounded-xl border border-border/60 bg-card p-4 space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span className="text-xs font-medium uppercase tracking-wide">Milk &amp; Fluids</span>
+                <Milk className="size-4 text-purple-600" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2" title={milkGuidance}>
+                {milkGuidance}
+              </p>
+              <p className="text-xs text-muted-foreground">Breastfeed after / between meals</p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Responsive Feeding Advisory */}
         <div className="rounded-lg bg-primary/5 border border-primary/15 p-3 text-xs text-muted-foreground flex items-start gap-2.5">
           <Info className="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
           <p className="leading-relaxed">
-            <strong className="text-foreground">FHB Responsive Feeding Principle:</strong> Feed with patience and love. Never force a baby to finish food. Sit facing the baby, maintain eye contact, and avoid all screen distractions during feeding sessions.
+            <strong className="text-foreground">FHB Responsive Feeding Principle:</strong>{' '}
+            {completedMonths < 6
+              ? 'Feed on cue with patience and love. Never force a feed. Sit facing your baby, maintain gentle eye contact, and avoid all screen distractions during feeding sessions.'
+              : 'Feed with patience and love. Never force a baby to finish food. Sit facing the baby, maintain eye contact, and avoid all screen distractions during feeding sessions.'}
           </p>
         </div>
       </CardContent>

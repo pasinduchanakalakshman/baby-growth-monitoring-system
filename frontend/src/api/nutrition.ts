@@ -2,7 +2,11 @@ import { apiClient } from './client';
 import {
   BabyNutritionPreferencesResponse,
   BabyNutritionPreferencesUpdate,
+  DailyMealPlanResponse,
   NutritionRecommendationResponse,
+  SubstituteValidationRequest,
+  SubstituteValidationResponse,
+  WeeklyMealPlanResponse,
 } from '@/types/nutrition';
 
 export const nutritionApi = {

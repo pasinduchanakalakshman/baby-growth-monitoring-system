@@ -350,7 +350,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     renderNutritionView();
 
     expect(await screen.findByRole('heading', { level: 1, name: /Nutrition & Feeding/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Food Ideas & Preparation/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /FHB Guidelines & Evidence/i })).toBeInTheDocument();
@@ -502,7 +502,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     renderNutritionView();
 
     // Navigate to preferences tab
-    const prefsTab = screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i });
+    const prefsTab = await screen.findByRole('tab', { name: /Feeding Preferences & Pantry/i });
     fireEvent.click(prefsTab);
 
     expect(await screen.findByText('Feeding Milestones & Milk Method')).toBeInTheDocument();
@@ -521,7 +521,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
   it('12. Submits updated preferences to backend and refreshes cache', async () => {
     renderNutritionView();
 
-    const prefsTab = screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i });
+    const prefsTab = await screen.findByRole('tab', { name: /Feeding Preferences & Pantry/i });
     fireEvent.click(prefsTab);
 
     await screen.findByText('Feeding Milestones & Milk Method');
@@ -550,7 +550,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
   it('13. Toggles pantry-only mode switch and updates preferences', async () => {
     renderNutritionView();
 
-    const prefsTab = screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i });
+    const prefsTab = await screen.findByRole('tab', { name: /Feeding Preferences & Pantry/i });
     fireEvent.click(prefsTab);
 
     await screen.findByText('Feeding Milestones & Milk Method');
@@ -566,7 +566,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
   it('14. Allows searching and selecting introduced foods and restricted ingredients', async () => {
     renderNutritionView();
 
-    const prefsTab = screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i });
+    const prefsTab = await screen.findByRole('tab', { name: /Feeding Preferences & Pantry/i });
     fireEvent.click(prefsTab);
 
     await screen.findByText('Feeding Milestones & Milk Method');
@@ -639,7 +639,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
   it('20. Allows filtering food ideas and recipes in Food Ideas & Prep tab', async () => {
     renderNutritionView();
 
-    const ideasTab = screen.getByRole('tab', { name: /Food Ideas & Preparation/i });
+    const ideasTab = await screen.findByRole('tab', { name: /Food Ideas & Preparation/i });
     fireEvent.click(ideasTab);
 
     expect(await screen.findByText('Stage-Appropriate Food Ideas')).toBeInTheDocument();
@@ -655,7 +655,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
   it('21. Displays FHB source evidence, 7 food groups, and safety principles in Guidelines tab', async () => {
     renderNutritionView();
 
-    const guidelinesTab = screen.getByRole('tab', { name: /FHB Guidelines & Evidence/i });
+    const guidelinesTab = await screen.findByRole('tab', { name: /FHB Guidelines & Evidence/i });
     fireEvent.click(guidelinesTab);
 
     expect(await screen.findByText(/"Right Food at the Right Time, To Make My Baby Healthy and Bright"/i)).toBeInTheDocument();
@@ -666,3 +666,510 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(screen.getByText('Whole Nut & Choking Hazards')).toBeInTheDocument();
   });
 });
+
+describe('Phase 8 — Age-Conditional Nutrition Interface Tests (0–5m vs 6–59m vs 60m+)', () => {
+  const babyNewborn0m: BabyProfile = {
+    id: 10,
+    owner_id: 1,
+    name: 'Aiden',
+    sex: 'Male',
+    date_of_birth: '2026-10-10',
+    birth_weight_kg: 3.1,
+  };
+
+  const baby2m: BabyProfile = {
+    id: 11,
+    owner_id: 1,
+    name: 'Aryan',
+    sex: 'Male',
+    date_of_birth: '2026-08-15',
+    birth_weight_kg: 3.3,
+  };
+
+  const baby4m: BabyProfile = {
+    id: 12,
+    owner_id: 1,
+    name: 'Nethmi',
+    sex: 'Female',
+    date_of_birth: '2026-06-15',
+    birth_weight_kg: 3.2,
+  };
+
+  const baby5m: BabyProfile = {
+    id: 13,
+    owner_id: 1,
+    name: 'Liam',
+    sex: 'Male',
+    date_of_birth: '2026-05-15',
+    birth_weight_kg: 3.5,
+  };
+
+  const baby6m: BabyProfile = {
+    id: 14,
+    owner_id: 1,
+    name: 'Pansilu',
+    sex: 'Male',
+    date_of_birth: '2026-04-15',
+    birth_weight_kg: 3.4,
+  };
+
+  const baby10m: BabyProfile = {
+    id: 15,
+    owner_id: 1,
+    name: 'Maya',
+    sex: 'Female',
+    date_of_birth: '2025-12-15',
+    birth_weight_kg: 3.3,
+  };
+
+  const makeUnder6mRecommendations = (
+    months: number,
+    days: number = 0,
+  ): NutritionRecommendationResponse => ({
+    child_age_completed_months: months,
+    child_age_remaining_days: days,
+    is_eligible: true,
+    is_at_completion_boundary: false,
+    feeding_stage: 'STAGE_0_TO_5M',
+    stage_name: 'Birth to 5 Completed Months (Exclusive Milk Feeding)',
+    meal_frequency_guidance: 'Exclusive breastfeeding or appropriate infant milk feeding on cue (8 to 12 times in 24 hours)',
+    daily_snack_frequency_guidance: null,
+    milk_feeding_guidance: 'Infants under 6 completed months require breast milk only (or formula where prescribed). No water, tea, solid foods, or animal milk.',
+    general_preparation_instructions: [],
+    safety_and_hygiene_guidance: [
+      'Zero complementary foods, water, fruit juice, or herbal teas before 6 completed months.',
+      'Early introduction of solids increases risk of diarrhoea, allergy, and reduced breast milk production.',
+    ],
+    special_notice: 'Under National FHB guidelines, complementary foods must NOT be introduced before 6 completed months.',
+    generated_main_meals_count: 0,
+    generated_snacks_count: 0,
+    recommendations: [],
+    available_substitutions: {},
+    evaluation_date: '2026-10-20',
+    evidence_summary: {},
+  });
+
+  const recommendations6mExact: NutritionRecommendationResponse = {
+    child_age_completed_months: 6,
+    child_age_remaining_days: 0,
+    is_eligible: true,
+    is_at_completion_boundary: false,
+    feeding_stage: 'STAGE_6M_DAY_1_TO_3',
+    stage_name: 'Six Completed Months: Day 1 to 3 (First Tastes)',
+    feeding_rule: {
+      rule_id: 'RULE_6M_01',
+      stage_id: 'STAGE_6M_DAY_1_TO_3',
+      stage_name: 'Six Months Day 1 to 3',
+      min_calendar_months: 6,
+      max_calendar_months: 6,
+      precedence: 10,
+      requires_known_start_date: true,
+      is_late_starter_rule: false,
+      daily_meal_frequency: '1 to 2 taste sessions daily',
+      daily_snack_frequency: null,
+      household_portion: '2 to 3 teaspoons (10 to 15 ml)',
+      texture: 'SMOOTH_PUREE',
+      recommended_food_groups: ['GRAINS_AND_STAPLES'],
+      preparation_instructions: ['Cook rice thoroughly and mash smooth with breast milk'],
+      safety_and_hygiene_guidance: ['Zero salt, zero sugar'],
+      evidence_tier: 'TIER_A',
+      source_citation: {
+        publication: 'Right Food at the Right Time',
+        organization: 'Family Health Bureau',
+        year: 2025,
+        booklet_page: 5,
+        evidence_tier: 'TIER_A',
+        evidence_description: 'First tastes introduction guideline',
+      },
+    },
+    meal_frequency_guidance: '1 to 2 taste sessions daily',
+    daily_snack_frequency_guidance: null,
+    milk_feeding_guidance: 'Continue on-demand breastfeeding before and between meals',
+    general_preparation_instructions: ['Cook thoroughly until soft and mash with clean fork'],
+    safety_and_hygiene_guidance: ['Zero salt before 1 year', 'Zero added sugar before 2 years'],
+    generated_main_meals_count: 1,
+    generated_snacks_count: 0,
+    recommendations: [
+      {
+        recommendation_id: 'REC_6M_001',
+        meal_slot: 'MAIN_MEAL',
+        dish_or_food_id: 'DISH_RICE_PUREE',
+        name: 'Smooth Rice Mash with Breast Milk',
+        sinhala_name: 'මව්කිරෙන් දියකළ බත් කැඳ',
+        item_type: 'DISH',
+        ingredients: ['ING_RICE', 'ING_BREAST_MILK'],
+        food_groups: ['GRAINS_AND_STAPLES', 'HUMAN_MILK'],
+        texture: 'SMOOTH_PUREE',
+        household_portion: '2 to 3 teaspoons',
+        preparation_instructions: ['Cook raw rice until very soft and blend with expressed breast milk'],
+        safety_precautions: ['Do not add salt or sugar'],
+        recommendation_reason: 'Gentle on immature gut, familiar maternal taste.',
+        evidence_tier: 'TIER_A',
+        source_citation: {
+          publication: 'Right Food at the Right Time',
+          organization: 'Family Health Bureau',
+          year: 2025,
+          booklet_page: 5,
+          evidence_tier: 'TIER_A',
+          evidence_description: 'First complementary dish',
+        },
+        is_available_in_household: true,
+        ranking_score: 98,
+        ranking_factors: ['FHB Day 1 recommendation'],
+      },
+    ],
+    available_substitutions: {},
+    evaluation_date: '2026-10-20',
+    evidence_summary: { TIER_A: 1 },
+  };
+
+  const recommendations10m: NutritionRecommendationResponse = {
+    child_age_completed_months: 10,
+    child_age_remaining_days: 5,
+    is_eligible: true,
+    is_at_completion_boundary: false,
+    feeding_stage: 'STAGE_9_TO_11M',
+    stage_name: 'Nine to Eleven Months (Coarsely Chopped & Finger Foods)',
+    feeding_rule: {
+      rule_id: 'RULE_9_11M_01',
+      stage_id: 'STAGE_9_TO_11M',
+      stage_name: '9 to 11 Months',
+      min_calendar_months: 9,
+      max_calendar_months: 11,
+      precedence: 10,
+      requires_known_start_date: false,
+      is_late_starter_rule: false,
+      daily_meal_frequency: '3 main meals daily',
+      daily_snack_frequency: '1 to 2 nutritious snacks',
+      household_portion: '3/4 tea cup (approx 185 ml)',
+      texture: 'COARSELY_CHOPPED',
+      recommended_food_groups: ['GRAINS_AND_STAPLES', 'ANIMAL_SOURCE_FOODS', 'VEGETABLES', 'GREEN_LEAVES'],
+      preparation_instructions: ['Chop food into soft, manageable pieces'],
+      safety_and_hygiene_guidance: ['Supervise during finger-food feeding to prevent choking'],
+      evidence_tier: 'TIER_A',
+      source_citation: {
+        publication: 'Right Food at the Right Time',
+        organization: 'Family Health Bureau',
+        year: 2025,
+        booklet_page: 11,
+        evidence_tier: 'TIER_A',
+        evidence_description: 'Finger food & chopped food stage',
+      },
+    },
+    meal_frequency_guidance: '3 main meals daily',
+    daily_snack_frequency_guidance: '1 to 2 nutritious snacks',
+    milk_feeding_guidance: 'Continue frequent breastfeeding between meals',
+    general_preparation_instructions: ['Chop finely and encourage self-feeding with clean hands'],
+    safety_and_hygiene_guidance: ['Ensure small pieces, no whole nuts or hard raw vegetables'],
+    generated_main_meals_count: 2,
+    generated_snacks_count: 1,
+    recommendations: [
+      {
+        recommendation_id: 'REC_10M_001',
+        meal_slot: 'MAIN_MEAL',
+        dish_or_food_id: 'DISH_RICE_FISH_VEG',
+        name: 'Rice with Flaked Fish and Diced Carrot',
+        sinhala_name: 'තලපත්මත් සහ කැරට් සමඟ බත්',
+        item_type: 'DISH',
+        ingredients: ['ING_RICE', 'ING_FISH', 'ING_CARROT'],
+        food_groups: ['GRAINS_AND_STAPLES', 'ANIMAL_SOURCE_FOODS', 'VEGETABLES'],
+        texture: 'COARSELY_CHOPPED',
+        household_portion: '3/4 tea cup',
+        preparation_instructions: ['Cook rice and carrots tender, flake boneless fish and mix'],
+        safety_precautions: ['Check thoroughly for bones'],
+        recommendation_reason: 'High protein and iodine from fresh fish with staple energy.',
+        evidence_tier: 'TIER_A',
+        source_citation: {
+          publication: 'Right Food at the Right Time',
+          organization: 'Family Health Bureau',
+          year: 2025,
+          booklet_page: 11,
+          evidence_tier: 'TIER_A',
+          evidence_description: 'Coarsely chopped fish dish',
+        },
+        is_available_in_household: true,
+        ranking_score: 94,
+        ranking_factors: ['FHB 10m recommendation'],
+      },
+    ],
+    available_substitutions: {},
+    evaluation_date: '2026-10-20',
+    evidence_summary: { TIER_A: 1 },
+  };
+
+  beforeEach(() => {
+    vi.resetAllMocks();
+    vi.mocked(useAuth).mockReturnValue({
+      user: mother,
+      isAuthenticated: true,
+      isLoading: false,
+      authState: 'AUTHENTICATED',
+      refreshUser: vi.fn(),
+      logout: vi.fn(),
+    });
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue(babyEmma);
+    vi.mocked(nutritionApi.getPreferences).mockResolvedValue(defaultPreferencesEmma);
+    vi.mocked(nutritionApi.updatePreferences).mockResolvedValue(defaultPreferencesEmma);
+  });
+
+  it('Requirement 1: Newborn baby (0 completed months) receives simplified milk-feeding view without complementary sections', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(0, 10));
+
+    renderNutritionView(babyNewborn0m, [babyNewborn0m]);
+
+    expect(await screen.findByText('Aiden')).toBeInTheDocument();
+    expect(screen.getAllByText(/0 completed months/i)[0]).toBeInTheDocument();
+    expect(screen.getByText('Exclusive Milk Feeding Stage (0–5 Completed Months)')).toBeInTheDocument();
+    expect(screen.getByText('100% Milk Feeding')).toBeInTheDocument();
+    expect(screen.getByText('At least 8 to 12 feeds in 24 hours')).toBeInTheDocument();
+
+    // Verify NO complementary tabs are present
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Recommended Main Meals/i)).not.toBeInTheDocument();
+  });
+
+  it('Requirement 2: Two-month-old baby receives simplified milk-feeding view and milestone countdown', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(2, 0));
+
+    renderNutritionView(baby2m, [baby2m]);
+
+    expect(await screen.findByText('Aryan')).toBeInTheDocument();
+    expect(screen.getAllByText(/2 completed months/i)[0]).toBeInTheDocument();
+    expect(screen.getByText('Exclusive Milk Feeding Stage (0–5 Completed Months)')).toBeInTheDocument();
+    expect(screen.getByText(/approx\. 4 months remaining/i)).toBeInTheDocument();
+    expect(screen.getByText(/Feeding Frequency/i)).toBeInTheDocument();
+
+    // No complementary tabs
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+  });
+
+  it('Requirement 3: Four-month-old baby receives simplified milk-feeding view explaining complementary feeding starts at six months', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(4, 5));
+
+    renderNutritionView(baby4m, [baby4m]);
+
+    expect(await screen.findByText('Nethmi')).toBeInTheDocument();
+    expect(screen.getAllByText(/4 completed months \+ 5 days/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/approx\. 2 months remaining/i)).toBeInTheDocument();
+    expect(screen.getByText(/No solid, semi-solid, or puréed foods should be introduced before 6 completed calendar months/i)).toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+  });
+
+  it('Requirement 4: Five-month-old baby receives readiness signs and milestone alert without premature food ideas', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(5, 12));
+
+    renderNutritionView(baby5m, [baby5m]);
+
+    expect(await screen.findByText('Liam')).toBeInTheDocument();
+    expect(screen.getAllByText(/5 completed months \+ 12 days/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/approx\. 1 month remaining/i)).toBeInTheDocument();
+    expect(screen.getByText(/Looking Ahead: Complementary Feeding Readiness \(6 Completed Months\)/i)).toBeInTheDocument();
+    expect(screen.getByText('Loss of Tongue Thrust')).toBeInTheDocument();
+
+    // Must NOT show complementary tabs or meal planner
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Food Ideas & Preparation/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Daily Planner/i)).not.toBeInTheDocument();
+  });
+
+  it('Requirement 5: Exact six-month boundary enables full complementary feeding interface with all six tabs', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(recommendations6mExact);
+
+    renderNutritionView(baby6m, [baby6m]);
+
+    expect(await screen.findByText('Pansilu')).toBeInTheDocument();
+    expect(screen.getByText(/6 completed months/i)).toBeInTheDocument();
+    expect(screen.getByText('Six Completed Months: Day 1 to 3 (First Tastes)')).toBeInTheDocument();
+
+    // All six tabs MUST be present
+    expect(await screen.findByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Daily Planner/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /7-Day Weekly Plan/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Food Ideas & Preparation/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /FHB Guidelines & Evidence/i })).toBeInTheDocument();
+
+    // Complementary meal card rendered
+    expect(screen.getByText('Smooth Rice Mash with Breast Milk')).toBeInTheDocument();
+    expect(screen.getByText('මව්කිරෙන් දියකළ බත් කැඳ')).toBeInTheDocument();
+  });
+
+  it('Requirement 6: Seven-month-old baby preserves full interface with soft snacks and main meals', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(recommendations7m);
+
+    renderNutritionView(babyEmma, [babyEmma]);
+
+    expect(await screen.findByText('Emma')).toBeInTheDocument();
+    expect(screen.getByText(/7 completed months/i)).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
+    expect(screen.getByText(/Recommended Main Meals \(2\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Nutritious Snacks \(1\)/i)).toBeInTheDocument();
+    expect(screen.getByText('Rice with Dhal and Mashed Carrot')).toBeInTheDocument();
+  });
+
+  it('Requirement 7: Ten-month-old baby preserves full interface with finger foods and 3-meal frequency', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(recommendations10m);
+
+    renderNutritionView(baby10m, [baby10m]);
+
+    expect(await screen.findByText('Maya')).toBeInTheDocument();
+    expect(screen.getByText(/10 completed months \+ 5 days/i)).toBeInTheDocument();
+    expect(screen.getByText('Nine to Eleven Months (Coarsely Chopped & Finger Foods)')).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
+    expect(screen.getByText('Rice with Flaked Fish and Diced Carrot')).toBeInTheDocument();
+    expect(screen.getByText('Portion Guidance')).toBeInTheDocument();
+  });
+
+  it('Requirement 8: Sixty-month completion boundary displays milestone notice with no meal planning', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(recommendations60mPlus);
+
+    renderNutritionView(babySchoolAge, [babySchoolAge]);
+
+    expect(await screen.findByText('Chloe')).toBeInTheDocument();
+    expect(screen.getAllByText(/60 completed months/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/Nutrition Milestone Reached \(60 Completed Months\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your child has reached 5 years/i)).toBeInTheDocument();
+
+    // No complementary tabs or planners
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Daily Planner/i)).not.toBeInTheDocument();
+  });
+
+  it('Requirement 9: Seamless switching between a milk-only baby (2m) and a complementary-stage baby (10m)', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockImplementation(async (id) => {
+      if (id === 15) return recommendations10m;
+      return makeUnder6mRecommendations(2, 0);
+    });
+
+    renderNutritionView(baby2m, [baby2m, baby10m]);
+
+    // 1. Initial 2-month baby: Milk view only, no tabs
+    expect(await screen.findByText('Aryan')).toBeInTheDocument();
+    expect(screen.getAllByText(/2 completed months/i)[0]).toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+
+    // 2. Switch to 10-month baby (Maya)
+    const selector = screen.getByLabelText('Select registered child profile');
+    fireEvent.change(selector, { target: { value: '15' } });
+
+    // 3. 10-month baby: Full tabs and recommendations appear
+    expect(await screen.findByText('Maya')).toBeInTheDocument();
+    expect(screen.getByText(/10 completed months/i)).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Daily Planner/i })).toBeInTheDocument();
+    expect(screen.getByText('Rice with Flaked Fish and Diced Carrot')).toBeInTheDocument();
+
+    // 4. Switch BACK to 2-month baby (Aryan)
+    const selectorAfter = screen.getByLabelText('Select registered child profile');
+    fireEvent.change(selectorAfter, { target: { value: '11' } });
+
+    // 5. Returns immediately to simplified milk view; tabs and food cards disappear
+    expect(await screen.findByText('Aryan')).toBeInTheDocument();
+    expect(screen.getAllByText(/2 completed months/i)[0]).toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.queryByText('Rice with Flaked Fish and Diced Carrot')).not.toBeInTheDocument();
+  });
+
+  it('Requirement 10: Unknown milk-feeding method does not assert breastfeeding and displays neutral guidance', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(3, 0));
+    vi.mocked(nutritionApi.getPreferences).mockResolvedValue({
+      ...defaultPreferencesEmma,
+      milk_feeding_method: null,
+    });
+
+    renderNutritionView(babyNewborn0m, [babyNewborn0m]);
+
+    expect(await screen.findByText('Not Specified (Showing National Guidance)')).toBeInTheDocument();
+    expect(screen.getByText('National FHB Feeding Guidance (Recommendation)')).toBeInTheDocument();
+    expect(screen.getByText(/For Formula-Fed Infants:/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Record Feeding Method/i })).toBeInTheDocument();
+  });
+
+  it('Requirement 11: Recorded formula feeding displays safe preparation and responsive bottle-feeding without breast milk claims', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(3, 0));
+    vi.mocked(nutritionApi.getPreferences).mockResolvedValue({
+      ...defaultPreferencesEmma,
+      milk_feeding_method: 'infant_formula_only',
+    });
+
+    renderNutritionView(babyNewborn0m, [babyNewborn0m]);
+
+    expect(await screen.findByText('Infant Formula Feeding (Doctor Guided)')).toBeInTheDocument();
+    expect(screen.getByText('Infant Formula Feeding & Safe Preparation Guidelines')).toBeInTheDocument();
+    expect(screen.getByText('Safe Preparation & Hygiene:')).toBeInTheDocument();
+    expect(screen.getByText('Responsive Bottle Feeding:')).toBeInTheDocument();
+    expect(screen.getByText(/Sterilize bottles, teats, and collars thoroughly/i)).toBeInTheDocument();
+    expect(screen.getByText(/Never force a baby to finish a bottle/i)).toBeInTheDocument();
+
+    // Verify caregiver can trigger update control
+    const updateBtn = screen.getByRole('button', { name: /Update Feeding Method/i });
+    fireEvent.click(updateBtn);
+
+    expect(screen.getByText('Select Feeding Method for Aiden')).toBeInTheDocument();
+  });
+
+  it('Requirement 12: No irrelevant food sections or cards are visible for under-six-month babies', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(3, 0));
+
+    renderNutritionView(babyNewborn0m, [babyNewborn0m]);
+
+    await screen.findByText('Aiden');
+
+    // Tabs must be completely hidden
+    expect(screen.queryByRole('tab', { name: /Daily Planner/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /7-Day Weekly Plan/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /Feeding Preferences & Pantry/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /Food Ideas & Preparation/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /FHB Guidelines & Evidence/i })).not.toBeInTheDocument();
+
+    // Irrelevant complementary cards must be completely hidden
+    expect(screen.queryByText(/Main Meals \(/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Nutritious Snacks \(/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Standard Sri Lankan tea cup/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Planned for Today/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Official FHB Clinical Evidence Reference \(Tier A\)/i)).not.toBeInTheDocument();
+  });
+
+  it('Requirement 13: No hidden complementary food section content remains keyboard-focusable for under-six-month babies', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockResolvedValue(makeUnder6mRecommendations(2, 0));
+
+    const { container } = renderNutritionView(baby2m, [baby2m]);
+
+    await screen.findByText('Aryan');
+
+    // No tab roles exist
+    const tabs = container.querySelectorAll('[role="tab"]');
+    expect(tabs.length).toBe(0);
+
+    // No buttons from complementary feeding (substitutions, pantry save, etc.)
+    const buttons = Array.from(container.querySelectorAll('button')).map((b) => b.textContent?.trim());
+    expect(buttons.some((text) => text?.includes('Save Preferences'))).toBe(false);
+    expect(buttons.some((text) => text?.includes('Strict Kitchen Pantry'))).toBe(false);
+    expect(buttons.some((text) => text?.includes('View Weekly Plan'))).toBe(false);
+  });
+
+  it('Requirement 14: No stale data leakage during rapid baby switching', async () => {
+    vi.mocked(nutritionApi.getRecommendations).mockImplementation(async (id) => {
+      if (id === 1) return recommendations7m; // Emma (7m)
+      if (id === 11) return makeUnder6mRecommendations(2, 0); // Aryan (2m)
+      return recommendations7m;
+    });
+
+    renderNutritionView(babyEmma, [babyEmma, baby2m]);
+
+    // Initial state on Emma (7m)
+    expect(await screen.findByText('Emma')).toBeInTheDocument();
+    expect(screen.getByText('Rice with Dhal and Mashed Carrot')).toBeInTheDocument();
+
+    // Switch to Aryan (2m)
+    const selector = screen.getByLabelText('Select registered child profile');
+    fireEvent.change(selector, { target: { value: '11' } });
+
+    // Stale dish must vanish immediately, Aryan's stage must appear
+    expect(await screen.findByText('Aryan')).toBeInTheDocument();
+    expect(screen.queryByText('Rice with Dhal and Mashed Carrot')).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.getByText('Exclusive Milk Feeding Stage (0–5 Completed Months)')).toBeInTheDocument();
+  });
+});
+

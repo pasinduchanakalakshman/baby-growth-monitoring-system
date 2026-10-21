@@ -56,7 +56,10 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
 
   const weeklyPlanQuery = useQuery({
     queryKey: ['nutrition.plans.weekly', babyId, startDate],
-    queryFn: () => nutritionApi.getWeeklyPlan(babyId, startDate),
+    queryFn: () => {
+      if (!babyId) throw new Error('No baby ID available');
+      return nutritionApi.getWeeklyPlan(babyId, startDate);
+    },
     enabled: !!babyId,
     staleTime: 5 * 60 * 1000,
   });
@@ -202,7 +205,7 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
                 Developmental Milestone Transitions This Week
               </AlertTitle>
               <AlertDescription className="text-xs mt-1 space-y-1">
-                {weekly.stage_transitions.map((trans, idx) => (
+                {weekly.stage_transitions.map((trans: string, idx: number) => (
                   <p key={idx} className="font-medium">• {trans}</p>
                 ))}
               </AlertDescription>
@@ -211,7 +214,7 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
 
           {/* 7-Day Calendar Pill Header */}
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
-            {weekly.days.map((day, idx) => {
+            {weekly.days.map((day: DailyMealPlanResponse, idx: number) => {
               const { dayName, dayDate } = formatDayPill(day.plan_date);
               const isSelected = selectedDayIndex === idx;
 
@@ -363,7 +366,7 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
           {showGroceryList && weekly.weekly_grocery_checklist.length > 0 && (
             <GroceryChecklistSection
               items={weekly.weekly_grocery_checklist}
-              title={`Weekly Ingredient Checklist (${formattedWeekRange})`}
+              title={`Weekly Household Ingredient Checklist (${formattedWeekRange})`}
               description="Aggregated ingredients needed across all 7 planned days (reflects the baseline unmodified weekly meal plan). Filter by on-hand status for easy kitchen planning."
             />
           )}
@@ -375,7 +378,7 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
                 <Sparkles className="size-3.5 text-emerald-600" />
                 Explainable Deterministic Rotation
               </span>
-              {weekly.variety_notes.map((note, idx) => (
+              {weekly.variety_notes.map((note: string, idx: number) => (
                 <p key={idx}>{note}</p>
               ))}
             </div>

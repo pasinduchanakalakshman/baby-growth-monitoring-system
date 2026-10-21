@@ -123,19 +123,16 @@ export function GroceryChecklistSection({
           Object.entries(groupedItems).map(([groupKey, groupItems]) => {
             const groupConfig = FOOD_GROUP_CONFIG[groupKey as FoodGroup] || {
               label: groupKey.replace(/_/g, ' '),
-              sinhala: '',
-              badgeClass: 'bg-muted text-foreground',
+              color: 'text-foreground',
+              bg: 'bg-muted text-foreground',
             };
 
             return (
               <div key={groupKey} className="space-y-3">
                 <div className="flex items-center gap-2 border-b border-border/40 pb-1.5">
-                  <Badge variant="outline" className={`text-2xs font-bold ${groupConfig.badgeClass}`}>
+                  <Badge variant="outline" className={`text-2xs font-bold ${groupConfig.bg} ${groupConfig.color}`}>
                     {groupConfig.label}
                   </Badge>
-                  {groupConfig.sinhala && (
-                    <span className="text-xs text-muted-foreground">({groupConfig.sinhala})</span>
-                  )}
                   <span className="text-2xs text-muted-foreground ml-auto">
                     {groupItems.length} {groupItems.length === 1 ? 'ingredient' : 'ingredients'}
                   </span>

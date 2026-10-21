@@ -88,11 +88,13 @@ const mealItemRiceFish: MealRecommendationItem = {
   recommendation_reason: 'Rich in animal protein, bioavailable iron, and essential fatty acids.',
   evidence_tier: 'TIER_A',
   source_citation: {
-    source_id: 'FHB_2025_CF',
-    booklet_title: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
-    section: 'Section 4.3',
-    page_or_figure: 'Page 9',
+    publication: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
+    organization: 'Family Health Bureau',
+    year: 2025,
+    booklet_page: 9,
+    pdf_page: 11,
     evidence_tier: 'TIER_A',
+    evidence_description: 'National complementary feeding guideline 7 months',
   },
   is_available_in_household: true,
   ranking_score: 95,
@@ -122,11 +124,13 @@ const mealItemVegetarianDuo: MealRecommendationItem = {
   recommendation_reason: 'Nutritious plant-protein meal combining lentils, chickpeas, and pumpkin in a coarsely mashed texture.',
   evidence_tier: 'TIER_B',
   source_citation: {
-    source_id: 'FHB_2025_CF',
-    booklet_title: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
-    section: 'Section 4.3',
-    page_or_figure: 'Page 9',
+    publication: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
+    organization: 'Family Health Bureau',
+    year: 2025,
+    booklet_page: 9,
+    pdf_page: 11,
     evidence_tier: 'TIER_B',
+    evidence_description: 'Vegetarian pulse combination guideline',
   },
   is_available_in_household: false,
   ranking_score: 88,
@@ -135,7 +139,7 @@ const mealItemVegetarianDuo: MealRecommendationItem = {
 
 const snackItemScrapedBanana: MealRecommendationItem = {
   recommendation_id: 'REC_SNACK_SCRAPED_BANANA_7M',
-  meal_slot: 'MID_MORNING_SNACK',
+  meal_slot: 'SNACK',
   dish_or_food_id: 'SNACK_SCRAPED_BANANA_7M',
   name: 'Fresh Scraped Ripe Banana',
   sinhala_name: 'ගාගත් ඉදුණු කෙසෙල්',
@@ -156,11 +160,13 @@ const snackItemScrapedBanana: MealRecommendationItem = {
   recommendation_reason: '7 months + 1 week fresh scraped fruit snack between meals.',
   evidence_tier: 'TIER_A',
   source_citation: {
-    source_id: 'FHB_2025_CF',
-    booklet_title: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
-    section: 'Section 4.5',
-    page_or_figure: 'Page 10',
+    publication: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
+    organization: 'Family Health Bureau',
+    year: 2025,
+    booklet_page: 10,
+    pdf_page: 12,
     evidence_tier: 'TIER_A',
+    evidence_description: 'Fresh scraped fruit recommendation',
   },
   is_available_in_household: false,
   ranking_score: 92,
@@ -248,7 +254,7 @@ const mockDailyPlanEmma: DailyMealPlanResponse = {
     {
       slot_number: 1,
       slot_label: 'Nutritious Snack (Between Meals)',
-      slot_type: 'MID_MORNING_SNACK',
+      slot_type: 'SNACK',
       meal_item: snackItemScrapedBanana,
       is_unfilled: false,
       unfilled_reason: null,
@@ -266,11 +272,13 @@ const mockDailyPlanEmma: DailyMealPlanResponse = {
   special_notice: null,
   evidence_summary: { TIER_A: 2, TIER_B: 1 },
   source_citation: {
-    source_id: 'FHB_2025_CF',
-    booklet_title: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
-    section: 'Section 4.3',
-    page_or_figure: 'Page 9',
+    publication: 'Right Food at the Right Time, To Make My Baby Healthy and Bright',
+    organization: 'Family Health Bureau',
+    year: 2025,
+    booklet_page: 9,
+    pdf_page: 11,
     evidence_tier: 'TIER_A',
+    evidence_description: 'National complementary feeding guideline 7 months',
   },
 };
 
@@ -403,14 +411,14 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('1. Displays Daily Planner and 7-Day Weekly Plan tabs in the navigation bar', async () => {
     renderNutritionPage();
 
-    expect(screen.getByRole('tab', { name: /Daily Planner/i })).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: /Daily Planner/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /7-Day Weekly Plan/i })).toBeInTheDocument();
   });
 
   it('2. Switches to Daily Planner tab and renders date navigation bar', async () => {
     renderNutritionPage();
 
-    const dailyTab = screen.getByRole('tab', { name: /Daily Planner/i });
+    const dailyTab = await screen.findByRole('tab', { name: /Daily Planner/i });
     fireEvent.click(dailyTab);
 
     await waitFor(() => {
@@ -424,7 +432,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('3. Renders daily meal slots with accurate FHB portion, texture, and Tier A labels', async () => {
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /Daily Planner/i }));
+    const dailyTab = await screen.findByRole('tab', { name: /Daily Planner/i });
+    fireEvent.click(dailyTab);
 
     await waitFor(() => {
       expect(screen.getByText(/Coarsely Mashed Rice with Sea Fish, Dhal & Sarana/i)).toBeInTheDocument();
@@ -438,7 +447,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('4. Renders nutritious snacks section for the planned date', async () => {
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /Daily Planner/i }));
+    const dailyTab = await screen.findByRole('tab', { name: /Daily Planner/i });
+    fireEvent.click(dailyTab);
 
     await waitFor(() => {
       expect(screen.getByText(/Fresh Scraped Ripe Banana/i)).toBeInTheDocument();
@@ -455,7 +465,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
 
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /Daily Planner/i }));
+    const dailyTab = await screen.findByRole('tab', { name: /Daily Planner/i });
+    fireEvent.click(dailyTab);
 
     await waitFor(() => {
       expect(screen.getByText(/Coarsely Mashed Rice with Sea Fish, Dhal & Sarana/i)).toBeInTheDocument();
@@ -489,7 +500,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('6. Switches to 7-Day Weekly Plan tab and renders 7-day calendar pills', async () => {
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /7-Day Weekly Plan/i }));
+    const weeklyTab = await screen.findByRole('tab', { name: /7-Day Weekly Plan/i });
+    fireEvent.click(weeklyTab);
 
     await waitFor(() => {
       expect(screen.getByText(/7-Day Weekly Meal Planning Matrix/i)).toBeInTheDocument();
@@ -508,7 +520,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('7. Displays developmental milestone transition notices across the week', async () => {
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /7-Day Weekly Plan/i }));
+    const weeklyTab = await screen.findByRole('tab', { name: /7-Day Weekly Plan/i });
+    fireEvent.click(weeklyTab);
 
     await waitFor(() => {
       expect(screen.getByText(/Developmental Milestone Transitions This Week/i)).toBeInTheDocument();
@@ -521,10 +534,11 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('8. Renders weekly grocery checklist with category grouping and pantry status', async () => {
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /7-Day Weekly Plan/i }));
+    const weeklyTab = await screen.findByRole('tab', { name: /7-Day Weekly Plan/i });
+    fireEvent.click(weeklyTab);
 
     await waitFor(() => {
-      expect(screen.getByText(/Weekly Ingredient Checklist/i)).toBeInTheDocument();
+      expect(screen.getByText(/Weekly Household Ingredient Checklist/i)).toBeInTheDocument();
       expect(screen.getByText(/Grains & Staples/i)).toBeInTheDocument();
       expect(screen.getByText(/Animal-Source Foods/i)).toBeInTheDocument();
       expect(screen.getByText(/Pulses & Legumes/i)).toBeInTheDocument();
@@ -537,10 +551,11 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   it('9. Allows filtering grocery checklist by missing ingredients only', async () => {
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /7-Day Weekly Plan/i }));
+    const weeklyTab = await screen.findByRole('tab', { name: /7-Day Weekly Plan/i });
+    fireEvent.click(weeklyTab);
 
     await waitFor(() => {
-      expect(screen.getByText(/Weekly Ingredient Checklist/i)).toBeInTheDocument();
+      expect(screen.getByText(/Weekly Household Ingredient Checklist/i)).toBeInTheDocument();
     });
 
     const needToBuyFilter = screen.getByRole('button', { name: /To Buy/i });
@@ -553,38 +568,69 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
   });
 
   it('10. Renders milk-feeding guidance and zero solid slots for children aged 0–5 months', async () => {
+    (nutritionApi.getRecommendations as any).mockResolvedValue({
+      baby_id: 3,
+      child_age_completed_months: 3,
+      child_age_remaining_days: 0,
+      is_eligible: true,
+      is_at_completion_boundary: false,
+      feeding_stage: 'STAGE_0_TO_5M',
+      stage_name: 'Birth to 5 Completed Months (Exclusive Milk Feeding)',
+      meal_frequency_guidance: 'Exclusive breastfeeding or appropriate infant milk feeding on cue',
+      daily_snack_frequency_guidance: null,
+      milk_feeding_guidance: 'Infants under 6 completed months require breast milk only. No water, tea, solid foods, or animal milk.',
+      general_preparation_instructions: [],
+      safety_and_hygiene_guidance: [],
+      special_notice: 'Under National FHB guidelines, complementary foods must NOT be introduced before 6 completed months.',
+      recommendations: [],
+      available_substitutions: {},
+    });
     (nutritionApi.getDailyPlan as any).mockResolvedValue(mockDailyPlanNewborn);
     renderNutritionPage(babyNewborn, [babyNewborn]);
 
-    fireEvent.click(screen.getByRole('tab', { name: /Daily Planner/i }));
+    expect(await screen.findByText('Noah')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Exclusive Milk Feeding Stage/i)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/require only breast milk/i)
-      ).toBeInTheDocument();
-    });
+    // Verify complementary tabs are hidden for under 6 months
+    expect(screen.queryByRole('tab', { name: /Daily Planner/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /7-Day Weekly Plan/i })).not.toBeInTheDocument();
+
+    // Verify simplified milk-feeding view is shown
+    expect(screen.getByText(/Exclusive Milk Feeding Stage/i)).toBeInTheDocument();
+    expect(screen.getByText(/100% Milk Feeding/i)).toBeInTheDocument();
 
     // Confirm no complementary meal slots are shown
     expect(screen.queryByText(/Main Meal 1/i)).not.toBeInTheDocument();
   });
 
   it('11. Renders project completion milestone notice for children at 60 completed months', async () => {
+    (nutritionApi.getRecommendations as any).mockResolvedValue({
+      baby_id: 4,
+      child_age_completed_months: 60,
+      child_age_remaining_days: 0,
+      is_eligible: false,
+      is_at_completion_boundary: true,
+      feeding_stage: 'STAGE_COMPLETED',
+      stage_name: '5 Years and Above (Research Boundary Reached)',
+      meal_frequency_guidance: 'Family meals',
+      daily_snack_frequency_guidance: null,
+      milk_feeding_guidance: 'Family dietary guidelines apply.',
+      general_preparation_instructions: [],
+      safety_and_hygiene_guidance: [],
+      special_notice: 'Child has completed the 0–59 calendar month research boundary. Please consult national school-age dietary guidelines.',
+      recommendations: [],
+      available_substitutions: {},
+    });
     (nutritionApi.getDailyPlan as any).mockResolvedValue(mockDailyPlanSchoolAge);
     renderNutritionPage(babySchoolAge, [babySchoolAge]);
 
-    fireEvent.click(screen.getByRole('tab', { name: /Daily Planner/i }));
+    expect(await screen.findByText('Chloe')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Child Growth & Nutrition Scope Complete/i)
-      ).toBeInTheDocument();
-      expect(
-        screen.getAllByText(/Your child has completed 60 calendar months \(5 years\)/i).length
-      ).toBeGreaterThan(0);
-    });
+    // Verify Daily Planner tab is hidden for 60m+
+    expect(screen.queryByRole('tab', { name: /Daily Planner/i })).not.toBeInTheDocument();
+
+    // Verify completion milestone notice rendered
+    expect(screen.getByText(/Nutrition Milestone Reached \(60 Completed Months\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your child has reached 5 years/i)).toBeInTheDocument();
 
     // Confirm no new complementary meal slots are generated
     expect(screen.queryByText(/Main Meal 1/i)).not.toBeInTheDocument();
@@ -609,7 +655,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
     (nutritionApi.getDailyPlan as any).mockResolvedValue(planWithUnfilled);
     renderNutritionPage();
 
-    fireEvent.click(screen.getByRole('tab', { name: /Daily Planner/i }));
+    const dailyTab = await screen.findByRole('tab', { name: /Daily Planner/i });
+    fireEvent.click(dailyTab);
 
     await waitFor(() => {
       expect(screen.getByText(/Unfilled Meal Slot/i)).toBeInTheDocument();

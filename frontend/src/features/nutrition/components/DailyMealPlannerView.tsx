@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   AlertCircle,
-  AlertTriangle,
   Award,
   BookOpen,
   Calendar,
@@ -15,20 +14,18 @@ import {
   Loader2,
   RefreshCw,
   ShieldAlert,
-  Sparkles,
   Utensils,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { nutritionApi } from '@/api/nutrition';
 import {
-  DailyMealPlanResponse,
   MealRecommendationItem,
   PlannedMealSlot,
 } from '@/types/nutrition';
-import { FOOD_TEXTURE_LABELS, getIngredientLabel } from '@/features/nutrition/nutritionMetadata';
+import { FOOD_TEXTURE_LABELS } from '@/features/nutrition/nutritionMetadata';
 import {
   addDaysToDate,
   formatHeaderDate,
@@ -42,7 +39,7 @@ interface DailyMealPlannerViewProps {
   babyDob: string;
 }
 
-export function DailyMealPlannerView({ babyId, babyDob }: DailyMealPlannerViewProps) {
+export function DailyMealPlannerView({ babyId, babyDob: _babyDob }: DailyMealPlannerViewProps) {
   const [selectedDate, setSelectedDate] = useState<string>(() => {
     return getTodayDateString();
   });
@@ -52,7 +49,10 @@ export function DailyMealPlannerView({ babyId, babyDob }: DailyMealPlannerViewPr
 
   const dailyPlanQuery = useQuery({
     queryKey: ['nutrition.plans.daily', babyId, selectedDate],
-    queryFn: () => nutritionApi.getDailyPlan(babyId, selectedDate),
+    queryFn: () => {
+      if (!babyId) throw new Error('No baby ID available');
+      return nutritionApi.getDailyPlan(babyId, selectedDate);
+    },
     enabled: !!babyId,
     staleTime: 5 * 60 * 1000,
   });
@@ -275,7 +275,7 @@ export function DailyMealPlannerView({ babyId, babyDob }: DailyMealPlannerViewPr
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(plan.planned_meals || []).map((slot) => {
+                {(plan.planned_meals || []).map((slot: PlannedMealSlot) => {
                   const effectiveItem = localSubstitutions[slot.slot_number] || slot.meal_item;
                   return (
                     <PlannedSlotCard
@@ -301,7 +301,7 @@ export function DailyMealPlannerView({ babyId, babyDob }: DailyMealPlannerViewPr
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(plan.planned_snacks || []).map((slot) => {
+                {(plan.planned_snacks || []).map((slot: PlannedMealSlot) => {
                   const effectiveItem = localSubstitutions[slot.slot_number] || slot.meal_item;
                   return (
                     <PlannedSlotCard
@@ -327,7 +327,7 @@ export function DailyMealPlannerView({ babyId, babyDob }: DailyMealPlannerViewPr
                       Preparation Guidelines for this Stage
                     </span>
                     <ul className="space-y-1.5 text-muted-foreground list-disc pl-4">
-                      {plan.general_preparation_instructions.map((step, idx) => (
+                      {plan.general_preparation_instructions.map((step: string, idx: number) => (
                         <li key={idx}>{step}</li>
                       ))}
                     </ul>
@@ -341,7 +341,7 @@ export function DailyMealPlannerView({ babyId, babyDob }: DailyMealPlannerViewPr
                       Safety, Salt & Sugar Prohibitions
                     </span>
                     <ul className="space-y-1.5 text-muted-foreground list-disc pl-4">
-                      {plan.safety_and_hygiene_guidance.map((note, idx) => (
+                      {plan.safety_and_hygiene_guidance.map((note: string, idx: number) => (
                         <li key={idx}>{note}</li>
                       ))}
                     </ul>

@@ -422,11 +422,11 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(nutritionApi.getPreferences).toHaveBeenCalledWith(2);
   });
 
-  it('5. Renders meal cards with Sinhala names, portion units, texture, ingredients, and reasons', async () => {
+  it('5. Renders meal cards with English names, portion units, texture, ingredients, and reasons', async () => {
     renderNutritionView();
 
     expect(await screen.findByText('Rice with Dhal and Mashed Carrot')).toBeInTheDocument();
-    expect(screen.getByText('පරිප්පු සහ කැරට් සමඟ බත්')).toBeInTheDocument();
+    expect(screen.queryByText('පරිප්පු සහ කැරට් සමඟ බත්')).not.toBeInTheDocument();
     expect(screen.getByText(/Portion:\s*1\/2 tea cup \(approx 125 ml\)/i)).toBeInTheDocument();
     expect(screen.getAllByText('Half Mashed')[0]).toBeInTheDocument();
     expect(screen.getByText('Combines staple grains with plant protein and vitamin A rich vegetable in an age-appropriate half-mashed texture.')).toBeInTheDocument();
@@ -435,13 +435,14 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(screen.getAllByText(/White \/ Red Rice/i)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Red Lentils|Red Dhal/i)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Carrot/i)[0]).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/\p{Script=Sinhala}/u);
   });
 
   it('6. Renders snack cards distinguishing soft snacks from main meals', async () => {
     renderNutritionView();
 
     expect(await screen.findByText('Mashed Ripe Banana (Ambul / Anamalu)')).toBeInTheDocument();
-    expect(screen.getByText('පොඩි කළ ඇඹුල් කෙසෙල්')).toBeInTheDocument();
+    expect(screen.queryByText('පොඩි කළ ඇඹුල් කෙසෙල්')).not.toBeInTheDocument();
     expect(screen.getByText(/Portion:\s*2 to 3 tablespoons/i)).toBeInTheDocument();
     expect(screen.getByText(/Recommended Main Meals \(2\)/i)).toBeInTheDocument();
     expect(screen.getByText(/Nutritious Snacks \(1\)/i)).toBeInTheDocument();
@@ -489,16 +490,15 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(screen.getByText(/Portion:\s*2 to 3 tablespoons/i)).toBeInTheDocument();
   });
 
-  it('10. Displays substitute ingredient suggestions when provided by backend', async () => {
+  it('10. Keeps the removed substitutions panel hidden when backend suggestions exist', async () => {
     renderNutritionView();
 
     await screen.findByText('Rice with Dhal and Mashed Carrot');
     const toggleButton = screen.getAllByRole('button', { name: /View Preparation & Safety Instructions/i })[0];
     fireEvent.click(toggleButton);
 
-    expect(screen.getByText('Practical Kitchen Substitutions')).toBeInTheDocument();
-    expect(screen.getAllByText(/Yellow Pumpkin/i)[0]).toBeInTheDocument();
-    expect(screen.getByText(/Yellow Sweet Potato/i)).toBeInTheDocument();
+    expect(screen.queryByText('Practical Kitchen Substitutions')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Yellow Sweet Potato/i)).not.toBeInTheDocument();
   });
 
   it('11. Allows editing feeding preferences and validates input', async () => {
@@ -995,7 +995,7 @@ describe('Phase 8 — Age-Conditional Nutrition Interface Tests (0–5m vs 6–5
 
     // Complementary meal card rendered
     expect(screen.getByText('Smooth Rice Mash with Breast Milk')).toBeInTheDocument();
-    expect(screen.getByText('මව්කිරෙන් දියකළ බත් කැඳ')).toBeInTheDocument();
+    expect(screen.queryByText('මව්කිරෙන් දියකළ බත් කැඳ')).not.toBeInTheDocument();
   });
 
   it('Requirement 6: Seven-month-old baby preserves full interface with soft snacks and main meals', async () => {

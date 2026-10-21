@@ -200,7 +200,7 @@ export const FOOD_TEXTURE_LABELS: Record<FoodTexture, { label: string; descripti
 export function getIngredientLabel(id: string): string {
   const meta = INGREDIENTS_BY_ID[id];
   if (!meta) return id;
-  return meta.sinhalaName ? `${meta.name} (${meta.sinhalaName})` : meta.name;
+  return meta.name;
 }
 
 export function getRestrictionGroupLabel(code: string): string {

@@ -1,24 +1,50 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import {
+  ArrowRight,
+  CalendarDays,
+  History,
+  ShieldAlert,
+  Sparkles,
+  TrendingUp,
+  Activity,
+  HeartHandshake
+} from 'lucide-react';
 import { growthApi } from '@/api/growth';
-import { ShieldAlert, Info, ActivitySquare } from 'lucide-react';
 import { formatCalendarDate } from '@/utils/growthDisplay';
-import { 
-  formatRiskScore, 
-  getScreeningStatus, 
-  isScreeningElevated, 
-  RESEARCH_SCREENING_THRESHOLD, 
-  RISK_DISCLAIMER_TEXT 
+import {
+  formatRiskScore,
+  getScreeningStatus,
+  isScreeningElevated,
+  RESEARCH_SCREENING_THRESHOLD
 } from '@/utils/riskDisplay';
+import {
+  getRecordedVisitCount,
+  getMatchedScreeningStatus,
+  analyzeWeightHistory,
+  analyzeWazComparison,
+  analyzeForecastComparison,
+  buildIntegratedGrowthStory,
+  getWeightRelatedFactors
+} from '@/utils/explanationDisplay';
+import type { GrowthHistoryPoint, Forecast30Day } from '@/types/growth';
 import { PageHeader } from '@/components/ui/shared/PageHeader';
+import { Button } from '@/components/ui/button';
 import { LoadingState } from '@/components/ui/shared/LoadingState';
 import { EmptyState } from '@/components/ui/shared/EmptyState';
 import { ErrorStateUI } from '@/components/ui/shared/ErrorStateUI';
 import { ResearchDisclaimer } from '@/components/ui/shared/ResearchDisclaimer';
+import WeightHistoryChart from '@/features/growth/components/WeightHistoryChart';
+import { shortDate } from '@/features/dashboard/dashboardDisplay';
+
+function readableGrowthDates(text: string) {
+  return text.replace(/\b\d{4}-\d{2}-\d{2}\b/g, date => shortDate(date) ?? date);
+}
 
 export default function RiskLatestPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { data: overview, isLoading: overviewLoading, error: overviewError } = useQuery({
     queryKey: ['growth.overview'],
@@ -35,6 +61,56 @@ export default function RiskLatestPage() {
     queryKey: ['model.info'],
     queryFn: growthApi.getModelInfo
   });
+
+  // Query explanation data together on the combined page
+  const { data: explanationData, isLoading: explanationLoading } = useQuery({
+    queryKey: ['risk.explanation', overview?.baby?.id],
+    queryFn: async ({ signal }) => {
+      const explanation = await growthApi.getRiskExplanation(signal);
+      let history: GrowthHistoryPoint[] = [];
+      let forecast: Forecast30Day | null = null;
+
+      if (!signal.aborted) {
+        try {
+          if (typeof growthApi.getGrowthHistory === 'function') {
+            history = await growthApi.getGrowthHistory();
+          }
+        } catch {
+          history = [];
+        }
+      }
+
+      if (!signal.aborted) {
+        try {
+          if (typeof growthApi.getGrowthForecast === 'function') {
+            forecast = await growthApi.getGrowthForecast();
+          }
+        } catch {
+          forecast = null;
+        }
+      }
+
+      return { explanation, history, forecast };
+    },
+    enabled: !!overview?.current_growth && !!risk?.risk_available,
+    retry: false
+  });
+
+  const scrollToExplanation = () => {
+    const el = document.getElementById('why-this-risk-assessment');
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    if (location.hash === '#why-this-risk-assessment' || location.hash === '#explanation') {
+      const timer = setTimeout(() => {
+        scrollToExplanation();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash, risk]);
 
   if (overviewLoading || (riskLoading && overview?.current_growth) || modelLoading) {
     return <LoadingState />;
@@ -53,34 +129,42 @@ export default function RiskLatestPage() {
     : isScreeningElevated(score, threshold);
   const screeningStatus = risk?.screening_status || getScreeningStatus(score, threshold);
 
+  // Explanation computations
+  const explanation = explanationData?.explanation;
+  const history = explanationData?.history ?? [];
+  const forecast = explanationData?.forecast ?? null;
+  const visitCount = explanation ? getRecordedVisitCount(explanation) : null;
+  const matchedStatus = explanation ? getMatchedScreeningStatus(explanation, risk) : null;
+  const effectiveStatus = matchedStatus ?? (isElevated ? 'elevated' : 'below');
+  const weightAnalysis = explanation ? analyzeWeightHistory(history, explanation) : null;
+  const wazComparison = explanation ? analyzeWazComparison(history, explanation) : null;
+  const forecastComparison = analyzeForecastComparison(forecast);
+
+  const weightFactors = explanation ? getWeightRelatedFactors(explanation, effectiveStatus) : [];
+
+  const story = weightAnalysis && wazComparison
+    ? buildIntegratedGrowthStory(weightAnalysis, wazComparison, effectiveStatus, weightFactors, forecastComparison)
+    : null;
+
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24">
+    <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24 space-y-8" data-testid="combined-risk-page">
       <PageHeader
-        title="Early Growth Risk"
-        description="Experimental AI screening score based on your child's recorded growth history."
+        title="Growth Risk & Insights"
+        description="Understand your baby's growth assessment and the information behind it."
         actions={
-          <>
-            <button
+            <Button
+              variant="outline"
               onClick={() => navigate('/growth/risk/history')}
-              className="border bg-background hover:bg-slate-50 px-4 py-2 rounded-xl font-medium transition-colors shadow-sm text-sm inline-flex items-center gap-2 text-slate-700"
+              className="min-h-12 shrink-0 gap-3 rounded-xl border-primary/20 bg-card px-4 py-3 font-semibold text-primary hover:bg-primary/5 hover:text-primary"
             >
-              <ActivitySquare className="h-4 w-4 text-slate-500" />
+              <History aria-hidden="true" className="size-5" />
               View Risk History
-            </button>
-            {risk?.risk_available && (
-              <button
-                onClick={() => navigate('/growth/explanation')}
-                className="bg-[#FFE7F4] border border-[#FFD0E8] hover:bg-[#FFD9EE] text-[#D81B7C] px-4 py-2 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-btn-prediction"
-              >
-                <Info className="h-4 w-4" />
-                Why This Risk?
-              </button>
-            )}
-          </>
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </Button>
         }
       />
 
-      <div className="space-y-8 mt-8">
+      <div className="space-y-8">
         {hasNoData ? (
           <EmptyState
             icon={ShieldAlert}
@@ -95,14 +179,15 @@ export default function RiskLatestPage() {
           />
         ) : risk && risk.risk_available ? (
           <div className="space-y-8" data-testid="risk-available-state">
-            <div className="bg-white border rounded-2xl shadow-sm p-8 relative overflow-hidden">
+            {/* FIRST SECTION — GROWTH RISK ASSESSMENT */}
+            <div className="bg-white border rounded-2xl shadow-sm p-6 md:p-8 relative overflow-hidden">
               <div className={`absolute top-0 left-0 w-2 h-full ${isElevated ? 'bg-amber-400' : 'bg-slate-300'}`}></div>
               <div className="pl-2">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                      180-Day Growth-Faltering Risk Score
-                    </h3>
+                    <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                      Growth-Faltering Risk Score
+                    </h2>
                     <div className="flex items-baseline gap-3 mt-4">
                       <span className="text-sm font-medium text-slate-500">Risk score:</span>
                       <span className="text-6xl font-bold text-slate-900 tracking-tight" data-testid="risk-score-value">
@@ -123,31 +208,255 @@ export default function RiskLatestPage() {
                       </span>
                     </div>
 
-                    <p className="text-sm text-slate-600 mt-6 leading-relaxed">
-                      {RISK_DISCLAIMER_TEXT}
-                    </p>
-                    <p className="text-xs text-slate-400 mt-2">
-                      Research screening threshold: {threshold.toFixed(3)}. Scores at or above this threshold indicate elevated screening risk for research observation.
-                    </p>
                   </div>
                   
-                  <div className="bg-slate-50 rounded-xl p-5 border border-slate-100 flex flex-col justify-center space-y-4">
-                    <div>
-                      <p className="text-sm text-slate-500 mb-1">Based on measurements up to:</p>
-                      <p className="text-lg font-medium text-slate-900">
-                        {formatCalendarDate(overview.current_growth?.visit_date)}
+                  <div className="flex items-center gap-4 rounded-2xl border border-primary/10 bg-secondary/50 p-5 sm:p-6">
+                    <div aria-hidden="true" className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-card text-primary shadow-sm">
+                      <CalendarDays className="size-6" strokeWidth={1.75} />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-medium text-muted-foreground">Latest measurement</h3>
+                      <p className="mt-1 text-xl font-semibold leading-snug tracking-tight text-foreground">
+                        <time dateTime={overview?.current_growth?.visit_date ?? undefined}>{formatCalendarDate(overview?.current_growth?.visit_date)}</time>
+                      </p>
+                      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Used for this risk assessment</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SECOND SECTION — RISK EXPLANATION */}
+            <div id="why-this-risk-assessment" className="space-y-6 pt-4 border-t border-slate-200/80" data-testid="explanation-section">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 shrink-0">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Why This Risk Assessment?</h2>
+                  <p className="text-sm text-slate-500">
+                    How recorded measurements and growth indicators informed this screening.
+                  </p>
+                </div>
+              </div>
+
+              {explanationLoading ? (
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-sm text-slate-500 text-center" data-testid="explanation-loading">
+                  Loading growth assessment explanation...
+                </div>
+              ) : !explanation ? (
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-sm text-slate-600" data-testid="explanation-unavailable">
+                  <p className="font-medium text-slate-800">Growth explanation is currently unavailable</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    We cannot show detailed explanation factors right now, but your baby&apos;s risk score above remains confirmed.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Subsection A: Your Baby's Growth Assessment */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-lg bg-purple-50 text-purple-600 shrink-0">
+                        <Activity className="h-4 w-4" />
+                      </div>
+                      <h3 className="text-base font-semibold text-slate-900">A. Your Baby&apos;s Growth Assessment</h3>
+                    </div>
+
+                    <div data-testid="screening-summary" className={`rounded-xl p-4 border space-y-2.5 ${
+                      isElevated ? 'bg-amber-50/60 border-amber-200 text-amber-950' : 'bg-slate-50 border-slate-100 text-slate-700'
+                    }`}>
+                      <p className="font-semibold text-base">
+                        {isElevated
+                          ? 'Closer growth monitoring may be helpful'
+                          : 'Continue regular growth checks'}
+                      </p>
+                      <p className="text-sm leading-relaxed">
+                        {isElevated
+                          ? "Your baby's recorded growth information has triggered an early screening alert for possible growth difficulties."
+                          : "Your baby's recorded growth information did not trigger an elevated screening alert for possible growth difficulties. Regular growth checks remain important."}
+                      </p>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        {isElevated
+                          ? "This is an early monitoring alert, not a medical diagnosis. It does not predict future weight decline or diagnose conditions such as stunting, wasting, or underweight. Please discuss this result with your healthcare provider."
+                          : "This assessment is encouraging, but it does not guarantee that growth difficulties cannot occur. Regular growth checks remain important."}
                       </p>
                     </div>
 
-                    {risk.component_scores && (
-                      <div className="pt-3 border-t border-slate-200 text-xs text-slate-500 space-y-1">
-                        <div className="font-medium text-slate-600">Model Components (0.90 / 0.10 Hybrid):</div>
-                        <div>Standard XGBoost Score: {formatRiskScore(risk.component_scores.xgboost_probability)} (Weight: 0.90)</div>
-                        <div>Clean Transformer Score: {formatRiskScore(risk.component_scores.transformer_probability)} (Weight: 0.10)</div>
+                    {story && (
+                      <div
+                        data-testid="integrated-growth-story"
+                        className="bg-gradient-to-br from-indigo-50/70 to-blue-50/50 border border-indigo-100 rounded-xl p-4 md:p-5 space-y-3"
+                      >
+                        <div className="flex items-center gap-2 text-indigo-900">
+                          <Sparkles className="h-4 w-4 text-indigo-600 shrink-0" />
+                          <h4 className="font-semibold text-sm text-indigo-950">At a Glance: Key Answers for Parents</h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                          <div className="bg-white/90 border border-indigo-100/70 rounded-lg p-3 space-y-1">
+                            <span className="font-semibold text-[11px] uppercase tracking-wider text-indigo-700 block">
+                              Is my baby gaining weight?
+                            </span>
+                            <p className="text-slate-700 text-xs leading-relaxed">{story.isGainingWeight}</p>
+                          </div>
+                          <div className="bg-white/90 border border-indigo-100/70 rounded-lg p-3 space-y-1">
+                            <span className="font-semibold text-[11px] uppercase tracking-wider text-indigo-700 block">
+                              Why is the AI concerned about my baby?
+                            </span>
+                            <p className="text-slate-700 text-xs leading-relaxed">{story.whyAiConcerned}</p>
+                          </div>
+                        </div>
                       </div>
                     )}
+
+                    {/* 30-Day Growth Forecast Card */}
+                    <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-2.5" data-testid="forecast-30day-card">
+                      <div className="flex items-center justify-between text-xs font-medium text-slate-500">
+                        <span className="uppercase tracking-wider">30-Day Short-Term Growth Forecast</span>
+                        <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200/70 font-semibold">
+                          {forecastComparison.available ? 'Short-Term Projection' : 'Not Yet Available'}
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-700 leading-relaxed">
+                        {forecastComparison.summaryText}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Subsection C: Changes in Your Baby's Growth */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-lg bg-blue-50 text-blue-600 shrink-0">
+                        <TrendingUp className="h-4 w-4" />
+                      </div>
+                      <h3 className="text-base font-semibold text-slate-900">C. Changes in Your Baby&apos;s Growth</h3>
+                    </div>
+                    <p className="text-sm text-slate-600">
+                      Compare your baby's saved measurements between visits.
+                    </p>
+
+                    {weightAnalysis && (
+                      <>
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3" data-testid="weight-summary-cards">
+                          <div className="rounded-2xl border border-border/60 bg-muted/40 p-4">
+                            <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block">Previous Weight</span>
+                            <span className="font-semibold text-slate-900 text-lg">
+                              {weightAnalysis.previous ? `${weightAnalysis.previous.weightKg.toFixed(2)} kg` : 'None recorded'}
+                            </span>
+                            <span className="text-xs text-slate-500 block mt-1">
+                              {weightAnalysis.previous ? shortDate(weightAnalysis.previous.date) : 'No earlier check'}
+                            </span>
+                          </div>
+
+                          <div className="rounded-2xl border border-primary/10 bg-secondary/40 p-4">
+                            <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block">Latest Weight</span>
+                            <span className="font-semibold text-slate-900 text-lg">
+                              {weightAnalysis.latest ? `${weightAnalysis.latest.weightKg.toFixed(2)} kg` : 'Not recorded'}
+                            </span>
+                            <span className="text-xs text-slate-500 block mt-1">
+                              {weightAnalysis.latest ? shortDate(weightAnalysis.latest.date) : 'No visit date'}
+                            </span>
+                          </div>
+
+                          <div className="col-span-2 rounded-2xl border border-primary/15 bg-primary/5 p-4 sm:col-span-1">
+                            <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block">Observed Change</span>
+                            <span className="font-semibold text-slate-900 text-lg">
+                              {weightAnalysis.hasEnoughData && weightAnalysis.changeKg !== null
+                                ? `${weightAnalysis.changeKg > 0 ? '+' : ''}${weightAnalysis.changeKg.toFixed(2)} kg`
+                                : 'Cannot yet be determined'}
+                            </span>
+                            <span className="text-xs text-slate-500 block mt-1">
+                              {weightAnalysis.hasEnoughData && weightAnalysis.rateGramsPerDay !== null
+                                ? `${weightAnalysis.daysBetween} days (${weightAnalysis.rateGramsPerDay > 0 ? '+' : ''}${weightAnalysis.rateGramsPerDay} g/day)`
+                                : 'Need 2+ recorded checks'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-200/70" data-testid="weight-analysis-summary">
+                          {readableGrowthDates(weightAnalysis.summaryText)}
+                        </p>
+                        <WeightHistoryChart points={weightAnalysis.points} />
+                      </>
+                    )}
+
+                    {/* WAZ Position Comparison */}
+                    {wazComparison && (
+                      <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-3" data-testid="waz-growth-comparison">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs font-medium text-slate-500">
+                          <span className="uppercase tracking-wider">Weight-for-age comparison</span>
+                          {wazComparison.status === 'lower' && (
+                            <span className="text-amber-800 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200/70 self-start sm:self-auto">
+                              Tracking lower relative to age curve
+                            </span>
+                          )}
+                          {wazComparison.status === 'higher' && (
+                            <span className="text-emerald-800 font-medium bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/70 self-start sm:self-auto">
+                              Keeping pace well with age curve
+                            </span>
+                          )}
+                          {wazComparison.status === 'steady' && (
+                            <span className="text-blue-800 font-medium bg-blue-50 px-2 py-0.5 rounded border border-blue-200/70 self-start sm:self-auto">
+                              Maintaining steady position
+                            </span>
+                          )}
+                        </div>
+
+                        {wazComparison.hasEnoughData && (
+                          <div className="grid grid-cols-1 gap-2 text-center py-1 sm:grid-cols-3">
+                            <div className="bg-white rounded-lg p-2.5 border border-slate-200/70">
+                              <span className="text-xs text-slate-500 block">Previous Score</span>
+                              <span className="font-semibold text-slate-900 text-sm">
+                                {wazComparison.previousWaz !== null ? `${wazComparison.previousWaz > 0 ? '+' : ''}${wazComparison.previousWaz.toFixed(2)}` : 'N/A'}
+                              </span>
+                            </div>
+                            <div className="bg-white rounded-lg p-2.5 border border-slate-200/70">
+                              <span className="text-xs text-slate-500 block">Latest Score</span>
+                              <span className="font-semibold text-slate-900 text-sm">
+                                {wazComparison.latestWaz !== null ? `${wazComparison.latestWaz > 0 ? '+' : ''}${wazComparison.latestWaz.toFixed(2)}` : 'N/A'}
+                              </span>
+                            </div>
+                            <div className="bg-white rounded-lg p-2.5 border border-slate-200/70">
+                              <span className="text-xs text-slate-500 block">Relative Shift</span>
+                              <span className="font-semibold text-slate-900 text-sm">
+                                {wazComparison.wazChange !== null ? `${wazComparison.wazChange > 0 ? '+' : ''}${wazComparison.wazChange.toFixed(2)}` : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        <p className="text-sm text-slate-700 leading-relaxed">
+                          {readableGrowthDates(wazComparison.summaryText)}
+                        </p>
+
+                        <details className="rounded-xl border border-border/60 bg-card text-sm">
+                          <summary className="min-h-11 cursor-pointer rounded-xl px-3 py-3 font-medium text-primary focus-visible:outline-2 focus-visible:outline-ring">How to read this comparison</summary>
+                          <p className="border-t border-border/60 p-3 text-xs leading-relaxed text-muted-foreground">{wazComparison.cautionText}</p>
+                        </details>
+                      </div>
+                    )}
+
                   </div>
                 </div>
+              )}
+            </div>
+
+            {/* WHAT SHOULD YOU DO NEXT? SECTION */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm space-y-3" data-testid="next-steps-section">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                  <HeartHandshake className="h-4 w-4" />
+                </div>
+                <h3 className="text-base font-semibold text-slate-900">What Should You Do Next?</h3>
+              </div>
+              <div className="text-sm text-slate-600 space-y-2">
+                <p>Continue your baby&apos;s regular growth checks with your healthcare provider.</p>
+                <p>Bring your baby&apos;s Child Health Development Record (CHDR) booklet to each clinic appointment.</p>
+                <p>If you have concerns about your baby&apos;s feeding, weight gain, or health, contact your Public Health Midwife or doctor.</p>
+                {isElevated && (
+                  <p className="font-medium text-slate-800 pt-1">
+                    Please discuss this screening result with your Public Health Midwife or doctor.
+                  </p>
+                )}
               </div>
             </div>
           </div>

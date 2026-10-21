@@ -1,13 +1,14 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { growthApi } from '@/api/growth';
-import { Activity, TrendingUp } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { formatCalendarDate } from '@/utils/growthDisplay';
 import { PageHeader } from '@/components/ui/shared/PageHeader';
 import { LoadingState } from '@/components/ui/shared/LoadingState';
 import { EmptyState } from '@/components/ui/shared/EmptyState';
 import { ErrorStateUI } from '@/components/ui/shared/ErrorStateUI';
 import { ResearchDisclaimer } from '@/components/ui/shared/ResearchDisclaimer';
+import { calendarDate } from '@/features/dashboard/dashboardDisplay';
 import {
   ResponsiveContainer,
   LineChart,
@@ -30,6 +31,15 @@ export default function RiskHistoryPage() {
     queryFn: growthApi.getModelInfo
   });
 
+  const validPoints = (trajectory ?? []).flatMap(point => {
+    const date = calendarDate(point.visit_date);
+    return date && typeof point.risk_probability === 'number' && Number.isFinite(point.risk_probability)
+      && point.risk_probability >= 0 && point.risk_probability <= 1
+      ? [{ ...point, chartTime: Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) }] : [];
+  }).sort((a, b) => a.chartTime - b.chartTime);
+  const threshold = modelInfo?.Risk?.threshold;
+  const hasThreshold = typeof threshold === 'number' && Number.isFinite(threshold) && threshold >= 0 && threshold <= 1;
+
   if (isLoading) {
     return <LoadingState />;
   }
@@ -38,13 +48,11 @@ export default function RiskHistoryPage() {
     return <ErrorStateUI message="We couldn't load the risk trajectory right now. Please try again." />;
   }
 
-  const validPoints = trajectory?.filter(p => p.risk_probability !== null && p.risk_probability !== undefined) || [];
-
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24 space-y-6">
       <PageHeader
         title="Risk History"
-        description="Track how the experimental 180-day growth-faltering risk score changed as genuine visits were added over time."
+        description="Track how the growth-faltering risk score changed as genuine visits were added over time."
       />
 
       {validPoints.length === 0 ? (
@@ -55,17 +63,18 @@ export default function RiskHistoryPage() {
         />
       ) : (
         <div className="bg-white border rounded-xl shadow-sm p-6" data-testid="trajectory-chart-container">
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-6">
-            180-Day Growth-Faltering Risk Score Trajectory
-          </h3>
-
-          <div className="h-80 w-full mt-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Growth-Faltering Risk Score Trajectory</h3>
+            {hasThreshold && <span className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-amber-600" />Threshold ({threshold.toFixed(3)})</span>}
+          </div>
+          <p className="mt-4 inline-flex items-center gap-2 text-xs text-slate-500"><span aria-hidden="true" className="size-2 rounded-full bg-blue-500" />Recorded risk score</p>
+          <div className="mt-4 h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={validPoints} margin={{ top: 10, right: 30, left: 0, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                 <XAxis 
-                  dataKey="visit_date" 
-                  tickFormatter={formatCalendarDate} 
+                  dataKey="visit_date"
+                  tickFormatter={formatCalendarDate}
                   stroke="#94A3B8" 
                   fontSize={12} 
                   tickMargin={10} 
@@ -82,12 +91,12 @@ export default function RiskHistoryPage() {
                   contentStyle={{ borderRadius: '8px', border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
                 
-                {modelInfo?.Risk?.threshold && (
+                {hasThreshold && (
                   <ReferenceLine 
-                    y={modelInfo.Risk.threshold} 
-                    stroke="#F59E0B" 
-                    strokeDasharray="3 3" 
-                    label={{ position: 'insideTopLeft', value: `Research Threshold (${Number(modelInfo.Risk.threshold).toFixed(3)})`, fill: '#F59E0B', fontSize: 12 }} 
+                    y={threshold}
+                    stroke="#D97706"
+                    strokeWidth={2}
+                    strokeDasharray="6 4"
                   />
                 )}
 
@@ -103,15 +112,6 @@ export default function RiskHistoryPage() {
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-8 text-sm text-slate-500 space-y-2">
-            <p className="flex items-start gap-2">
-              <TrendingUp className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />
-              <span>Each point represents the experimental 180-day risk score at the time of a <strong>genuine recorded visit</strong>.</span>
-            </p>
-            <p className="text-xs text-slate-400 pl-6">
-              This is an experimental AI screening score, not a medical diagnosis or an exact probability.
-            </p>
-          </div>
         </div>
       )}
       <ResearchDisclaimer />

@@ -22,9 +22,8 @@ const destinations = [
   ['/growth/history', 'Growth History'],
   ['/growth/charts', 'Growth Charts'],
   ['/growth/forecast', 'Growth Forecast'],
-  ['/growth/risk', 'Growth Risk'],
+  ['/growth/risk', 'Growth Risk & Insights'],
   ['/growth/risk/history', 'Risk History'],
-  ['/growth/explanation', 'Risk Explanation'],
   ['/nutrition', 'Nutrition & Feeding'],
   ['/account', 'Account'],
 ];
@@ -80,7 +79,7 @@ describe('Authenticated shell and navigation', () => {
     expect(screen.getByRole('heading', { level: 1, name: `${title} content` })).toBeInTheDocument();
   });
 
-  it('lists all twelve implemented destinations without unsupported placeholder routes', async () => {
+  it('lists all eleven implemented destinations without unsupported placeholder routes', async () => {
     renderShell();
     const navigation = await screen.findByRole('navigation', { name: 'Desktop navigation' });
     expect(within(navigation).getAllByRole('link').map(link => link.getAttribute('href'))).toEqual(destinations.map(([path]) => path));
@@ -95,7 +94,7 @@ describe('Authenticated shell and navigation', () => {
     renderShell('/growth/risk/history?range=30#visits');
     const navigation = await screen.findByRole('navigation', { name: 'Desktop navigation' });
     expect(within(navigation).getByRole('link', { name: 'Risk History' })).toHaveAttribute('aria-current', 'page');
-    expect(within(navigation).getByRole('link', { name: 'Growth Risk' })).not.toHaveAttribute('aria-current');
+    expect(within(navigation).getByRole('link', { name: 'Growth Risk & Insights' })).not.toHaveAttribute('aria-current');
     expect(within(navigation).getByRole('link', { name: 'Growth Overview' })).not.toHaveAttribute('aria-current');
   });
 

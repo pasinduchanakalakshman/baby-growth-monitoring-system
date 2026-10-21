@@ -164,11 +164,6 @@ export function GroceryChecklistSection({
                           )}
                         </div>
 
-                        {item.sinhala_name && (
-                          <p className="text-2xs text-emerald-800 dark:text-emerald-400 font-medium">
-                            {item.sinhala_name}
-                          </p>
-                        )}
                       </div>
 
                       <div className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between text-3xs text-muted-foreground">

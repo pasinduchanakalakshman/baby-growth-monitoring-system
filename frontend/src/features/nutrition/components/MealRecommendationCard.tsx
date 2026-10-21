@@ -7,14 +7,12 @@ import {
   CircleDot,
   Clock,
   CookingPot,
-  Repeat,
   Sparkles,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  FOOD_GROUP_CONFIG,
   FOOD_TEXTURE_LABELS,
   getIngredientLabel,
   sanitizeParentGuidance,
@@ -26,7 +24,7 @@ interface MealRecommendationCardProps {
   substitutionsMap?: Record<string, string[]>;
 }
 
-export function MealRecommendationCard({ item, substitutionsMap = {} }: MealRecommendationCardProps) {
+export function MealRecommendationCard({ item }: MealRecommendationCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const textureInfo = FOOD_TEXTURE_LABELS[item.texture] ?? {
@@ -36,23 +34,10 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
 
   const isSnack = item.meal_slot === 'SNACK' || item.item_type === 'SNACK';
 
-  // Gather available substitutions for any ingredient in this dish
-  const relevantSubs: { primaryId: string; primaryLabel: string; alternatives: string[] }[] = [];
-  for (const ingId of item.ingredients) {
-    const alts = substitutionsMap[ingId];
-    if (alts && alts.length > 0) {
-      relevantSubs.push({
-        primaryId: ingId,
-        primaryLabel: getIngredientLabel(ingId),
-        alternatives: alts.map(altId => getIngredientLabel(altId)),
-      });
-    }
-  }
-
   return (
     <Card className="border-border/60 shadow-2xs hover:shadow-xs transition-shadow duration-200 overflow-hidden bg-card">
       <CardContent className="p-5 space-y-4">
-        {/* Top Header: Meal Slot, Sinhala Name, Evidence Badge */}
+        {/* Top Header: Meal Slot, Name, Evidence Badge */}
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
@@ -83,11 +68,6 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
               {item.name}
             </h3>
 
-            {item.sinhala_name && (
-              <p className="text-sm font-medium text-emerald-800 dark:text-emerald-400">
-                {item.sinhala_name}
-              </p>
-            )}
           </div>
         </div>
 
@@ -104,7 +84,7 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
           </p>
         </div>
 
-        {/* Ingredients & Food Groups */}
+        {/* Ingredients */}
         <div className="space-y-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Ingredients ({item.ingredients.length})
@@ -123,24 +103,6 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
             })}
           </div>
 
-          {/* Food group badges */}
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {item.food_groups.map((fg) => {
-              const cfg = FOOD_GROUP_CONFIG[fg] ?? {
-                label: fg.replace(/_/g, ' '),
-                color: 'text-foreground',
-                bg: 'bg-muted border-border',
-              };
-              return (
-                <span
-                  key={fg}
-                  className={`inline-block rounded-sm border px-2 py-0.5 text-2xs font-medium ${cfg.bg} ${cfg.color}`}
-                >
-                  {cfg.label}
-                </span>
-              );
-            })}
-          </div>
         </div>
 
         {/* Expandable Preparation, Safety & Citations */}
@@ -178,25 +140,6 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
               </div>
             )}
 
-            {/* Practical Substitutions if available */}
-            {relevantSubs.length > 0 && (
-              <div className="space-y-2 rounded-lg bg-sky-50/60 border border-sky-200/70 p-3 text-xs text-sky-950 dark:bg-sky-950/20 dark:text-sky-200 dark:border-sky-800/40">
-                <h4 className="font-bold flex items-center gap-1.5 text-sky-800 dark:text-sky-300">
-                  <Repeat className="size-3.5 text-sky-600 shrink-0" aria-hidden="true" />
-                  Practical Kitchen Substitutions
-                </h4>
-                <div className="space-y-1.5">
-                  {relevantSubs.map((sub, idx) => (
-                    <div key={idx} className="text-xs leading-relaxed">
-                      <strong>If you don't have {sub.primaryLabel}:</strong> Try substituting with{' '}
-                      <span className="font-medium text-sky-900 dark:text-sky-100">
-                        {sub.alternatives.join(', ')}
-                      </span>.
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
 

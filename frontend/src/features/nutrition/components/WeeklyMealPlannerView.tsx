@@ -8,11 +8,8 @@ import {
   ChevronRight,
   CookingPot,
   Info,
-  Layers,
   Loader2,
   RefreshCw,
-  ShoppingBag,
-  Sparkles,
   TrendingUp,
   Utensils,
 } from 'lucide-react';
@@ -36,7 +33,6 @@ import {
   getTodayDateString,
   subDaysFromDate,
 } from '@/features/nutrition/plannerDateUtils';
-import { GroceryChecklistSection } from './GroceryChecklistSection';
 import { MealSubstitutionModal } from './MealSubstitutionModal';
 
 interface WeeklyMealPlannerViewProps {
@@ -50,7 +46,6 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
   });
 
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
-  const [showGroceryList, setShowGroceryList] = useState<boolean>(true);
   const [activeSlotForSub, setActiveSlotForSub] = useState<PlannedMealSlot | null>(null);
   const [localSubstitutions, setLocalSubstitutions] = useState<Record<string, MealRecommendationItem>>({});
 
@@ -277,15 +272,6 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
                     </CardDescription>
                   </div>
 
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setShowGroceryList(!showGroceryList)}
-                    className="text-xs h-8 px-3 rounded-xl gap-1.5 border-border/80"
-                  >
-                    <ShoppingBag className="size-3.5 text-primary" />
-                    {showGroceryList ? 'Hide Grocery List' : 'Show Weekly Grocery List'}
-                  </Button>
                 </div>
               </CardHeader>
 
@@ -362,27 +348,6 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
             </Card>
           )}
 
-          {/* Weekly Grocery Checklist Section */}
-          {showGroceryList && weekly.weekly_grocery_checklist.length > 0 && (
-            <GroceryChecklistSection
-              items={weekly.weekly_grocery_checklist}
-              title={`Weekly Household Ingredient Checklist (${formattedWeekRange})`}
-              description="Aggregated ingredients needed across all 7 planned days (reflects the baseline unmodified weekly meal plan). Filter by on-hand status for easy kitchen planning."
-            />
-          )}
-
-          {/* Variety & Rotation Strategy Notes */}
-          {weekly.variety_notes.length > 0 && (
-            <div className="p-4 rounded-2xl bg-muted/20 border border-border/60 text-xs text-muted-foreground space-y-1">
-              <span className="font-semibold text-foreground flex items-center gap-1.5">
-                <Sparkles className="size-3.5 text-emerald-600" />
-                Explainable Deterministic Rotation
-              </span>
-              {weekly.variety_notes.map((note: string, idx: number) => (
-                <p key={idx}>{note}</p>
-              ))}
-            </div>
-          )}
         </div>
       )}
 
@@ -441,11 +406,6 @@ function WeeklyDaySlotItem({ slot, item, onOpenSubstitute }: WeeklyDaySlotItemPr
           {item.name}
         </h5>
 
-        {item.sinhala_name && (
-          <p className="text-2xs text-emerald-800 dark:text-emerald-400 font-medium">
-            {item.sinhala_name}
-          </p>
-        )}
 
         <div className="pt-1 text-2xs text-muted-foreground">
           <strong className="text-foreground">Portion:</strong> {sanitizeParentGuidance(item.household_portion)}

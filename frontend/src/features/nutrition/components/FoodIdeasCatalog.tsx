@@ -112,7 +112,7 @@ export function FoodIdeasCatalog({ recommendations }: FoodIdeasCatalogProps) {
       <div className="relative">
         <Search className="size-4 absolute left-3 top-2.5 text-muted-foreground" aria-hidden="true" />
         <Input
-          placeholder="Search by food name, Sinhala term, or ingredient..."
+          placeholder="Search by food name or ingredient..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-9 text-xs h-9"

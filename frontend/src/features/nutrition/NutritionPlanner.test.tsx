@@ -437,11 +437,15 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Coarsely Mashed Rice with Sea Fish, Dhal & Sarana/i)).toBeInTheDocument();
-      expect(screen.getByText(/මාළු, පරිප්පු, සාරණ සමඟ කැකුළු බත්/i)).toBeInTheDocument();
+      expect(screen.queryByText(/මාළු, පරිප්පු, සාරණ සමඟ කැකුළු බත්/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/Tier A/i)).not.toBeInTheDocument();
+      expect(screen.queryByText('Animal-Source Foods')).not.toBeInTheDocument();
+      expect(screen.queryByText('Grains & Staples')).not.toBeInTheDocument();
+      expect(screen.queryByText('Pulses & Legumes')).not.toBeInTheDocument();
       expect(screen.getAllByText(/Coarsely Mashed/i).length).toBeGreaterThan(0);
       expect(screen.getByText(/Main Meal 1 \(Mid-Morning\)/i)).toBeInTheDocument();
       expect(screen.getByText(/Main Meal 2 \(Late Afternoon\)/i)).toBeInTheDocument();
+      expect(document.body.textContent).not.toMatch(/\p{Script=Sinhala}/u);
     });
   });
 
@@ -453,7 +457,7 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Fresh Scraped Ripe Banana/i)).toBeInTheDocument();
-      expect(screen.getByText(/ගාගත් ඉදුණු කෙසෙල්/i)).toBeInTheDocument();
+      expect(screen.queryByText(/ගාගත් ඉදුණු කෙසෙල්/i)).not.toBeInTheDocument();
     });
   });
 
@@ -532,40 +536,21 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
     });
   });
 
-  it('8. Renders weekly grocery checklist with category grouping and pantry status', async () => {
+  it('8. Keeps weekly meals without the removed checklist, toggle, or rotation note', async () => {
     renderNutritionPage();
 
     const weeklyTab = await screen.findByRole('tab', { name: /7-Day Weekly Plan/i });
     fireEvent.click(weeklyTab);
 
     await waitFor(() => {
-      expect(screen.getByText(/Weekly Household Ingredient Checklist/i)).toBeInTheDocument();
-      expect(screen.getByText(/Grains & Staples/i)).toBeInTheDocument();
-      expect(screen.getByText(/Animal-Source Foods/i)).toBeInTheDocument();
-      expect(screen.getByText(/Pulses & Legumes/i)).toBeInTheDocument();
-      expect(screen.getByText(/Fresh Fruits/i)).toBeInTheDocument();
-      expect(screen.getByText(/White Raw Rice \/ Samba/i)).toBeInTheDocument();
-      expect(screen.getByText(/Fresh Banana/i)).toBeInTheDocument();
+      expect(screen.getByText(/Coarsely Mashed Rice with Sea Fish, Dhal & Sarana/i)).toBeInTheDocument();
     });
-  });
-
-  it('9. Allows filtering grocery checklist by missing ingredients only', async () => {
-    renderNutritionPage();
-
-    const weeklyTab = await screen.findByRole('tab', { name: /7-Day Weekly Plan/i });
-    fireEvent.click(weeklyTab);
-
-    await waitFor(() => {
-      expect(screen.getByText(/Weekly Household Ingredient Checklist/i)).toBeInTheDocument();
-    });
-
-    const needToBuyFilter = screen.getByRole('button', { name: /To Buy/i });
-    fireEvent.click(needToBuyFilter);
-
-    // Rice is in pantry, so should not appear under "Need to Buy"
+    expect(screen.queryByText(/Weekly Household Ingredient Checklist/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Pantry & Shopping Guidance/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Grocery List/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Explainable Deterministic Rotation/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/White Raw Rice \/ Samba/i)).not.toBeInTheDocument();
-    // Fresh Banana is missing, so should remain visible
-    expect(screen.getByText(/Fresh Banana/i)).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/\p{Script=Sinhala}/u);
   });
 
   it('10. Renders milk-feeding guidance and zero solid slots for children aged 0–5 months', async () => {

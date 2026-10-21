@@ -417,11 +417,6 @@ function PlannedSlotCard({ slot, item, onOpenSubstitute }: PlannedSlotCardProps)
             <h4 className="text-base font-bold text-foreground leading-snug pt-0.5">
               {item.name}
             </h4>
-            {item.sinhala_name && (
-              <p className="text-xs font-medium text-emerald-800 dark:text-emerald-400">
-                {item.sinhala_name}
-              </p>
-            )}
           </div>
         </div>
 

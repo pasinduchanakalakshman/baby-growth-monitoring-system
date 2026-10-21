@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import {
-  BookOpen,
   CookingPot,
-  Filter,
   Info,
-  Layers,
   Search,
-  Sparkles,
   Utensils,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MealRecommendationCard } from '@/features/nutrition/components/MealRecommendationCard';
 import { NutritionRecommendationResponse } from '@/types/nutrition';
@@ -70,7 +66,7 @@ export function FoodIdeasCatalog({ recommendations }: FoodIdeasCatalogProps) {
             Stage-Appropriate Food Ideas
           </h3>
           <p className="text-xs text-muted-foreground">
-            Carefully curated dishes and snacks returned by the Family Health Bureau recommendation engine.
+            Carefully curated dishes and snacks matched to your child's age and texture stage.
           </p>
         </div>
 

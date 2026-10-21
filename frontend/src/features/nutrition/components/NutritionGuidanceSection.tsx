@@ -1,13 +1,7 @@
 import React from 'react';
 import {
-  AlertTriangle,
-  Award,
   Ban,
   BookOpen,
-  CheckCircle,
-  ExternalLink,
-  Heart,
-  Info,
   Scale,
   Shield,
   Sparkles,
@@ -33,13 +27,13 @@ export function NutritionGuidanceSection() {
             </div>
             <div className="space-y-1">
               <Badge className="bg-emerald-700 text-white font-medium text-xs mb-1">
-                Official National Clinical Reference
+                National Feeding Guidelines
               </Badge>
               <h3 className="text-xl font-bold text-foreground">
-                "Right Food at the Right Time, To Make My Baby Healthy and Bright"
+                Right Food at the Right Time, To Make Your Baby Healthy & Bright
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Published by the <strong>Family Health Bureau (FHB)</strong>, Ministry of Health, Sri Lanka (2025). This recommendation system is strictly traceable to the 28 pages of official clinical guidance, recipes, portions, and responsive feeding protocols.
+                Practical, stage-by-stage complementary feeding guidance, nutrient-rich Sri Lankan recipes, age-appropriate portions, and responsive feeding advice to support healthy child development.
               </p>
             </div>
           </div>
@@ -92,7 +86,7 @@ export function NutritionGuidanceSection() {
             Developmental Texture Progression Timeline
           </CardTitle>
           <CardDescription className="text-xs">
-            FHB stage-by-stage consistency progression to develop tongue coordination, chewing skills, and prevent oral aversion.
+            Stage-by-stage consistency progression to develop tongue coordination, chewing skills, and prevent oral aversion.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 pt-1">
@@ -146,17 +140,6 @@ export function NutritionGuidanceSection() {
             Never give whole peanuts, cashews, or hard round seeds to children under 5 years. Peanuts and tree nuts must always be roasted and crushed into fine paste or powder.
           </p>
         </div>
-      </div>
-
-      {/* Scope Disclaimer */}
-      <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-xs text-muted-foreground space-y-1.5">
-        <h4 className="font-bold text-foreground flex items-center gap-2">
-          <Info className="size-4 text-primary" aria-hidden="true" />
-          Research Project Scope & Medical Disclaimer
-        </h4>
-        <p className="leading-relaxed">
-          The 0–59 completed calendar months boundary is a research project age scope. This system provides guideline-traceable complementary feeding and young child meal planning for healthy children. It does not replace individualized pediatrician consultations, clinical allergy diagnosis, or specialized therapeutic formulas.
-        </p>
       </div>
     </div>
   );

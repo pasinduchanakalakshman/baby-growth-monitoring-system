@@ -429,7 +429,7 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
     });
   });
 
-  it('3. Renders daily meal slots with accurate FHB portion, texture, and Tier A labels', async () => {
+  it('3. Renders daily meal slots with accurate portion, texture, and slot labels without technical tier badges', async () => {
     renderNutritionPage();
 
     const dailyTab = await screen.findByRole('tab', { name: /Daily Planner/i });
@@ -438,7 +438,8 @@ describe('Phase 7 Nutrition Planner Frontend Integration Tests', () => {
     await waitFor(() => {
       expect(screen.getByText(/Coarsely Mashed Rice with Sea Fish, Dhal & Sarana/i)).toBeInTheDocument();
       expect(screen.getByText(/මාළු, පරිප්පු, සාරණ සමඟ කැකුළු බත්/i)).toBeInTheDocument();
-      expect(screen.getAllByText(/Tier A/i).length).toBeGreaterThan(0);
+      expect(screen.queryByText(/Tier A/i)).not.toBeInTheDocument();
+      expect(screen.getAllByText(/Coarsely Mashed/i).length).toBeGreaterThan(0);
       expect(screen.getByText(/Main Meal 1 \(Mid-Morning\)/i)).toBeInTheDocument();
       expect(screen.getByText(/Main Meal 2 \(Late Afternoon\)/i)).toBeInTheDocument();
     });

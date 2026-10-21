@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   AlertCircle,
   Award,
-  BookOpen,
   Calendar,
   CheckCircle2,
   ChevronLeft,
@@ -25,7 +24,7 @@ import {
   MealRecommendationItem,
   PlannedMealSlot,
 } from '@/types/nutrition';
-import { FOOD_TEXTURE_LABELS } from '@/features/nutrition/nutritionMetadata';
+import { FOOD_TEXTURE_LABELS, sanitizeParentGuidance } from '@/features/nutrition/nutritionMetadata';
 import {
   addDaysToDate,
   formatHeaderDate,
@@ -155,7 +154,7 @@ export function DailyMealPlannerView({ babyId, babyDob: _babyDob }: DailyMealPla
       {isLoading && (
         <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
           <Loader2 className="size-8 animate-spin text-primary" />
-          <p className="text-xs">Generating age-appropriate meal plan according to FHB guidelines...</p>
+          <p className="text-xs">Generating age-appropriate meal plan...</p>
         </div>
       )}
 
@@ -239,7 +238,7 @@ export function DailyMealPlannerView({ babyId, babyDob: _babyDob }: DailyMealPla
               <AlertTitle className="text-sm font-bold">Exclusive Milk Feeding Stage (0–5 Months)</AlertTitle>
               <AlertDescription className="text-xs mt-1.5 space-y-2">
                 <p>
-                  According to Sri Lankan Ministry of Health and FHB guidelines, babies under 6 completed months
+                  According to Sri Lankan national health guidelines, babies under 6 completed months
                   require only breast milk (or infant formula if prescribed).
                 </p>
                 <p>
@@ -407,8 +406,6 @@ function PlannedSlotCard({ slot, item, onOpenSubstitute }: PlannedSlotCardProps)
     description: '',
   };
 
-  const isTierA = item.evidence_tier === 'TIER_A';
-
   return (
     <Card className="border-border/80 shadow-xs hover:shadow-sm transition-all duration-200 rounded-2xl flex flex-col justify-between bg-card overflow-hidden">
       <CardContent className="p-5 space-y-3.5">
@@ -426,17 +423,6 @@ function PlannedSlotCard({ slot, item, onOpenSubstitute }: PlannedSlotCardProps)
               </p>
             )}
           </div>
-
-          <Badge
-            variant="outline"
-            className={
-              isTierA
-                ? 'border-emerald-500/40 text-emerald-700 bg-emerald-50/50 text-3xs shrink-0'
-                : 'border-blue-400 text-blue-700 bg-blue-50/50 text-3xs shrink-0'
-            }
-          >
-            {isTierA ? 'FHB Tier A' : 'Derived Tier B'}
-          </Badge>
         </div>
 
         {/* Portion and Texture Badges */}
@@ -455,12 +441,12 @@ function PlannedSlotCard({ slot, item, onOpenSubstitute }: PlannedSlotCardProps)
         {/* Household Portion Highlight */}
         <div className="p-2.5 rounded-xl bg-muted/40 border border-border/60 text-xs">
           <span className="font-semibold text-foreground block">Household Portion:</span>
-          <span className="text-muted-foreground">{item.household_portion}</span>
+          <span className="text-muted-foreground">{sanitizeParentGuidance(item.household_portion)}</span>
         </div>
 
         {/* Reason / Developmental Rationale */}
         <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-          {item.recommendation_reason}
+          {sanitizeParentGuidance(item.recommendation_reason)}
         </p>
 
         {/* Expanded Recipe & Safety Instructions */}
@@ -489,13 +475,6 @@ function PlannedSlotCard({ slot, item, onOpenSubstitute }: PlannedSlotCardProps)
                 </ul>
               </div>
             )}
-
-            <div className="text-3xs text-muted-foreground flex items-center gap-1 pt-1">
-              <BookOpen className="size-3" />
-              <span>
-                FHB Booklet: p. {item.source_citation.booklet_page ?? 'N/A'} (PDF p. {item.source_citation.pdf_page ?? 'N/A'})
-              </span>
-            </div>
           </div>
         )}
 

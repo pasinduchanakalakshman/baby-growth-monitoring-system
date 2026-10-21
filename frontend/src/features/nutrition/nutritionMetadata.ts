@@ -208,3 +208,21 @@ export function getRestrictionGroupLabel(code: string): string {
   if (meta) return meta.name;
   return getIngredientLabel(code);
 }
+
+/**
+ * Strips technical research references, booklet/PDF page citations, and tier codes
+ * from backend guidance text, returning parent-friendly advice.
+ */
+export function sanitizeParentGuidance(text: string | null | undefined): string {
+  if (!text) return '';
+  return text
+    // Remove bracketed citations like [Booklet pp. 2, 5, PDF pp. 4, 7] or [Booklet p. 8, PDF p. 10]
+    .replace(/\s*\[(?:Booklet|PDF|FHB|Page)[^\]]*\]/gi, '')
+    // Remove parenthetical citations like (Booklet p. 8, PDF p. 10)
+    .replace(/\s*\((?:Booklet|PDF|FHB|Page)\s+p[^)]*\)/gi, '')
+    // Remove trailing technical references
+    .replace(/\s*\(FHB Tier [A-C][^)]*\)/gi, '')
+    // Clean up multiple spaces or spaces before punctuation
+    .replace(/\s+([.,;:])/g, '$1')
+    .trim();
+}

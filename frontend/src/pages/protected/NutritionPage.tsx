@@ -169,7 +169,7 @@ export default function NutritionPage({ initialBaby, allBabies = [] }: Nutrition
       {/* Page Header */}
       <PageHeader
         title="Nutrition & Feeding Guidance"
-        description="Personalized Sri Lankan complementary feeding recommendations and dietary preferences aligned with Family Health Bureau (FHB) standards."
+        description="Personalized Sri Lankan complementary feeding recommendations and dietary preferences tailored to your child's developmental stage."
       />
 
       {/* Overview & Stage Card */}
@@ -353,7 +353,7 @@ export default function NutritionPage({ initialBaby, allBabies = [] }: Nutrition
                 }`}
               >
                 <BookOpen className="size-3.5" aria-hidden="true" />
-                FHB Guidelines &amp; Evidence
+                Feeding &amp; Safety Guidance
               </button>
             </nav>
           </div>
@@ -461,7 +461,7 @@ export default function NutritionPage({ initialBaby, allBabies = [] }: Nutrition
             <FoodIdeasCatalog recommendations={recommendations} />
           )}
 
-          {/* Tab 4: FHB Guidelines & Evidence */}
+          {/* Tab 4: Feeding & Safety Guidance */}
           {activeTab === 'guidance' && (
             <NutritionGuidanceSection />
           )}

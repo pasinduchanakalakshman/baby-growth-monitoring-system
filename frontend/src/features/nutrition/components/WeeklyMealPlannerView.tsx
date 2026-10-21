@@ -27,7 +27,7 @@ import {
   PlannedMealSlot,
   WeeklyMealPlanResponse,
 } from '@/types/nutrition';
-import { FOOD_TEXTURE_LABELS } from '@/features/nutrition/nutritionMetadata';
+import { FOOD_TEXTURE_LABELS, sanitizeParentGuidance } from '@/features/nutrition/nutritionMetadata';
 import {
   addDaysToDate,
   formatDayPill,
@@ -295,7 +295,7 @@ export function WeeklyMealPlannerView({ babyId, babyDob }: WeeklyMealPlannerView
                     <Info className="size-4 text-blue-700" />
                     <AlertDescription>
                       Child is {activeDayPlan.child_age_completed_months} completed months on this date.
-                      FHB guidance prescribes exclusive breastfeeding without complementary foods.
+                      National health guidance recommends exclusive milk feeding without complementary foods.
                     </AlertDescription>
                   </Alert>
                 ) : activeDayPlan.is_at_completion_boundary ? (
@@ -448,7 +448,7 @@ function WeeklyDaySlotItem({ slot, item, onOpenSubstitute }: WeeklyDaySlotItemPr
         )}
 
         <div className="pt-1 text-2xs text-muted-foreground">
-          <strong className="text-foreground">Portion:</strong> {item.household_portion}
+          <strong className="text-foreground">Portion:</strong> {sanitizeParentGuidance(item.household_portion)}
         </div>
       </div>
 

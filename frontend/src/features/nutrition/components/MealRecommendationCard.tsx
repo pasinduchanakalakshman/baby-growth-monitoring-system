@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   AlertTriangle,
-  BookOpen,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -18,6 +17,7 @@ import {
   FOOD_GROUP_CONFIG,
   FOOD_TEXTURE_LABELS,
   getIngredientLabel,
+  sanitizeParentGuidance,
 } from '@/features/nutrition/nutritionMetadata';
 import { MealRecommendationItem } from '@/types/nutrition';
 
@@ -35,7 +35,6 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
   };
 
   const isSnack = item.meal_slot === 'SNACK' || item.item_type === 'SNACK';
-  const isTierA = item.evidence_tier === 'TIER_A';
 
   // Gather available substitutions for any ingredient in this dish
   const relevantSubs: { primaryId: string; primaryLabel: string; alternatives: string[] }[] = [];
@@ -90,32 +89,18 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
               </p>
             )}
           </div>
-
-          {/* Evidence Tier Badge */}
-          <div className="shrink-0 flex items-center gap-1.5">
-            <Badge
-              variant="outline"
-              className={
-                isTierA
-                  ? 'border-emerald-500/40 text-emerald-700 bg-emerald-50/50 text-2xs'
-                  : 'border-blue-500/40 text-blue-700 bg-blue-50/50 text-2xs'
-              }
-            >
-              {isTierA ? 'FHB Tier A Evidence' : 'FHB Tier B Derived'}
-            </Badge>
-          </div>
         </div>
 
         {/* Portion and Developmental Rationale */}
         <div className="rounded-xl bg-secondary/40 p-3.5 space-y-2 border border-border/40 text-xs text-foreground">
           <div className="flex items-center gap-2 text-foreground font-semibold">
             <Clock className="size-3.5 text-primary shrink-0" aria-hidden="true" />
-            <span>Portion: {item.household_portion}</span>
+            <span>Portion: {sanitizeParentGuidance(item.household_portion)}</span>
           </div>
 
           <p className="text-muted-foreground leading-relaxed">
             <Sparkles className="size-3 text-amber-500 inline mr-1" aria-hidden="true" />
-            {item.recommendation_reason}
+            {sanitizeParentGuidance(item.recommendation_reason)}
           </p>
         </div>
 
@@ -212,20 +197,6 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
                 </div>
               </div>
             )}
-
-            {/* FHB Source Citation */}
-            <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1 border border-border/40">
-              <div className="flex items-center gap-1.5 text-muted-foreground font-semibold">
-                <BookOpen className="size-3.5 text-primary shrink-0" aria-hidden="true" />
-                <span>Source Citation (Family Health Bureau, 2025)</span>
-              </div>
-              <p className="text-muted-foreground text-2xs leading-relaxed">
-                {item.source_citation.publication} &bull; Page {item.source_citation.booklet_page ?? 'N/A'} (PDF Page {item.source_citation.pdf_page ?? 'N/A'})
-              </p>
-              <p className="text-2xs text-foreground/80 italic">
-                "{item.source_citation.evidence_description}"
-              </p>
-            </div>
           </div>
         )}
 
@@ -239,11 +210,11 @@ export function MealRecommendationCard({ item, substitutionsMap = {} }: MealReco
         >
           {isExpanded ? (
             <>
-              Hide Preparation & Evidence <ChevronUp className="size-4" aria-hidden="true" />
+              Hide Preparation & Guidance <ChevronUp className="size-4" aria-hidden="true" />
             </>
           ) : (
             <>
-              View Preparation Instructions & Citations <ChevronDown className="size-4" aria-hidden="true" />
+              View Preparation & Safety Instructions <ChevronDown className="size-4" aria-hidden="true" />
             </>
           )}
         </Button>

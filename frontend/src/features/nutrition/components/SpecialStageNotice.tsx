@@ -2,6 +2,7 @@ import React from 'react';
 import { AlertCircle, Baby, CheckCircle, GraduationCap, Info, Milk, ShieldAlert } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
+import { sanitizeParentGuidance } from '@/features/nutrition/nutritionMetadata';
 import { NutritionRecommendationResponse } from '@/types/nutrition';
 
 interface SpecialStageNoticeProps {
@@ -30,7 +31,7 @@ export function SpecialStageNotice({ recommendations }: SpecialStageNoticeProps)
           </AlertTitle>
           <AlertDescription className="text-xs leading-relaxed space-y-2 mt-2">
             <p>
-              According to Sri Lankan Family Health Bureau guidelines, infants under 6 completed calendar months should be fed exclusively on milk (breast milk on demand, day and night, at least 8 to 12 times in 24 hours).
+              According to national infant feeding guidelines, infants under 6 completed calendar months should be fed exclusively on milk (breast milk on demand, day and night, at least 8 to 12 times in 24 hours).
             </p>
             <p className="font-semibold text-purple-900 dark:text-purple-200">
               No solid, semi-solid, or puréed foods should be introduced before 6 completed calendar months.
@@ -45,7 +46,7 @@ export function SpecialStageNotice({ recommendations }: SpecialStageNoticeProps)
               Guidance for this Stage
             </h4>
             <div className="text-xs text-muted-foreground leading-relaxed space-y-2">
-              <p>{milk_feeding_guidance}</p>
+              <p>{sanitizeParentGuidance(milk_feeding_guidance)}</p>
               {safety_and_hygiene_guidance.length > 0 && (
                 <ul className="list-disc list-inside space-y-1 pl-1 pt-1">
                   {safety_and_hygiene_guidance.map((item, idx) => (
@@ -78,7 +79,7 @@ export function SpecialStageNotice({ recommendations }: SpecialStageNoticeProps)
           </div>
           <div className="rounded-lg bg-card border border-border/60 p-4 text-xs text-muted-foreground text-left space-y-2">
             <p className="font-semibold text-foreground">
-              {special_notice ?? 'Transition to Family Health Bureau school-age child nutrition guidelines.'}
+              {sanitizeParentGuidance(special_notice ?? 'Transition to school-age child nutrition guidelines.')}
             </p>
             <p>
               Continue providing diverse meals with all family food groups (cereals, pulses, animal proteins, vegetables, green leaves, fruits, and dairy), ensuring adequate physical activity and continuing hygienic home cooking without excess sugar, salt, or ultra-processed snacks.
@@ -99,7 +100,7 @@ export function SpecialStageNotice({ recommendations }: SpecialStageNoticeProps)
         </AlertTitle>
         <AlertDescription className="text-xs leading-relaxed space-y-2 mt-2">
           <p>
-            {special_notice ?? 'No meals could be safely generated matching all selected ingredient restrictions or availability constraints.'}
+            {sanitizeParentGuidance(special_notice ?? 'No meals could be safely generated matching all selected ingredient restrictions or availability constraints.')}
           </p>
           <p>
             Please check your <strong>Feeding Preferences</strong> tab to adjust excluded ingredients, relax the strict kitchen pantry filter, or add available household ingredients.

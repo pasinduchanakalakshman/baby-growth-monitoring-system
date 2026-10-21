@@ -97,7 +97,7 @@ export function MealSubstitutionModal({
         <DialogHeader className="space-y-2">
           <div className="flex items-center gap-2 text-primary">
             <RefreshCw className="size-5" />
-            <span className="text-xs font-bold uppercase tracking-wider">FHB Validated Alternative</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Validated Alternative Meal</span>
           </div>
           <DialogTitle className="text-xl font-bold tracking-tight">
             Substitute Meal for {slot.slot_label}
@@ -158,7 +158,7 @@ export function MealSubstitutionModal({
           {validateMutation.isPending && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-muted/40 text-xs text-muted-foreground">
               <Loader2 className="size-4 animate-spin text-primary" />
-              <span>Revalidating clinical and texture constraints on backend...</span>
+              <span>Verifying age-suitability and texture...</span>
             </div>
           )}
 

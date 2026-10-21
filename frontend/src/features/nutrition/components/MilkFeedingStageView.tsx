@@ -21,6 +21,7 @@ import {
   MilkFeedingMethod,
   NutritionRecommendationResponse,
 } from '@/types/nutrition';
+import { sanitizeParentGuidance } from '@/features/nutrition/nutritionMetadata';
 import { BabyProfile } from '@/types/baby';
 
 export interface MilkFeedingStageViewProps {
@@ -84,7 +85,7 @@ export function MilkFeedingStageView({
           </div>
           <AlertDescription className="text-xs leading-relaxed space-y-2 text-purple-900/90 dark:text-purple-200">
             <p>
-              According to the Sri Lankan Family Health Bureau (FHB) national guidelines, infants under six completed calendar months obtain 100% of their nutrients, protective antibodies, and hydration from milk feeding alone.
+              According to national infant feeding guidelines, infants under six completed calendar months obtain 100% of their nutrients, protective antibodies, and hydration from milk feeding alone.
             </p>
             <p className="font-semibold text-purple-950 dark:text-purple-100 flex items-center gap-1.5">
               <Clock className="size-3.5 text-purple-600 inline" aria-hidden="true" />
@@ -132,7 +133,7 @@ export function MilkFeedingStageView({
             {isBreastfeeding && (
               <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs gap-1">
                 <CheckCircle2 className="size-3" aria-hidden="true" />
-                Exclusive Breastfeeding (FHB Gold Standard)
+                Exclusive Breastfeeding (Recommended)
               </Badge>
             )}
             {isFormula && (
@@ -184,7 +185,7 @@ export function MilkFeedingStageView({
                     <Heart className="size-3.5 text-rose-500" /> Exclusive Breastfeeding
                   </p>
                   <p className="text-2xs text-muted-foreground mt-1">
-                    Breast milk only, on cue day & night (FHB recommended).
+                    Breast milk only, on cue day & night.
                   </p>
                 </button>
 
@@ -295,10 +296,10 @@ export function MilkFeedingStageView({
             <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/40 dark:bg-emerald-950/20 p-4 space-y-3">
               <h4 className="text-xs font-bold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
                 <Heart className="size-4 text-emerald-600" aria-hidden="true" />
-                FHB Exclusive Breastfeeding Guidance
+                Recommended Breastfeeding Guidance
               </h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                The Sri Lankan Family Health Bureau recommends exclusive breastfeeding on demand, day and night (at least 8 to 12 feeds in 24 hours).
+                Exclusive breastfeeding is recommended on demand, day and night (at least 8 to 12 feeds in 24 hours).
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
                 <div className="bg-card rounded-lg p-3 border border-border/60 space-y-1.5">
@@ -328,10 +329,10 @@ export function MilkFeedingStageView({
             <div className="rounded-xl border border-amber-200/80 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-3">
               <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
                 <Info className="size-4 text-amber-600" aria-hidden="true" />
-                National FHB Feeding Guidance (Recommendation)
+                National Milk-Feeding Guidance (Recommendation)
               </h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                The Sri Lankan Family Health Bureau recommends exclusive breastfeeding for all infants from birth up to six completed calendar months whenever possible.
+                Exclusive breastfeeding is recommended for all infants from birth up to six completed calendar months whenever possible.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
                 <div className="bg-card rounded-lg p-3 border border-border/60 space-y-1.5">
@@ -375,9 +376,9 @@ export function MilkFeedingStageView({
             <div className="rounded-lg bg-muted/40 border border-border/50 p-3 text-xs text-muted-foreground space-y-1">
               <span className="font-bold text-foreground flex items-center gap-1.5">
                 <Info className="size-3.5 text-primary" aria-hidden="true" />
-                FHB Feeding Stage Recommendation:
+                Feeding Stage Guidance:
               </span>
-              <p className="leading-relaxed">{recommendations.milk_feeding_guidance}</p>
+              <p className="leading-relaxed">{sanitizeParentGuidance(recommendations.milk_feeding_guidance)}</p>
             </div>
           )}
         </CardContent>
@@ -461,7 +462,7 @@ export function MilkFeedingStageView({
           <div className="mt-3.5 rounded-lg bg-primary/5 border border-primary/15 p-3 text-xs text-muted-foreground flex items-start gap-2">
             <Info className="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
             <p className="leading-relaxed">
-              <strong className="text-foreground">FHB Golden Principle:</strong> Never force your baby to finish a feed. Feeding should be a gentle, loving interaction with eye contact. Avoid screen distractions (mobile phones, television) completely during feeding times.
+              <strong className="text-foreground">Responsive Feeding Principle:</strong> Never force your baby to finish a feed. Feeding should be a gentle, loving interaction with eye contact. Avoid screen distractions (mobile phones, television) completely during feeding times.
             </p>
           </div>
         </CardContent>

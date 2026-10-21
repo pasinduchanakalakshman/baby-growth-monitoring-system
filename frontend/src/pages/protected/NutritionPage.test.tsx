@@ -353,7 +353,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(await screen.findByRole('tab', { name: /Today's Recommendations/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Food Ideas & Preparation/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /FHB Guidelines & Evidence/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Feeding & Safety Guidance/i })).toBeInTheDocument();
   });
 
   it('2. Shows selected baby information, completed calendar months, and feeding stage', async () => {
@@ -451,7 +451,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     renderNutritionView();
 
     await screen.findByText('Rice with Dhal and Mashed Carrot');
-    const toggleButton = screen.getAllByRole('button', { name: /View Preparation Instructions & Citations/i })[0];
+    const toggleButton = screen.getAllByRole('button', { name: /View Preparation & Safety Instructions/i })[0];
 
     // Click to expand
     fireEvent.click(toggleButton);
@@ -462,20 +462,23 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(screen.getByText('Do not add salt or artificial seasonings')).toBeInTheDocument();
 
     // Click again to collapse
-    fireEvent.click(screen.getAllByRole('button', { name: /Hide Preparation & Evidence/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Hide Preparation & Guidance/i })[0]);
     expect(screen.queryByText('Preparation Instructions')).not.toBeInTheDocument();
   });
 
-  it('8. Displays FHB booklet citation with booklet page number and evidence tier', async () => {
+  it('8. Displays preparation and safety instructions without visible source citations or tier badges', async () => {
     renderNutritionView();
 
     await screen.findByText('Rice with Dhal and Mashed Carrot');
-    const toggleButton = screen.getAllByRole('button', { name: /View Preparation Instructions & Citations/i })[0];
+    const toggleButton = screen.getAllByRole('button', { name: /View Preparation & Safety Instructions/i })[0];
     fireEvent.click(toggleButton);
 
-    expect(screen.getByText('Source Citation (Family Health Bureau, 2025)')).toBeInTheDocument();
-    expect(screen.getByText(/Page 8/i)).toBeInTheDocument();
-    expect(screen.getAllByText('FHB Tier A Evidence')[0]).toBeInTheDocument();
+    expect(screen.getByText('Preparation Instructions')).toBeInTheDocument();
+    expect(screen.getByText('Safety & Hygiene Precautions')).toBeInTheDocument();
+    expect(screen.queryByText('Source Citation (Family Health Bureau, 2025)')).not.toBeInTheDocument();
+    expect(screen.queryByText(/FHB Tier A Evidence/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Page 8/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/PDF p\./i)).not.toBeInTheDocument();
   });
 
   it('9. Shows original household portions without invented metric conversions', async () => {
@@ -490,7 +493,7 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     renderNutritionView();
 
     await screen.findByText('Rice with Dhal and Mashed Carrot');
-    const toggleButton = screen.getAllByRole('button', { name: /View Preparation Instructions & Citations/i })[0];
+    const toggleButton = screen.getAllByRole('button', { name: /View Preparation & Safety Instructions/i })[0];
     fireEvent.click(toggleButton);
 
     expect(screen.getByText('Practical Kitchen Substitutions')).toBeInTheDocument();
@@ -652,18 +655,19 @@ describe('Nutrition & Feeding Page Integration Tests (Phase 6)', () => {
     expect(screen.queryByText('Rice with Dhal and Mashed Carrot')).not.toBeInTheDocument();
   });
 
-  it('21. Displays FHB source evidence, 7 food groups, and safety principles in Guidelines tab', async () => {
+  it('21. Displays feeding guidance, 7 food groups, and safety principles in Guidance tab', async () => {
     renderNutritionView();
 
-    const guidelinesTab = await screen.findByRole('tab', { name: /FHB Guidelines & Evidence/i });
+    const guidelinesTab = await screen.findByRole('tab', { name: /Feeding & Safety Guidance/i });
     fireEvent.click(guidelinesTab);
 
-    expect(await screen.findByText(/"Right Food at the Right Time, To Make My Baby Healthy and Bright"/i)).toBeInTheDocument();
-    expect(screen.getByText('Official National Clinical Reference')).toBeInTheDocument();
+    expect(await screen.findByText(/Right Food at the Right Time, To Make Your Baby Healthy & Bright/i)).toBeInTheDocument();
+    expect(screen.getByText('National Feeding Guidelines')).toBeInTheDocument();
     expect(screen.getByText('Strict Salt & Sugar Ban')).toBeInTheDocument();
     expect(screen.getByText('Screen-Free Responsive Feeding')).toBeInTheDocument();
     expect(screen.getByText('The 7 Sri Lankan Childhood Food Groups')).toBeInTheDocument();
     expect(screen.getByText('Whole Nut & Choking Hazards')).toBeInTheDocument();
+    expect(screen.queryByText(/Research Project Scope & Medical Disclaimer/i)).not.toBeInTheDocument();
   });
 });
 
@@ -987,7 +991,7 @@ describe('Phase 8 — Age-Conditional Nutrition Interface Tests (0–5m vs 6–5
     expect(screen.getByRole('tab', { name: /7-Day Weekly Plan/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Feeding Preferences & Pantry/i })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Food Ideas & Preparation/i })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /FHB Guidelines & Evidence/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Feeding & Safety Guidance/i })).toBeInTheDocument();
 
     // Complementary meal card rendered
     expect(screen.getByText('Smooth Rice Mash with Breast Milk')).toBeInTheDocument();
@@ -1080,7 +1084,7 @@ describe('Phase 8 — Age-Conditional Nutrition Interface Tests (0–5m vs 6–5
     renderNutritionView(babyNewborn0m, [babyNewborn0m]);
 
     expect(await screen.findByText('Not Specified (Showing National Guidance)')).toBeInTheDocument();
-    expect(screen.getByText('National FHB Feeding Guidance (Recommendation)')).toBeInTheDocument();
+    expect(screen.getByText('National Milk-Feeding Guidance (Recommendation)')).toBeInTheDocument();
     expect(screen.getByText(/For Formula-Fed Infants:/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Record Feeding Method/i })).toBeInTheDocument();
   });
@@ -1120,7 +1124,7 @@ describe('Phase 8 — Age-Conditional Nutrition Interface Tests (0–5m vs 6–5
     expect(screen.queryByRole('tab', { name: /7-Day Weekly Plan/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('tab', { name: /Feeding Preferences & Pantry/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('tab', { name: /Food Ideas & Preparation/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('tab', { name: /FHB Guidelines & Evidence/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /Feeding & Safety Guidance/i })).not.toBeInTheDocument();
 
     // Irrelevant complementary cards must be completely hidden
     expect(screen.queryByText(/Main Meals \(/i)).not.toBeInTheDocument();

@@ -2,6 +2,7 @@ import React from 'react';
 import { Baby, Calendar, Clock, Heart, Info, Milk, Sparkles, Utensils } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { sanitizeParentGuidance } from '@/features/nutrition/nutritionMetadata';
 import { NutritionRecommendationResponse } from '@/types/nutrition';
 import { BabyProfile } from '@/types/baby';
 
@@ -46,8 +47,8 @@ export function BabyNutritionOverview({
   const stageName = recommendations?.stage_name ?? 'Determining Feeding Stage...';
   const mealFrequency = recommendations?.meal_frequency_guidance ?? 'Loading meal frequency guidance...';
   const snackFrequency = recommendations?.daily_snack_frequency_guidance;
-  const milkGuidance = recommendations?.milk_feeding_guidance ?? 'Continue breastfeeding on demand.';
-  const portionGuidance = recommendations?.feeding_rule?.household_portion ?? 'Age-appropriate portion according to child appetite.';
+  const milkGuidance = sanitizeParentGuidance(recommendations?.milk_feeding_guidance ?? 'Continue breastfeeding on demand.');
+  const portionGuidance = sanitizeParentGuidance(recommendations?.feeding_rule?.household_portion ?? 'Age-appropriate portion according to child appetite.');
 
   const babiesList = allBabies.length > 0 ? allBabies : baby ? [baby] : [];
 
@@ -116,7 +117,7 @@ export function BabyNutritionOverview({
             </h3>
             {completedMonths >= 6 && recommendations?.feeding_rule?.stage_id && (
               <p className="text-xs text-muted-foreground">
-                Target Texture: <strong className="text-foreground">{recommendations.feeding_rule.texture.replace(/_/g, ' ')}</strong> &bull; Rule Precedence: {recommendations.feeding_rule.precedence}
+                Target Texture: <strong className="text-foreground">{recommendations.feeding_rule.texture.replace(/_/g, ' ')}</strong>
               </p>
             )}
             {completedMonths < 6 && (
@@ -124,11 +125,6 @@ export function BabyNutritionOverview({
                 Feeding Mode: <strong className="text-foreground">Exclusive Milk (Liquid)</strong> &bull; Zero solids or purées before 6 completed months
               </p>
             )}
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-1 text-xs">
-              FHB 2025 Guideline Aligned
-            </Badge>
           </div>
         </div>
 
@@ -223,7 +219,7 @@ export function BabyNutritionOverview({
         <div className="rounded-lg bg-primary/5 border border-primary/15 p-3 text-xs text-muted-foreground flex items-start gap-2.5">
           <Info className="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
           <p className="leading-relaxed">
-            <strong className="text-foreground">FHB Responsive Feeding Principle:</strong>{' '}
+            <strong className="text-foreground">Responsive Feeding Advice:</strong>{' '}
             {completedMonths < 6
               ? 'Feed on cue with patience and love. Never force a feed. Sit facing your baby, maintain gentle eye contact, and avoid all screen distractions during feeding sessions.'
               : 'Feed with patience and love. Never force a baby to finish food. Sit facing the baby, maintain eye contact, and avoid all screen distractions during feeding sessions.'}

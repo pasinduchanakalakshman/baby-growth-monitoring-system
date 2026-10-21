@@ -1,5 +1,5 @@
 import { cloneElement, type ReactElement } from 'react';
-import { render, screen, within, fireEvent } from '@testing-library/react';
+import { cleanup, render, screen, within, fireEvent } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -10,8 +10,6 @@ import type { BabyProfile } from '@/types/baby';
 import type { GrowthOverview, GrowthHistoryPoint } from '@/types/growth';
 import { ageInDays, babyAgeLabel, calendarDate, recordedWeightPoints } from '@/features/dashboard/dashboardDisplay';
 import Dashboard from './Dashboard';
-import response from '@/test/fixtures/newbornWeightJourney.json';
-import type { NewbornWeightJourney } from '@/types/growth';
 
 vi.mock('@/auth/AuthProvider', () => ({ useAuth: vi.fn() }));
 vi.mock('@/api/baby', () => ({ babyApi: { getBabyProfile: vi.fn() } }));
@@ -34,7 +32,7 @@ function renderDashboard() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return render(<QueryClientProvider client={client}><MemoryRouter initialEntries={['/app']}><Routes>
     <Route path="/app" element={<Dashboard />} />
-    {['/baby', '/growth', '/growth/charts', '/growth/history', '/growth/forecast'].map(path => <Route key={path} path={path} element={<h1>Destination {path}</h1>} />)}
+    {['/baby', '/growth/add', '/growth/charts'].map(path => <Route key={path} path={path} element={<h1>Destination {path}</h1>} />)}
   </Routes></MemoryRouter></QueryClientProvider>);
 }
 
@@ -43,35 +41,43 @@ async function ready() {
   await screen.findByRole('img', { name: /Recorded weight in kilograms/ });
 }
 
+function stat(label: string) {
+  return screen.getByText(label, { selector: 'dt' }).parentElement!.querySelector('dd')!;
+}
+
 describe('Dashboard content', () => {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date(2026, 9, 19, 10));
     vi.clearAllMocks();
-    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue(response as NewbornWeightJourney);
     vi.mocked(useAuth).mockReturnValue(auth);
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue(baby);
     vi.mocked(growthApi.getGrowthOverview).mockResolvedValue(overview);
     vi.mocked(growthApi.getGrowthHistory).mockResolvedValue(history);
   });
-  afterEach(() => vi.useRealTimers());
+  afterEach(() => { cleanup(); vi.useRealTimers(); });
 
-  it('renders actual account and profile data, calendar age and kilogram values', async () => {
+  it('combines actual profile details and growth metrics into one of two main cards', async () => {
     renderDashboard(); await ready();
-    expect(screen.getByRole('heading', { level: 1, name: 'Welcome, Sarah Johnson!' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Emma' })).toBeInTheDocument();
-    expect(screen.getByText('9 months old')).toBeInTheDocument();
-    expect(screen.getByText('Born 1 Jan 2026')).toBeInTheDocument();
-    expect(screen.getByText('Birth weight: 3.20 kg')).toBeInTheDocument();
-    expect(screen.getByText('+4.00')).toHaveTextContent('+4.00 kg');
-    expect(screen.getByText('15 Oct 2026', { exact: true })).toBeInTheDocument();
-    expect(screen.queryByText(/Registered on/)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Welcome back, Sarah Johnson!' })).toBeInTheDocument();
+    const summary = within(screen.getByRole('region', { name: 'Baby summary' }));
+    expect(summary.getByRole('heading', { name: 'Emma' })).toBeInTheDocument();
+    expect(summary.getByText('9 months old')).toBeInTheDocument();
+    expect(summary.getByText('Female')).toBeInTheDocument();
+    expect(summary.getByText('Born 1 Jan 2026')).toBeInTheDocument();
+    expect(stat('Latest Weight')).toHaveTextContent('7.20 kg');
+    expect(stat('Weight Change')).toHaveTextContent('+4.00 kg');
+    expect(stat('Last Measurement')).toHaveTextContent('15 Oct 2026');
+    expect(screen.getAllByRole('region')).toHaveLength(2);
+    expect(screen.getByRole('heading', { name: 'Weight Progress' })).toBeInTheDocument();
+    expect(screen.queryByText(/Explore your baby's growth|Birth weight:/)).not.toBeInTheDocument();
     expect(babyApi.getBabyProfile).toHaveBeenCalledOnce();
     expect(growthApi.getGrowthOverview).toHaveBeenCalledOnce();
     expect(growthApi.getGrowthHistory).toHaveBeenCalledOnce();
+    expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
   });
 
-  it('renders a real measured chart with units and accessible recorded values', async () => {
+  it('preserves the measured chart, units and accessible recorded values', async () => {
     const { container } = renderDashboard(); await ready();
     expect(container.querySelector('svg.recharts-surface')).toHaveAttribute('width', '300');
     expect(screen.getByText('Age (days)')).toBeInTheDocument();
@@ -82,38 +88,42 @@ describe('Dashboard content', () => {
     expect(screen.queryByText(/Illustrative example/)).not.toBeInTheDocument();
   });
 
-  it('shows useful profile loading skeletons without fabricated values', () => {
+  it('shows loading placeholders without invented values or premature data reads', () => {
     vi.mocked(babyApi.getBabyProfile).mockImplementation(() => new Promise(() => {}));
     renderDashboard();
     expect(screen.getByRole('status', { name: 'Loading baby profile' })).toBeInTheDocument();
     expect(screen.getByRole('status', { name: 'Loading weight chart' })).toBeInTheDocument();
     expect(growthApi.getGrowthOverview).not.toHaveBeenCalled();
+    expect(growthApi.getGrowthHistory).not.toHaveBeenCalled();
     expect(screen.queryByText('0.00')).not.toBeInTheDocument();
   });
 
-  it('loads growth cards and chart independently of the available profile', async () => {
+  it('loads growth statistics and chart independently of the available profile', async () => {
     vi.mocked(growthApi.getGrowthOverview).mockImplementation(() => new Promise(() => {}));
     vi.mocked(growthApi.getGrowthHistory).mockImplementation(() => new Promise(() => {}));
     renderDashboard();
     await screen.findByRole('heading', { name: 'Emma' });
-    expect(screen.getByRole('status', { name: 'Loading latest recorded weight' })).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Loading latest weight' })).toBeInTheDocument();
     expect(screen.getByRole('status', { name: 'Loading weight chart' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View Profile' })).toHaveAttribute('href', '/baby');
+    expect(screen.getByRole('link', { name: 'Add Measurement' })).toHaveAttribute('href', '/growth/add');
   });
 
-  it('handles a missing profile without fictional baby details or extra data reads', async () => {
+  it('handles a missing profile without fictional details or extra data reads', async () => {
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue(null as unknown as BabyProfile);
     renderDashboard();
     expect(await screen.findByText('Baby details are not available.')).toBeInTheDocument();
     expect(growthApi.getGrowthOverview).not.toHaveBeenCalled();
     expect(growthApi.getGrowthHistory).not.toHaveBeenCalled();
+    expect(screen.queryByRole('link', { name: 'Add Measurement' })).not.toBeInTheDocument();
     expect(screen.queryByText('Emma')).not.toBeInTheDocument();
   });
 
-  it('handles a failed profile request and retries it using the real query', async () => {
+  it('retries a failed profile request without showing the no-measurements state', async () => {
     vi.mocked(babyApi.getBabyProfile).mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(baby);
     renderDashboard();
     await screen.findByText("We couldn't load your baby's profile.");
+    expect(screen.queryByRole('heading', { name: "Your baby's growth journey starts here" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     await ready();
     expect(babyApi.getBabyProfile).toHaveBeenCalledTimes(2);
@@ -126,110 +136,93 @@ describe('Dashboard content', () => {
     expect(screen.queryByText(/Mama|Mother|Sarah/)).not.toBeInTheDocument();
   });
 
-  it('does not invent metrics, daily gain, normal-range bands or a health status', async () => {
+  it('shows three placeholders and a single compact empty state without inventing metrics', async () => {
     vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: null });
     vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
     const { container } = renderDashboard();
-    await screen.findByText('No current measurement available');
-    expect(await screen.findAllByText('Not recorded')).toHaveLength(3);
-    expect(screen.getByText(/No measurements with a recorded weight/)).toBeInTheDocument();
+    await screen.findByRole('heading', { name: "Your baby's growth journey starts here" });
+    expect(stat('Latest Weight').textContent).toBe('—');
+    expect(stat('Weight Change').textContent).toBe('—');
+    expect(stat('Last Measurement').textContent).toBe('—');
+    expect(screen.getByText("Add your first measurement to start tracking your baby's growth over time.")).toBeInTheDocument();
     expect(container.querySelector('svg.recharts-surface')).toBeNull();
-    expect(screen.queryByText(/Daily gain|Normal|On track|Growth status/)).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'View Forecast' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Not recorded|Daily gain|Normal|On track|Growth status/)).not.toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Add Measurement' })).toHaveLength(1);
   });
 
-  it('keeps Add Measurement unavailable on the dashboard for older babies', async () => {
-    renderDashboard(); await ready();
-    expect(screen.getByRole('button', { name: 'Add Measurement' })).toBeDisabled();
-    expect(screen.queryByRole('link', { name: 'Add Measurement' })).not.toBeInTheDocument();
-  });
-
-  it.each([['View Profile', '/baby'], ['Growth Overview', '/growth'], ['Growth Charts', '/growth/charts'], ['Growth History', '/growth/history'], ['View Charts', '/growth/charts']])('navigates %s to the existing %s route', async (label, path) => {
+  it.each([['View Profile', '/baby'], ['Add Measurement', '/growth/add'], ['View Growth Charts', '/growth/charts']])('navigates %s to the existing %s route', async (label, path) => {
     renderDashboard(); await ready();
     fireEvent.click(screen.getByRole('link', { name: label }));
     expect(await screen.findByRole('heading', { name: `Destination ${path}` })).toBeInTheDocument();
   });
 
-  it('links to the real forecast only when its existing availability and value are supplied', async () => {
-    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ ...overview, forecast_30d: { available: true, estimated_weight_kg: 7.4, horizon_days: 30 } });
-    renderDashboard(); await ready();
-    fireEvent.click(screen.getByRole('link', { name: 'View Forecast' }));
-    expect(await screen.findByRole('heading', { name: 'Destination /growth/forecast' })).toBeInTheDocument();
-  });
-
-  it('keeps the birth-based first-month example separate from recorded and forecast values', async () => {
-    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07' });
-    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: { birth_weight_kg: 9 }, current_growth: null });
-    const { container } = renderDashboard();
-    await screen.findByRole('img', { name: /Illustrative weight journey beginning.*3.2 kg/ });
-    expect(screen.getByText('12 days old')).toBeInTheDocument();
-    expect(screen.getByText('Recorded birth weight: 3.2 kg')).toBeInTheDocument();
-    expect(screen.getByText('Illustrative example')).toBeInTheDocument();
-    expect(container.querySelector('.recharts-line-curve')).toHaveAttribute('stroke-dasharray', '7 5');
-    expect(container.querySelector('.recharts-reference-dot-dot')).toBeInTheDocument();
-    expect(screen.getByText(response.message)).toBeInTheDocument();
-    expect(growthApi.getNewbornWeightJourney).toHaveBeenCalledOnce();
-    expect(screen.getByText(/No extra weight entries are needed during the first 30 days/)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Add Measurement/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /View Charts|Forecast|History/ })).not.toBeInTheDocument();
-    expect(growthApi.getGrowthHistory).not.toHaveBeenCalled();
-    expect(await screen.findAllByText('Not recorded')).toHaveLength(3);
-  });
-
-  it('keeps the newborn journey visible when the growth service fails', async () => {
-    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07' });
-    vi.mocked(growthApi.getGrowthOverview).mockRejectedValue(new Error('Offline'));
-    renderDashboard();
-    expect(await screen.findByRole('img', { name: /Illustrative weight journey/ })).toBeInTheDocument();
-    expect(await screen.findByRole('button', { name: 'Try again' })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('link', { name: 'View Weight Journey' }));
-    expect(await screen.findByRole('heading', { name: 'Destination /growth' })).toBeInTheDocument();
-  });
-
-  it('identifies saved visit summaries separately from the first-month illustrative curve', async () => {
+  it('shows saved newborn measurements using the same recorded-weight chart', async () => {
     vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07' });
     vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: { visit_date: '2026-10-19', weight_kg: 3.3 } });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([{ ...history[0], visit_date: '2026-10-19', age_days: 12, weight_kg: 3.3 }]);
     renderDashboard();
-    expect(await screen.findByText('3.30', { selector: 'p' })).toBeInTheDocument();
-    expect(await screen.findByRole('img', { name: /Illustrative weight journey beginning.*3.2 kg/ })).toBeInTheDocument();
-    expect(screen.getByText(/Recorded visit weights, when available, come from saved visit data/)).toBeVisible();
-    expect(screen.getByText('From a recorded visit')).toBeVisible();
-    expect(screen.queryByRole('button', { name: 'Add Measurement' })).not.toBeInTheDocument();
+    await screen.findByRole('img', { name: /Recorded weight in kilograms/ });
+    expect(screen.getByText('12 days old')).toBeInTheDocument();
+    expect(stat('Latest Weight')).toHaveTextContent('3.30 kg');
+    expect(stat('Weight Change')).toHaveTextContent('+0.10 kg');
+    expect(screen.getByRole('link', { name: 'Add Measurement' })).toHaveAttribute('href', '/growth/add');
+    expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
   });
 
-  it.each([32, null])('shows no unsupported curve for gestational age %s', async weeks => {
-    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07', gestational_age_weeks: weeks });
-    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, available: false, points: [], message: 'This example does not suit the recorded birth details.' } as NewbornWeightJourney);
+  it('shows the first-measurement empty state for a newborn without saved visits', async () => {
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07' });
+    vi.mocked(growthApi.getGrowthOverview).mockResolvedValue({ baby: {}, current_growth: null });
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([]);
     renderDashboard();
-    expect(await screen.findByText(/does not suit the recorded birth details/)).toBeInTheDocument();
-    expect(screen.queryByRole('img', { name: /Illustrative weight journey/ })).toBeNull();
+    await screen.findByRole('heading', { name: "Your baby's growth journey starts here" });
+    expect(screen.queryByRole('img', { name: /Illustrative weight journey/ })).not.toBeInTheDocument();
+    expect(growthApi.getNewbornWeightJourney).not.toHaveBeenCalled();
   });
 
-  it('handles incomplete birth details without drawing an example or calculating a change', async () => {
-    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, date_of_birth: '2026-10-07', birth_weight_kg: null } as unknown as BabyProfile);
-    vi.mocked(growthApi.getNewbornWeightJourney).mockResolvedValue({ ...response, available: false, points: [], message: 'A valid recorded birth weight is unavailable.' } as NewbornWeightJourney);
-    const { container } = renderDashboard();
-    await screen.findByText(/A valid recorded birth weight is unavailable/);
-    expect(container.querySelector('svg.recharts-surface')).toBeNull();
-    expect(await screen.findByText('Requires birth and recorded weights')).toBeInTheDocument();
-    expect(screen.queryByText('+4.00')).not.toBeInTheDocument();
+  it.each([null, 0, NaN])('does not calculate weight change with invalid birth weight %s', async birth_weight_kg => {
+    vi.mocked(babyApi.getBabyProfile).mockResolvedValue({ ...baby, birth_weight_kg } as unknown as BabyProfile);
+    renderDashboard(); await ready();
+    expect(stat('Weight Change').textContent).toBe('—');
+    expect(stat('Latest Weight')).toHaveTextContent('7.20 kg');
   });
 
-  it('shows a measured-history error without hiding available profile and metric data', async () => {
-    vi.mocked(growthApi.getGrowthHistory).mockRejectedValue(new Error('Offline'));
+  it('shows and retries a history error while retaining profile and summary data', async () => {
+    vi.mocked(growthApi.getGrowthHistory).mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(history);
     renderDashboard();
     await screen.findByText("We couldn't load recorded weights. Please try again.");
     expect(screen.getByRole('heading', { name: 'Emma' })).toBeInTheDocument();
     expect(screen.getByText('7.20')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: "Your baby's growth journey starts here" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry weight progress' }));
+    await ready();
+    expect(growthApi.getGrowthHistory).toHaveBeenCalledTimes(2);
+    expect(growthApi.getGrowthOverview).toHaveBeenCalledOnce();
   });
 
-  it('preserves the complete existing medical disclaimer in an accessible note', async () => {
+  it('retries an overview error while retaining the independent recorded chart', async () => {
+    vi.mocked(growthApi.getGrowthOverview).mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(overview);
+    renderDashboard();
+    await screen.findByText(/We couldn't load the latest growth summary/);
+    expect(await screen.findByRole('img', { name: /Recorded weight in kilograms/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    await ready();
+    expect(growthApi.getGrowthOverview).toHaveBeenCalledTimes(2);
+    expect(growthApi.getGrowthHistory).toHaveBeenCalledOnce();
+  });
+
+  it('does not call invalid saved measurements an empty history', async () => {
+    vi.mocked(growthApi.getGrowthHistory).mockResolvedValue([{ ...history[0], weight_kg: NaN }]);
+    renderDashboard();
+    await screen.findByRole('heading', { name: 'Weight progress is not available yet' });
+    expect(screen.queryByText(/Add your first measurement/)).not.toBeInTheDocument();
+  });
+
+  it('retains a readable medical disclaimer at the bottom', async () => {
     renderDashboard(); await ready();
     const note = screen.getByRole('note', { name: 'System disclaimer' });
-    expect(within(note).getByText(/This system provides growth estimates and risk assessments and is not a medical diagnosis. Always consult with a healthcare professional for medical advice./)).toBeInTheDocument();
+    expect(note).toHaveTextContent('BabyGrowth provides growth monitoring estimates and is not a medical diagnosis. Consult a healthcare professional for medical advice.');
   });
 });
-
 describe('Dashboard date and chart presentation', () => {
   const today = new Date(2026, 9, 19, 10);
   it.each(['', '2026-02-30', 'bad-date', '2026-13-01', undefined])('rejects an invalid date %s', value => {
